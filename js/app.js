@@ -402,7 +402,51 @@ function initRegistroJugador() {
     console.log('=== INICIO REGISTRO JUGADOR ===');
     // 🔥 Cerrar cualquier sesión activa
     localStorage.removeItem('arvet_user');
+ 
+    // 🔥 AVATAR DEFAULT
+    let avatarUrl = "https://i.ibb.co/4pDNDk1/avatar1.png";
 
+    const avatarPreview = document.getElementById('avatarPreview');
+    const avatarOptions = document.querySelectorAll('.avatar-option');
+    const avatarUpload = document.getElementById('avatarUpload');
+
+    // Selección avatar predefinido
+    avatarOptions.forEach(img => {
+        img.addEventListener('click', function() {
+            avatarUrl = this.src;
+            avatarPreview.src = this.src;
+        });
+    });
+
+    // Subida a imgbb
+    avatarUpload.addEventListener('change', async function() {
+
+        const file = this.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("image", file);
+
+        try {
+
+            const response = await fetch("https://api.imgbb.com/1/upload?key=TU_API_KEY", {
+                method: "POST",
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                avatarUrl = result.data.url;
+                avatarPreview.src = avatarUrl;
+            }
+
+        } catch (error) {
+            console.error("Error subiendo imagen:", error);
+        }
+
+    });
+    
     // Obtener equipoId de la URL
     const urlParams = new URLSearchParams(window.location.search);
     const equipoId = urlParams.get('equipo');
@@ -471,6 +515,7 @@ function initRegistroJugador() {
                 `&dni=${encodeURIComponent(data.dni)}` +
                 `&cuitCuil=${encodeURIComponent(data.cuitCuil)}` +
                 `&password=${encodeURIComponent(data.password)}` +
+                `&avatarUrl=${encodeURIComponent(avatarUrl)}` +
                 `&equipoId=${encodeURIComponent(data.equipoId)}`
             );
             

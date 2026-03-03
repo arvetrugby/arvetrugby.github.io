@@ -25,13 +25,51 @@
     </nav>
 
     <!-- Portada -->
-    <section id="portada" class="hero" style="margin-top: 70px;">
-        <div class="container">
-            <div id="equipoHeader">
-                <div class="loading">Cargando equipo...</div>
-            </div>
+   <!-- REEMPLAZAR la sección de Portada completa -->
+<section id="portada" class="hero" style="margin-top: 70px; padding: 40px 0;">
+    <div class="container">
+        <div id="equipoHeader">
+            <div class="loading">Cargando equipo...</div>
         </div>
-    </section>
+        <!-- Logo del equipo -->
+        <div id="equipoLogoContainer" style="margin-top: 20px; text-align: center;">
+            <img id="equipoLogo" src="" alt="Logo del equipo" 
+                 style="width: 150px; height: 150px; object-fit: contain; border-radius: 12px; 
+                        background: #fff; padding: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: none;">
+        </div>
+    </div>
+</section>
+
+<!--  Galería completa -->
+<section id="galeria" class="section">
+    <div class="container">
+        <h2>📸 Galería</h2>
+        <div id="galeriaContainer" style="position: relative; max-width: 100%; overflow: hidden;">
+            <!-- Carrusel Mobile-First -->
+            <div id="galeriaCarrusel" style="display: flex; overflow-x: auto; scroll-snap-type: x mandatory; 
+                                              scroll-behavior: smooth; -webkit-overflow-scrolling: touch; 
+                                              gap: 12px; padding: 20px 0; scrollbar-width: none;">
+                <!-- Las imágenes se cargan dinámicamente -->
+            </div>
+            
+            <!-- Indicadores de puntos (para mobile) -->
+            <div id="galeriaDots" style="display: flex; justify-content: center; gap: 8px; margin-top: 15px;">
+                <!-- Puntos se generan dinámicamente -->
+            </div>
+            
+            <!-- Botones de navegación (para desktop) -->
+            <button id="btnPrevGaleria" onclick="moverGaleria(-1)" 
+                    style="display: none; position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+                           background: rgba(0,0,0,0.6); color: white; border: none; border-radius: 50%; 
+                           width: 40px; height: 40px; cursor: pointer; font-size: 18px; z-index: 10;">‹</button>
+            <button id="btnNextGaleria" onclick="moverGaleria(1)" 
+                    style="display: none; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+                           background: rgba(0,0,0,0.6); color: white; border: none; border-radius: 50%; 
+                           width: 40px; height: 40px; cursor: pointer; font-size: 18px; z-index: 10;">›</button>
+        </div>
+        <p id="sinGaleria" style="text-align: center; color: #64748b; display: none;">No hay fotos en la galería</p>
+    </div>
+</section>
 
     <!-- Quiénes Somos -->
     <section id="quienes-somos" class="section">
@@ -81,16 +119,7 @@
         </div>
     </section>
 
-    <!-- Galería -->
-    <section id="galeria" class="section">
-        <div class="container">
-            <h2>📸 Galería</h2>
-            <div id="galeriaGrid" class="paises-grid">
-                <p>Galería de fotos del equipo</p>
-            </div>
-        </div>
-        
-    </section>
+  
 <!-- Mapa -->
 <section id="ubicacion" class="section" style="background: #f1f5f9;">
     <div class="container">

@@ -243,7 +243,55 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 
   }
+/*********************************
+ SUBIR DOCUMENTOS A DRIVE
+*********************************/
 
+const btnSubirDocs = document.getElementById("btnSubirDocumentos");
+
+if (btnSubirDocs) {
+
+  btnSubirDocs.addEventListener("click", async () => {
+
+    const apto = document.getElementById("aptoMedico").files[0];
+    const estudios = document.getElementById("estudios").files[0];
+    const deslinde = document.getElementById("deslinde").files[0];
+
+    if (!apto || !estudios || !deslinde) {
+      mostrarMensaje("Todos los documentos son obligatorios", "error");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("action", "subirDocumentos");
+    formData.append("idJugador", user.id);
+    formData.append("apto", apto);
+    formData.append("estudios", estudios);
+    formData.append("deslinde", deslinde);
+
+    try {
+
+      const response = await fetch(API_URL, {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        mostrarMensaje("Documentación subida correctamente", "ok");
+      } else {
+        mostrarMensaje("Error al subir documentos", "error");
+      }
+
+    } catch (error) {
+      console.error(error);
+      mostrarMensaje("Error de conexión", "error");
+    }
+
+  });
+
+}
   /*********************************
    LOGOUT
   *********************************/

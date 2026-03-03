@@ -644,6 +644,7 @@ async function cargarEquipo(slug) {
     const comisionGrid = document.getElementById('comisionGrid');
     const plantelGrid = document.getElementById('plantelGrid');
     const partidosList = document.getElementById('partidosEquipoList');
+    const logoImg = document.getElementById('equipoLogo');
     
     try {
         console.log('Enviando a API: action=getEquipoBySlug, slug=' + slug);
@@ -660,10 +661,9 @@ async function cargarEquipo(slug) {
 
         const equipo = response.data;
         console.log('Equipo cargado:', equipo);
-        console.log('Nombre:', equipo.nombre);
-        console.log('Coordenadas:', equipo.lat, equipo.lng);
         window.currentSlug = slug;
         window.currentEquipoId = equipo.id;
+        window.currentEquipo = equipo; // Guardar para la galería
 
         // Actualizar UI - Header
         if (header) {
@@ -672,6 +672,12 @@ async function cargarEquipo(slug) {
                 <p>${equipo.ciudad}, ${equipo.pais}</p>
                 <p>${equipo.descripcion || ''}</p>
             `;
+        }
+
+        // 🔵 MOSTRAR LOGO SI EXISTE
+        if (logoImg && equipo.logoUrl) {
+            logoImg.src = equipo.logoUrl;
+            logoImg.style.display = 'inline-block';
         }
 
         // Actualizar Quienes Somos
@@ -685,37 +691,30 @@ async function cargarEquipo(slug) {
 
         // Cargar datos adicionales si hay ID
         if (equipo.id) {
-            console.log('Cargando jugadores y partidos para equipo ID:', equipo.id);
+            console.log('Cargando jugadores, partidos y galería para equipo ID:', equipo.id);
             if (comisionGrid && plantelGrid) {
                 await cargarJugadoresEquipo(equipo.id);
             }
             if (partidosList) {
                 await cargarPartidosEquipoPublico(equipo.id);
             }
+            // 🔵 CARGAR GALERÍA
+            await cargarGaleriaEquipo(equipo.id);
         }
 
-        // Configurar mapa
+        // Configurar mapa...
         if (equipo.lat && equipo.lng) {
-            console.log('✅ Tiene coordenadas:', equipo.lat, equipo.lng);
             window.equipoCoords = {
                 lat: parseFloat(equipo.lat),
                 lng: parseFloat(equipo.lng)
             };
         } else {
-            console.log('⚠️ Sin coordenadas, usando default');
-            window.equipoCoords = {
-                lat: -34.6037,
-                lng: -58.3816
-            };
+            window.equipoCoords = { lat: -34.6037, lng: -58.3816 };
         }
         
-        // Inicializar mapa solo si existe el contenedor y Leaflet está cargado
         const mapContainer = document.getElementById('map');
         if (mapContainer && typeof L !== 'undefined') {
-            console.log('Inicializando mapa...');
             inicializarMapa();
-        } else {
-            console.log('Mapa no inicializado - contenedor:', !!mapContainer, 'Leaflet:', typeof L !== 'undefined');
         }
 
     } catch (error) {
@@ -726,6 +725,85 @@ async function cargarEquipo(slug) {
     }
 }
 
+// 🔵 NUEVA FUNCIÓN: Cargar Galería
+async function cargarGaleriaEquipo(equipoId) {
+    const container = document.getElementById('galeriaCarrusel');
+    const dotsContainer = document.getElementById('galeriaDots');
+    const sinGaleria = document.getElementById('sinGaleria');
+    const btnPrev = document.getElementById('btnPrevGaleria');
+    const btnNext = document.getElementById('btnNextGaleria');
+    
+    if (!container) return;
+    
+    try {
+        const response = await window.fetchAPI('getGaleria', { equipoId });
+        
+        if (!response.success || !response.data || response.data.length === 0) {
+            container.style.display = 'none';
+            dotsContainer.style.display = 'none';
+            sinGaleria.style.display = 'block';
+            return;
+        }
+        
+        const imagenes = response.data;
+        console.log('Galería cargada:', imagenes.length, 'imágenes');
+        
+        // Generar HTML del carrusel
+        container.innerHTML = imagenes.map((img, index) => `
+            <div class="galeria-item" style="flex: 0 0 85%; scroll-snap-align: center; 
+                                              border-radius: 12px; overflow: hidden; 
+                                              box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <img src="${img.url}" alt="${img.descripcion || 'Foto del equipo'}" 
+                     style="width: 100%; height: 250px; object-fit: cover; display: block;">
+                ${img.descripcion ? `<p style="padding: 10px; margin: 0; background: white; font-size: 14px; color: #333;">${img.descripcion}</p>` : ''}
+            </div>
+        `).join('');
+        
+        // Generar dots indicadores
+        dotsContainer.innerHTML = imagenes.map((_, index) => `
+            <span class="galeria-dot" onclick="irAGaleria(${index})" 
+                  style="width: 10px; height: 10px; border-radius: 50%; 
+                         background: ${index === 0 ? 'var(--primary, #3b82f6)' : '#cbd5e1'}; 
+                         cursor: pointer; transition: all 0.3s;"></span>
+        `).join('');
+        
+        // Mostrar botones de navegación en desktop
+        if (window.innerWidth > 768) {
+            btnPrev.style.display = 'block';
+            btnNext.style.display = 'block';
+        }
+        
+        // Listener para actualizar dots al scroll
+        container.addEventListener('scroll', () => {
+            const scrollLeft = container.scrollLeft;
+            const itemWidth = container.offsetWidth * 0.85 + 12; // 85% + gap
+            const activeIndex = Math.round(scrollLeft / itemWidth);
+            
+            document.querySelectorAll('.galeria-dot').forEach((dot, idx) => {
+                dot.style.background = idx === activeIndex ? 'var(--primary, #3b82f6)' : '#cbd5e1';
+                dot.style.transform = idx === activeIndex ? 'scale(1.2)' : 'scale(1)';
+            });
+        });
+        
+    } catch (error) {
+        console.error('Error cargando galería:', error);
+        container.style.display = 'none';
+        sinGaleria.style.display = 'block';
+    }
+}
+
+// 🔵 FUNCIONES GLOBALES PARA GALERÍA
+window.moverGaleria = function(direccion) {
+    const container = document.getElementById('galeriaCarrusel');
+    const itemWidth = container.offsetWidth * 0.85 + 12;
+    container.scrollBy({ left: itemWidth * direccion, behavior: 'smooth' });
+};
+
+window.irAGaleria = function(index) {
+    const container = document.getElementById('galeriaCarrusel');
+    const itemWidth = container.offsetWidth * 0.85 + 12;
+    container.scrollTo({ left: itemWidth * index, behavior: 'smooth' });
+};
 async function cargarJugadoresEquipo(equipoId) {
     console.log('Cargando jugadores para equipo:', equipoId);
     
@@ -1094,6 +1172,238 @@ function inicializarMapa() {
         console.error('❌ Error creando mapa:', error);
     }
 }
+
+// ============================================
+// ADMIN: GESTIÓN DE LOGO Y GALERÍA
+// ============================================
+
+let logoUrlActual = null;
+let galeriaActual = [];
+
+// Inicializar sección de configuración del equipo
+function initConfigEquipo() {
+    const currentUser = JSON.parse(localStorage.getItem('arvet_user') || '{}');
+    if (!currentUser.equipoId) return;
+    
+    // Cargar logo actual
+    cargarLogoActual(currentUser.equipoId);
+    
+    // Cargar galería actual
+    cargarGaleriaAdmin(currentUser.equipoId);
+    
+    // Setup event listeners para logo
+    const btnCambiarLogo = document.getElementById('btnCambiarLogo');
+    const inputLogo = document.getElementById('inputLogo');
+    const btnGuardarLogo = document.getElementById('btnGuardarLogo');
+    
+    if (btnCambiarLogo && inputLogo) {
+        btnCambiarLogo.addEventListener('click', () => inputLogo.click());
+        
+        inputLogo.addEventListener('change', async function() {
+            const file = this.files[0];
+            if (!file) return;
+            
+            const formData = new FormData();
+            formData.append("image", file);
+            
+            try {
+                mostrarMensajeAdmin('Subiendo logo...', 'info');
+                
+                const response = await fetch("https://api.imgbb.com/1/upload?key=2c40bfae99afcb6fd536a0e303a77b90", {
+                    method: "POST",
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    logoUrlActual = result.data.url;
+                    document.getElementById('logoPreview').src = logoUrlActual;
+                    mostrarMensajeAdmin('Logo cargado. Guardá los cambios.', 'success');
+                } else {
+                    mostrarMensajeAdmin('Error subiendo logo', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                mostrarMensajeAdmin('Error de conexión', 'error');
+            }
+        });
+    }
+    
+    if (btnGuardarLogo) {
+        btnGuardarLogo.addEventListener('click', async function() {
+            if (!logoUrlActual) {
+                mostrarMensajeAdmin('Primero seleccioná un logo', 'error');
+                return;
+            }
+            
+            try {
+                const response = await window.postAPI('updateEquipoLogo', {
+                    equipoId: currentUser.equipoId,
+                    logoUrl: logoUrlActual
+                });
+                
+                if (response.success) {
+                    mostrarMensajeAdmin('Logo guardado correctamente', 'success');
+                } else {
+                    mostrarMensajeAdmin('Error: ' + response.error, 'error');
+                }
+            } catch (err) {
+                mostrarMensajeAdmin('Error de conexión', 'error');
+            }
+        });
+    }
+    
+    // Setup para agregar fotos a galería
+    const btnAgregarFoto = document.getElementById('btnAgregarFoto');
+    const inputGaleria = document.getElementById('inputGaleria');
+    const btnGuardarGaleria = document.getElementById('btnGuardarGaleria');
+    
+    if (btnAgregarFoto && inputGaleria) {
+        btnAgregarFoto.addEventListener('click', () => inputGaleria.click());
+        
+        inputGaleria.addEventListener('change', async function() {
+            const files = Array.from(this.files);
+            if (files.length === 0) return;
+            
+            mostrarMensajeAdmin(`Subiendo ${files.length} foto(s)...`, 'info');
+            
+            const nuevasFotos = [];
+            
+            for (const file of files) {
+                const formData = new FormData();
+                formData.append("image", file);
+                
+                try {
+                    const response = await fetch("https://api.imgbb.com/1/upload?key=2c40bfae99afcb6fd536a0e303a77b90", {
+                        method: "POST",
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        nuevasFotos.push({
+                            url: result.data.url,
+                            thumb: result.data.thumb?.url || result.data.url,
+                            descripcion: ''
+                        });
+                    }
+                } catch (err) {
+                    console.error('Error subiendo imagen:', err);
+                }
+            }
+            
+            if (nuevasFotos.length > 0) {
+                galeriaActual = [...galeriaActual, ...nuevasFotos];
+                renderGaleriaAdmin();
+                mostrarMensajeAdmin(`${nuevasFotos.length} foto(s) agregadas. Guardá los cambios.`, 'success');
+            } else {
+                mostrarMensajeAdmin('Error subiendo fotos', 'error');
+            }
+        });
+    }
+    
+    if (btnGuardarGaleria) {
+        btnGuardarGaleria.addEventListener('click', async function() {
+            try {
+                const response = await window.postAPI('updateGaleria', {
+                    equipoId: currentUser.equipoId,
+                    imagenes: galeriaActual
+                });
+                
+                if (response.success) {
+                    mostrarMensajeAdmin('Galería actualizada', 'success');
+                } else {
+                    mostrarMensajeAdmin('Error: ' + response.error, 'error');
+                }
+            } catch (err) {
+                mostrarMensajeAdmin('Error de conexión', 'error');
+            }
+        });
+    }
+}
+
+async function cargarLogoActual(equipoId) {
+    try {
+        const response = await window.fetchAPI('getEquipoById', { id: equipoId });
+        if (response.success && response.data.logoUrl) {
+            logoUrlActual = response.data.logoUrl;
+            document.getElementById('logoPreview').src = logoUrlActual;
+        }
+    } catch (err) {
+        console.error('Error cargando logo:', err);
+    }
+}
+
+async function cargarGaleriaAdmin(equipoId) {
+    try {
+        const response = await window.fetchAPI('getGaleria', { equipoId });
+        if (response.success && response.data) {
+            galeriaActual = response.data;
+            renderGaleriaAdmin();
+        }
+    } catch (err) {
+        console.error('Error cargando galería:', err);
+    }
+}
+
+function renderGaleriaAdmin() {
+    const container = document.getElementById('galeriaAdminGrid');
+    if (!container) return;
+    
+    if (galeriaActual.length === 0) {
+        container.innerHTML = '<p style="color: #64748b; text-align: center; padding: 40px;">No hay fotos en la galería</p>';
+        return;
+    }
+    
+    container.innerHTML = galeriaActual.map((img, index) => `
+        <div class="galeria-admin-item" style="position: relative; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <img src="${img.thumb || img.url}" style="width: 100%; height: 150px; object-fit: cover;">
+            <input type="text" placeholder="Descripción..." value="${img.descripcion || ''}" 
+                   onchange="actualizarDescGaleria(${index}, this.value)"
+                   style="width: 100%; padding: 8px; border: none; border-top: 1px solid #e2e8f0; font-size: 12px;">
+            <button onclick="eliminarFotoGaleria(${index})" 
+                    style="position: absolute; top: 5px; right: 5px; background: #ef4444; color: white; 
+                           border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; 
+                           font-size: 16px; line-height: 1;">×</button>
+        </div>
+    `).join('');
+}
+
+window.actualizarDescGaleria = function(index, descripcion) {
+    galeriaActual[index].descripcion = descripcion;
+};
+
+window.eliminarFotoGaleria = function(index) {
+    if (!confirm('¿Eliminar esta foto?')) return;
+    galeriaActual.splice(index, 1);
+    renderGaleriaAdmin();
+};
+
+function mostrarMensajeAdmin(texto, tipo) {
+    const msg = document.getElementById('msgConfig');
+    if (!msg) return;
+    
+    msg.textContent = texto;
+    msg.className = 'message ' + tipo;
+    msg.style.display = 'block';
+    
+    setTimeout(() => {
+        msg.style.display = 'none';
+    }, 5000);
+}
+
+// Inicializar config en admin
+document.addEventListener('DOMContentLoaded', function() {
+    if (getCurrentPage() === 'admin') {
+        // Verificar si estamos en la sección de configuración
+        const configSection = document.getElementById('configuracion');
+        if (configSection && configSection.classList.contains('active')) {
+            initConfigEquipo();
+        }
+    }
+});
 
 // ============================================
 // ADMIN MOBILE - NAVEGACIÓN GLOBAL

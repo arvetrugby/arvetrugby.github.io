@@ -9,7 +9,8 @@ let jugadorId = user?.id;
 if (adminEditId) {
   jugadorId = adminEditId;
 }
-
+const esAdminEditando = !!adminEditId;
+  
   if (!user) {
   window.location.href = 'login.html';
   return;
@@ -53,7 +54,19 @@ if (user.rol !== 'Jugador' && !esAdminEditando) {
       }, 500);
     }, 5000);
   }
+  /*********************************
+  VOLVER A ADMIN
+  *********************************/
+const btnVolverAdmin = document.getElementById('btnVolverAdmin');
 
+if (esAdminEditando && btnVolverAdmin) {
+  btnVolverAdmin.style.display = 'inline-block';
+
+  btnVolverAdmin.addEventListener('click', function() {
+    localStorage.removeItem('admin_edit_jugador');
+    window.location.href = 'admin.html';
+  });
+}
   /*********************************
    CARGAR PERFIL
   *********************************/

@@ -1352,6 +1352,7 @@ window.toggleMenu = function() {
     }
 }
 
+// 🔥 SOLO UNA FUNCIÓN showSection - la completa con configuración
 window.showSection = function(sectionId) {
     console.log('showSection ejecutado:', sectionId);
     
@@ -1367,6 +1368,7 @@ window.showSection = function(sectionId) {
         console.log('✅ Sección activada:', sectionId);
     } else {
         console.error('❌ No existe sección:', sectionId);
+        return;
     }
     
     // Actualizar título del header
@@ -1375,7 +1377,8 @@ window.showSection = function(sectionId) {
         'partidos': 'Partidos',
         'cuotas': 'Cuotas',
         'jugadores': 'Jugadores',
-        'finanzas': 'Finanzas'
+        'finanzas': 'Finanzas',
+        'configuracion': 'Configuración'
     };
     const pageTitle = document.getElementById('pageTitle');
     if (pageTitle) {
@@ -1396,4 +1399,14 @@ window.showSection = function(sectionId) {
             item.classList.add('active');
         }
     });
+    
+    // 🔥 INICIALIZAR CONFIGURACIÓN SI ES ESA SECCIÓN
+    if (sectionId === 'configuracion') {
+        console.log('🔧 Inicializando configuración...');
+        if (typeof initConfigEquipo === 'function') {
+            initConfigEquipo();
+        } else {
+            console.error('❌ initConfigEquipo no está definida');
+        }
+    }
 };

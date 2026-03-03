@@ -1065,7 +1065,12 @@ window.nuevoJugador = function() {
 }
 
 window.editarJugador = function(id) {
-    alert('Editar jugador: ' + id);
+
+    // Guardamos ID del jugador a editar
+    localStorage.setItem('admin_edit_jugador', id);
+
+    // Redirigimos al panel jugador
+    window.location.href = 'panel-jugador.html?admin=1';
 }
 
 window.logout = function() {

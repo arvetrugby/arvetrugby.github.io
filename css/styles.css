@@ -821,3 +821,38 @@ h1, h2, h3 {
 .btn-delete:hover {
     background: #dc2626;
 }
+
+
+/* Carrusel Galería - Mobile First */
+#galeriaCarrusel::-webkit-scrollbar {
+    display: none;
+}
+
+.galeria-item {
+    transition: transform 0.3s ease;
+}
+
+.galeria-item:active {
+    transform: scale(0.98);
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+    .galeria-item {
+        flex: 0 0 300px !important;
+    }
+    
+    .galeria-item img {
+        height: 200px !important;
+    }
+}
+
+/* Admin Galería Grid */
+.galeria-admin-item {
+    transition: all 0.3s ease;
+}
+
+.galeria-admin-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}

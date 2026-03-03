@@ -50,6 +50,48 @@
             <button id="btnVerSitio" class="btn-secondary">
                 🌐 Ver Sitio Público
             </button>
+            <!-- Sección Configuración -->
+<section id="configuracion" class="admin-section">
+    <h2>⚙️ Configuración del Equipo</h2>
+    
+    <div id="msgConfig" class="message" style="display: none; margin-bottom: 20px;"></div>
+    
+    <!-- Logo del Equipo -->
+    <div class="card" style="margin-bottom: 30px;">
+        <h3>🏷️ Logo del Equipo</h3>
+        <div style="text-align: center; margin: 20px 0;">
+            <img id="logoPreview" src="https://i.ibb.co/xxxxx/logo-default.png" 
+                 style="width: 150px; height: 150px; object-fit: contain; border-radius: 12px; 
+                        background: #f1f5f9; padding: 10px; border: 2px dashed #cbd5e0;">
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <input type="file" id="inputLogo" accept="image/*" style="display: none;">
+            <button type="button" id="btnCambiarLogo" class="btn-primary">Seleccionar Logo</button>
+            <button type="button" id="btnGuardarLogo" class="btn-success">Guardar Logo</button>
+        </div>
+        <p style="text-align: center; color: #64748b; font-size: 12px; margin-top: 10px;">
+            Formatos: JPG, PNG. Tamaño recomendado: 500x500px
+        </p>
+    </div>
+    
+    <!-- Galería de Fotos -->
+    <div class="card">
+        <h3>📸 Galería de Fotos</h3>
+        <p style="color: #64748b; margin-bottom: 20px;">
+            Agregá fotos del equipo, partidos, eventos, etc. Se mostrarán en un carrusel en la página pública.
+        </p>
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <input type="file" id="inputGaleria" accept="image/*" multiple style="display: none;">
+            <button type="button" id="btnAgregarFoto" class="btn-primary">+ Agregar Fotos</button>
+            <button type="button" id="btnGuardarGaleria" class="btn-success">Guardar Cambios</button>
+        </div>
+        
+        <div id="galeriaAdminGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;">
+            <p style="color: #64748b; text-align: center; padding: 40px; grid-column: 1/-1;">Cargando galería...</p>
+        </div>
+    </div>
+</section>
             <button onclick="logout()" class="btn-logout">
                 🚪 Cerrar Sesión
             </button>

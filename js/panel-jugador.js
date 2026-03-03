@@ -10,11 +10,18 @@ if (adminEditId) {
   jugadorId = adminEditId;
 }
 
-  if (!user || user.rol !== 'Jugador') {
-    window.location.href = 'login.html';
-    return;
-  }
+  if (!user) {
+  window.location.href = 'login.html';
+  return;
+}
 
+const esAdminEditando = !!adminEditId;
+
+// Si NO es jugador y tampoco es admin editando → afuera
+if (user.rol !== 'Jugador' && !esAdminEditando) {
+  window.location.href = 'login.html';
+  return;
+}
   // 🔵 VARIABLE GLOBAL DEL AVATAR
   let avatarUrlActual = null;
 
@@ -152,7 +159,7 @@ if (jugador.deslinde) {
     e.preventDefault();
 
     const datosActualizados = {
-      id: user.id,
+      id: jugadorId,
       nombre: document.getElementById('nombre').value.trim(),
       apellido: document.getElementById('apellido').value.trim(),
       email: document.getElementById('email').value.trim(),
@@ -276,7 +283,7 @@ if (jugador.deslinde) {
           method: 'POST',
           body: JSON.stringify({
             action: 'updatePassword',
-            id: user.id,
+            id: jugadorId,
             password: nuevaPass
           })
         });
@@ -326,7 +333,7 @@ if (btnSubirDocs) {
 
     const data = {
       action: "subirDocumentos",
-      idJugador: user.id
+      idJugador: jugadorId
     };
 
     if (apto) {
@@ -391,7 +398,7 @@ if (btnSubirDocs) {
       method: "POST",
       body: JSON.stringify({
         action: "eliminarDocumento",
-        idJugador: user.id,
+        idJugador: jugadorId,
         tipo: tipo
       })
     });

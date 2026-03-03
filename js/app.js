@@ -429,7 +429,7 @@ function initRegistroJugador() {
 
         try {
 
-            const response = await fetch("https://api.imgbb.com/1/upload?key=TU_API_KEY", {
+            const response = await fetch("https://api.imgbb.com/1/upload?key=2c40bfae99afcb6fd536a0e303a77b90", {
                 method: "POST",
                 body: formData
             });

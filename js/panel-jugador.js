@@ -79,6 +79,20 @@ document.addEventListener('DOMContentLoaded', async function() {
         avatarImg.src = 'https://i.ibb.co/xxxxx/avatar-default.png';
       }
       /*********************************
+ ESTADO JUGADOR POR DOCUMENTOS
+*********************************/
+      const estadoEl = document.getElementById("estadoJugador");
+
+estadoEl.textContent = jugador.estado || "FALTA DOCUMENTACIÓN";
+
+estadoEl.classList.remove("habilitado", "faltante");
+
+if (jugador.estado === "HABILITADO") {
+    estadoEl.classList.add("habilitado");
+} else {
+    estadoEl.classList.add("faltante");
+}
+      /*********************************
  MOSTRAR DOCUMENTOS EXISTENTES
 *********************************/
 

@@ -2,47 +2,47 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   const user = JSON.parse(localStorage.getItem('arvet_user'));
 
-  if (!user) {
+  if (!user || user.rol !== 'Jugador') {
     window.location.href = 'login.html';
     return;
   }
 
-  if (user.rol !== 'Jugador') {
-    window.location.href = 'login.html';
-    return;
-  }
-function mostrarMensaje(texto, tipo = "ok") {
+  // 🔵 VARIABLE GLOBAL DEL AVATAR
+  let avatarUrlActual = null;
 
-  const div = document.getElementById('mensajePerfil');
-  if (!div) return;
+  function mostrarMensaje(texto, tipo = "ok") {
 
-  div.textContent = texto;
+    const div = document.getElementById('mensajePerfil');
+    if (!div) return;
 
-  div.style.display = "block";
-  div.style.opacity = "1";
-  div.style.transition = "opacity 0.5s ease";
+    div.textContent = texto;
+    div.style.display = "block";
+    div.style.opacity = "1";
+    div.style.transition = "opacity 0.5s ease";
+    div.style.padding = "10px";
+    div.style.marginBottom = "15px";
+    div.style.borderRadius = "6px";
 
-  div.style.padding = "10px";
-  div.style.marginBottom = "15px";
-  div.style.borderRadius = "6px";
-
-  if (tipo === "ok") {
-    div.style.backgroundColor = "#d4edda";
-    div.style.color = "#155724";
-  } else {
-    div.style.backgroundColor = "#f8d7da";
-    div.style.color = "#721c24";
-  }
-
-  setTimeout(() => {
-    div.style.opacity = "0";
+    if (tipo === "ok") {
+      div.style.backgroundColor = "#d4edda";
+      div.style.color = "#155724";
+    } else {
+      div.style.backgroundColor = "#f8d7da";
+      div.style.color = "#721c24";
+    }
 
     setTimeout(() => {
-      div.style.display = "none";
-    }, 500);
+      div.style.opacity = "0";
+      setTimeout(() => {
+        div.style.display = "none";
+      }, 500);
+    }, 5000);
+  }
 
-  }, 5000); // ahora dura 5 segundos
-}
+  /*********************************
+   CARGAR PERFIL
+  *********************************/
+
   try {
 
     const response = await fetch(
@@ -50,7 +50,6 @@ function mostrarMensaje(texto, tipo = "ok") {
     );
 
     const data = await response.json();
-    console.log("Respuesta servidor:", data);
 
     if (data.success) {
 
@@ -63,12 +62,22 @@ function mostrarMensaje(texto, tipo = "ok") {
 
       if (jugador.fechaNacimiento) {
         const fecha = new Date(jugador.fechaNacimiento);
-        const fechaFormateada = fecha.toISOString().split('T')[0];
-        document.getElementById('fechaNacimiento').value = fechaFormateada;
+        document.getElementById('fechaNacimiento').value =
+          fecha.toISOString().split('T')[0];
       }
 
       document.getElementById('dni').value = jugador.dni || '';
       document.getElementById('cuitCuil').value = jugador.cuitCuil || '';
+
+      // 🔵 CARGAR AVATAR
+      const avatarImg = document.getElementById('avatarPreview');
+
+      if (jugador.avatarUrl) {
+        avatarUrlActual = jugador.avatarUrl;
+        avatarImg.src = jugador.avatarUrl;
+      } else {
+        avatarImg.src = 'https://i.ibb.co/xxxxx/avatar-default.png';
+      }
 
     } else {
       alert('Error cargando perfil');
@@ -78,7 +87,10 @@ function mostrarMensaje(texto, tipo = "ok") {
     console.error(err);
   }
 
-  // 👇 AHORA el listener va acá adentro
+  /*********************************
+   GUARDAR PERFIL
+  *********************************/
+
   const form = document.getElementById('formPerfil');
 
   form.addEventListener('submit', async function(e) {
@@ -107,19 +119,19 @@ function mostrarMensaje(texto, tipo = "ok") {
       });
 
       const data = await response.json();
-      console.log("Respuesta update:", data);
 
       if (data.success) {
-  mostrarMensaje('Perfil actualizado correctamente', 'ok');
 
-  const updatedUser = {
-    ...user,
-    nombre: datosActualizados.nombre,
-    apellido: datosActualizados.apellido,
-    email: datosActualizados.email
-  };
+        mostrarMensaje('Perfil actualizado correctamente', 'ok');
 
-  localStorage.setItem('arvet_user', JSON.stringify(updatedUser));
+        const updatedUser = {
+          ...user,
+          nombre: datosActualizados.nombre,
+          apellido: datosActualizados.apellido,
+          email: datosActualizados.email
+        };
+
+        localStorage.setItem('arvet_user', JSON.stringify(updatedUser));
 
       } else {
         mostrarMensaje('Error al actualizar', 'error');
@@ -127,20 +139,65 @@ function mostrarMensaje(texto, tipo = "ok") {
 
     } catch (error) {
       console.error(error);
-      mostrarMensaje('Error de conección', 'error');
+      mostrarMensaje('Error de conexión', 'error');
     }
 
   });
-/*********************************
-   AVATAR
-  *********************************/
-  const avatarImg = document.getElementById('avatarPreview');
 
-if (jugador.avatarUrl) {
-  avatarImg.src = jugador.avatarUrl;
-} else {
-  avatarImg.src = 'https://i.ibb.co/xxxxx/avatar-default.png'; // tu avatar default
-}
+  /*********************************
+   CAMBIAR AVATAR
+  *********************************/
+
+  const btnCambiarAvatar = document.getElementById('btnCambiarAvatar');
+  const inputAvatar = document.getElementById('inputAvatar');
+  const avatarPreview = document.getElementById('avatarPreview');
+
+  if (btnCambiarAvatar) {
+
+    btnCambiarAvatar.addEventListener('click', () => {
+      inputAvatar.click();
+    });
+
+    inputAvatar.addEventListener('change', async function() {
+
+      const file = this.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append("image", file);
+
+      try {
+
+        const response = await fetch(
+          "https://api.imgbb.com/1/upload?key=2c40bfae99afcb6fd536a0e303a77b90",
+          {
+            method: "POST",
+            body: formData
+          }
+        );
+
+        const result = await response.json();
+
+        if (result.success) {
+
+          avatarUrlActual = result.data.url;
+          avatarPreview.src = avatarUrlActual;
+
+          mostrarMensaje("Imagen cargada correctamente", "ok");
+
+        } else {
+          mostrarMensaje("Error subiendo imagen", "error");
+        }
+
+      } catch (err) {
+        console.error(err);
+        mostrarMensaje("Error de conexión con imgbb", "error");
+      }
+
+    });
+
+  }
+
   /*********************************
    CAMBIAR CONTRASEÑA
   *********************************/
@@ -170,74 +227,23 @@ if (jugador.avatarUrl) {
         });
 
         const data = await response.json();
-        console.log("Respuesta updatePassword:", data);
 
         if (data.success) {
           mostrarMensaje('Contraseña actualizada', 'ok');
           document.getElementById('nuevaPassword').value = "";
         } else {
-          mostrarMensaje('Error al querer actualizar nueva contraseña', 'error');
+          mostrarMensaje('Error al actualizar contraseña', 'error');
         }
 
       } catch (error) {
         console.error(error);
-        alert("Error de conexión");
+        mostrarMensaje("Error de conexión", "error");
       }
 
     });
 
   }
-  /*********************************
-   CAMBIAR AVATAR
-  *********************************/
-let avatarUrlActual = null;
 
-const btnCambiarAvatar = document.getElementById('btnCambiarAvatar');
-const inputAvatar = document.getElementById('inputAvatar');
-const avatarPreview = document.getElementById('avatarPreview');
-
-if (btnCambiarAvatar) {
-
-  btnCambiarAvatar.addEventListener('click', () => {
-    inputAvatar.click();
-  });
-
-  inputAvatar.addEventListener('change', async function() {
-
-    const file = this.files[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append("image", file);
-
-    try {
-
-      const response = await fetch("https://api.imgbb.com/1/upload?key=TU_API_KEY", {
-        method: "POST",
-        body: formData
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-
-        avatarUrlActual = result.data.url;
-        avatarPreview.src = avatarUrlActual;
-
-        mostrarMensaje("Imagen cargada correctamente", "ok");
-
-      } else {
-        mostrarMensaje("Error subiendo imagen", "error");
-      }
-
-    } catch (err) {
-      console.error(err);
-      mostrarMensaje("Error de conexión con imgbb", "error");
-    }
-
-  });
-
-}
   /*********************************
    LOGOUT
   *********************************/
@@ -250,4 +256,5 @@ if (btnCambiarAvatar) {
       window.location.href = 'login.html';
     });
   }
+
 });

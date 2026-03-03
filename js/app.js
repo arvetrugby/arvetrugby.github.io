@@ -1257,7 +1257,7 @@ function initConfigEquipo() {
         }
     });
     
-    // 3. Guardar logo en Google Sheets
+      // 3. Guardar logo en Google Sheets (mismo patrón que panel-jugador)
     btnGuardarLogo.addEventListener('click', async function() {
         if (!window.nuevoLogoUrl) {
             showMsg('⚠️ Primero seleccioná una imagen', 'error');
@@ -1267,18 +1267,27 @@ function initConfigEquipo() {
         showMsg('Guardando...', 'info');
         
         try {
-            const response = await window.postAPI('updateEquipoLogo', {
-                equipoId: currentUser.equipoId,
-                logoUrl: window.nuevoLogoUrl
+            // 🔥 MISMO PATRÓN QUE PANEL-JUGADOR (funciona!)
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'updateEquipo',  // o 'updateEquipoLogo' según tu backend
+                    id: currentUser.equipoId,
+                    logoUrl: window.nuevoLogoUrl
+                })
             });
             
-            if (response.success) {
-                showMsg('✅ Logo guardado en el equipo', 'success');
-                window.nuevoLogoUrl = null; // Limpiar
+            const result = await response.json();
+            console.log('Respuesta:', result);
+            
+            if (result.success) {
+                showMsg('✅ Logo guardado', 'success');
+                window.nuevoLogoUrl = null;
             } else {
-                showMsg('❌ Error: ' + response.error, 'error');
+                showMsg('❌ Error: ' + result.error, 'error');
             }
         } catch (err) {
+            console.error(err);
             showMsg('❌ Error de conexión', 'error');
         }
     });

@@ -68,7 +68,29 @@
                     <label for="passwordConfirm">Confirmar Contraseña *</label>
                     <input type="password" id="passwordConfirm" name="passwordConfirm" required placeholder="Repite tu contraseña">
                 </div>
+<!-- ========================= -->
+<!-- AVATAR -->
+<!-- ========================= -->
 
+<div class="form-group">
+    <label>Avatar *</label>
+
+    <div style="text-align:center; margin-bottom:15px;">
+        <img id="avatarPreview"
+             src="https://i.ibb.co/4pDNDk1/avatar1.png"
+             style="width:100px; height:100px; border-radius:50%; object-fit:cover; border:3px solid #e2e8f0;">
+    </div>
+
+    <div style="display:flex; gap:10px; justify-content:center; margin-bottom:15px;">
+        <img src="https://i.ibb.co/4pDNDk1/avatar1.png" class="avatar-option" style="width:50px; height:50px; border-radius:50%; cursor:pointer;">
+        <img src="https://i.ibb.co/XYZ/avatar2.png" class="avatar-option" style="width:50px; height:50px; border-radius:50%; cursor:pointer;">
+        <img src="https://i.ibb.co/XYZ/avatar3.png" class="avatar-option" style="width:50px; height:50px; border-radius:50%; cursor:pointer;">
+    </div>
+
+    <div style="text-align:center;">
+        <input type="file" id="avatarUpload" accept="image/*">
+    </div>
+</div>
                 <input type="hidden" id="equipoId" name="equipoId">
 
                 <div id="msg" class="message" style="display: none; margin-bottom: 20px; padding: 15px; border-radius: 8px;"></div>

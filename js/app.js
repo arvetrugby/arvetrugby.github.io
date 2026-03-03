@@ -966,9 +966,10 @@ async function cargarJugadoresAdmin() {
                             </p>
                         </div>
                         <div class="list-item-actions">
-                            ${btnEstado}
-                            <button class="btn-action btn-delete" onclick="eliminarJugador('${j.id}')">Eliminar</button>
-                        </div>
+    <button class="btn-action btn-primary" onclick="verJugadorAdmin('${j.id}')">Ver / Editar</button>
+    ${btnEstado}
+    <button class="btn-action btn-delete" onclick="eliminarJugador('${j.id}')">Eliminar</button>
+</div>
                     </div>
                 `;
             }).join('');
@@ -980,7 +981,81 @@ async function cargarJugadoresAdmin() {
         console.error('❌ Error cargando jugadores admin:', error);
     }
 }
+// ============================================
+// FUNCION VER JUGADOR
+// ============================================
+window.verJugadorAdmin = async function(id) {
 
+    try {
+
+        const response = await window.fetchAPI('getJugadorById', { id });
+
+        if (!response.success) {
+            alert(response.error);
+            return;
+        }
+
+        const j = response.jugador;
+
+        const contenido = `
+            <div class="admin-detalle">
+                <h3>${j.nombre} ${j.apellido || ''}</h3>
+
+                <label>Email</label>
+                <input id="editEmail" value="${j.email || ''}">
+
+                <label>Teléfono</label>
+                <input id="editTelefono" value="${j.telefono || ''}">
+
+                <label>Posición</label>
+                <input id="editPosicion" value="${j.posicion || ''}">
+
+                <label>Estado Documentación</label>
+                <div style="font-weight:bold; margin-bottom:10px;">
+                    ${j.estado || 'FALTA DOCUMENTACIÓN'}
+                </div>
+
+                <label>Apto Médico</label>
+                ${j.apto ? `<a href="${j.apto}" target="_blank">Ver archivo</a>` : 'No cargado'}
+
+                <label>Estudios</label>
+                ${j.estudios ? `<a href="${j.estudios}" target="_blank">Ver archivo</a>` : 'No cargado'}
+
+                <label>Deslinde</label>
+                ${j.deslinde ? `<a href="${j.deslinde}" target="_blank">Ver archivo</a>` : 'No cargado'}
+
+                <br><br>
+                <button onclick="guardarCambiosAdmin('${j.id}')">Guardar Cambios</button>
+            </div>
+        `;
+
+        mostrarModal(contenido);
+
+    } catch (error) {
+        alert("Error cargando jugador");
+        console.error(error);
+    }
+}
+// ============================================
+// FUNCION EDITAR JUGADOR
+// ============================================
+window.guardarCambiosAdmin = async function(id) {
+
+    const response = await window.fetchAPI('updateJugadorAdmin', {
+        id: id,
+        email: document.getElementById('editEmail').value,
+        telefono: document.getElementById('editTelefono').value,
+        posicion: document.getElementById('editPosicion').value
+    });
+
+    if (response.success) {
+        alert("Actualizado correctamente");
+        cerrarModal();
+        cargarJugadoresAdmin();
+    } else {
+        alert(response.error);
+    }
+}
 // ============================================
 // FUNCIONES GLOBALES
 // ============================================

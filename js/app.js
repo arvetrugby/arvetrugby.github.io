@@ -1175,9 +1175,8 @@ function inicializarMapa() {
 
 
 // ============================================
-// ADMIN: CONFIGURACIÓN BÁSICA (solo logo por ahora)
+// ADMIN: CONFIGURACIÓN BÁSICA
 // ============================================
-
 function initConfigEquipo() {
     console.log('=== initConfigEquipo ===');
     
@@ -1207,7 +1206,7 @@ function initConfigEquipo() {
         setTimeout(() => msgConfig.style.display = 'none', 5000);
     }
     
-        // 1. Cargar logo actual (mismo patrón que panel-jugador)
+    // 1. Cargar logo actual (mismo patrón que panel-jugador)
     async function cargarLogoExistente() {
         try {
             const response = await fetch(`${API_URL}?action=getEquipoById&id=${currentUser.equipoId}`);
@@ -1221,13 +1220,13 @@ function initConfigEquipo() {
                     logoPreview.src = equipo.logoUrl;
                     console.log('✅ Logo cargado:', equipo.logoUrl);
                 } else {
-                    logoPreview.src = 'https://i.ibb.co/xxxxx/logo-default.png';
+                    logoPreview.src = 'https://i.ibb.co/xxxxx/logo-default.png ';
                     console.log('ℹ️ No hay logo, mostrando default');
                 }
             }
         } catch (err) {
             console.error('Error cargando logo:', err);
-            logoPreview.src = 'https://i.ibb.co/xxxxx/logo-default.png';
+            logoPreview.src = 'https://i.ibb.co/xxxxx/logo-default.png ';
         }
     }
     cargarLogoExistente();
@@ -1245,7 +1244,7 @@ function initConfigEquipo() {
         formData.append("image", file);
         
         try {
-            const response = await fetch("https://api.imgbb.com/1/upload?key=2c40bfae99afcb6fd536a0e303a77b90", {
+            const response = await fetch("https://api.imgbb.com/1/upload?key=2c40bfae99afcb6fd536a0e303a77b90 ", {
                 method: "POST",
                 body: formData
             });
@@ -1268,7 +1267,7 @@ function initConfigEquipo() {
         }
     });
     
-      // 3. Guardar logo en Google Sheets (mismo patrón que panel-jugador)
+    // 3. Guardar logo en Google Sheets (mismo patrón que panel-jugador)
     btnGuardarLogo.addEventListener('click', async function() {
         if (!window.nuevoLogoUrl) {
             showMsg('⚠️ Primero seleccioná una imagen', 'error');
@@ -1282,7 +1281,7 @@ function initConfigEquipo() {
             const response = await fetch(API_URL, {
                 method: 'POST',
                 body: JSON.stringify({
-                    action: 'updateEquipo',  // o 'updateEquipoLogo' según tu backend
+                    action: 'updateEquipo',
                     id: currentUser.equipoId,
                     logoUrl: window.nuevoLogoUrl
                 })
@@ -1302,6 +1301,7 @@ function initConfigEquipo() {
             showMsg('❌ Error de conexión', 'error');
         }
     });
+    
     // ============================================
     // GALERÍA (máximo 5 fotos)
     // ============================================
@@ -1366,7 +1366,7 @@ function initConfigEquipo() {
         
         if (files.length > restantes) {
             showMsg(`Solo podés agregar ${restantes} foto(s) más`, 'error');
-            files.splice(restantes); // Cortar al máximo permitido
+            files.splice(restantes);
         }
         
         if (files.length === 0) return;
@@ -1378,7 +1378,7 @@ function initConfigEquipo() {
             formData.append("image", file);
             
             try {
-                const response = await fetch("https://api.imgbb.com/1/upload?key=2c40bfae99afcb6fd536a0e303a77b90", {
+                const response = await fetch("https://api.imgbb.com/1/upload?key=2c40bfae99afcb6fd536a0e303a77b90 ", {
                     method: "POST",
                     body: formData
                 });
@@ -1422,17 +1422,14 @@ function initConfigEquipo() {
             showMsg('❌ Error de conexión', 'error');
         }
     });
-}
+}  // ← CIERRA initConfigEquipo
 
-// Función global para eliminar foto
+// Función global para eliminar foto (FUERA de initConfigEquipo)
 window.eliminarFotoGaleria = function(index) {
     if (!confirm('¿Eliminar esta foto?')) return;
     galeriaTemporal.splice(index, 1);
     renderGaleriaAdmin();
 };
-    
-}
-
 
 // Inicializar cuando se muestra la sección
 window.showSection = function(sectionId) {
@@ -1488,6 +1485,7 @@ window.showSection = function(sectionId) {
         initConfigEquipo();
     }
 };
+
 // ============================================
 // ADMIN MOBILE - NAVEGACIÓN GLOBAL
 // ============================================

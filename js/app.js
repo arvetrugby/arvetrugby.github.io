@@ -800,6 +800,8 @@ async function cargarJugadoresEquipo(equipoId) {
     
     try {
         const response = await window.fetchAPI('getJugadores', { equipoId });
+        console.log('Respuesta completa:', response); // 🔥 DEBUG
+        
         if (!response.success) {
             console.log('No se pudieron cargar jugadores:', response.error);
             return;
@@ -808,6 +810,12 @@ async function cargarJugadoresEquipo(equipoId) {
         const jugadores = Array.isArray(response.data)
             ? response.data.filter(j => j.estado && j.estado.trim() === 'Activo')
             : [];
+        
+        console.log('Jugadores filtrados:', jugadores); // 🔥 DEBUG
+        console.log('Primer jugador:', jugadores[0]); // 🔥 DEBUG
+        console.log('Avatar del primer jugador:', jugadores[0]?.avatarUrl); // 🔥 DEBUG
+        
+      
         
         // Comisión: roles administrativos
         const comision = jugadores.filter(j => j.rol && j.rol !== 'Jugador');

@@ -1207,16 +1207,27 @@ function initConfigEquipo() {
         setTimeout(() => msgConfig.style.display = 'none', 5000);
     }
     
-    // 1. Cargar logo actual si existe
+        // 1. Cargar logo actual (mismo patrón que panel-jugador)
     async function cargarLogoExistente() {
         try {
-            const response = await window.fetchAPI('getEquipoById', { id: currentUser.equipoId });
-            if (response.success && response.data.logoUrl) {
-                logoPreview.src = response.data.logoUrl;
-                console.log('Logo cargado:', response.data.logoUrl);
+            const response = await fetch(`${API_URL}?action=getEquipoById&id=${currentUser.equipoId}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                const equipo = data.data;
+                
+                // 🔵 CARGAR LOGO (mismo patrón que avatar en panel-jugador)
+                if (equipo.logoUrl) {
+                    logoPreview.src = equipo.logoUrl;
+                    console.log('✅ Logo cargado:', equipo.logoUrl);
+                } else {
+                    logoPreview.src = 'https://i.ibb.co/xxxxx/logo-default.png';
+                    console.log('ℹ️ No hay logo, mostrando default');
+                }
             }
-        } catch (e) {
-            console.log('No se pudo cargar logo existente');
+        } catch (err) {
+            console.error('Error cargando logo:', err);
+            logoPreview.src = 'https://i.ibb.co/xxxxx/logo-default.png';
         }
     }
     cargarLogoExistente();

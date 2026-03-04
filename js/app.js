@@ -804,46 +804,54 @@ async function cargarJugadoresEquipo(equipoId) {
             console.log('No se pudieron cargar jugadores:', response.error);
             return;
         }
-       const jugadores = Array.isArray(response.data)
-    ? response.data.filter(j =>
-        j.estado && j.estado.trim() === 'Activo'
-      )
-    : [];
-       
         
-        // Comisión: roles administrativos (todos los que tienen rol y no son "Jugador" puro)
+        const jugadores = Array.isArray(response.data)
+            ? response.data.filter(j => j.estado && j.estado.trim() === 'Activo')
+            : [];
+        
+        // Comisión: roles administrativos
         const comision = jugadores.filter(j => j.rol && j.rol !== 'Jugador');
         
-        // Plantel: jugadores puros + admins (todos excepto los que son solo rol sin datos de jugador)
+        // Plantel: jugadores puros + admins
         const plantel = jugadores.filter(j => 
-            !j.rol ||                          // Sin rol = jugador
-            j.rol === 'Jugador' ||             // Rol Jugador explícito
-            (j.rol && j.rol !== 'Jugador')     // Cualquier admin también va al plantel
+            !j.rol || 
+            j.rol === 'Jugador' || 
+            (j.rol && j.rol !== 'Jugador')
         );
         
         const comisionGrid = document.getElementById('comisionGrid');
         const plantelGrid = document.getElementById('plantelGrid');
         
+        // 🔥 COMISIÓN CON FOTOS
         if (comisionGrid) {
             comisionGrid.innerHTML = comision.map(j => `
-                <div class="card">
+                <div class="card" style="text-align: center;">
+                    <img src="${j.avatarUrl || 'https://i.ibb.co/4pDNDk1/avatar1.png'}" 
+                         style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;">
                     <h3>${j.nombre} ${j.apellido}</h3>
                     <p class="badge badge-success">${j.rol}</p>
                 </div>
-            `).join('') || '<p>Sin comisión registrada</p>';
+            `).join('') || '<p style="text-align: center; color: #64748b;">Sin comisión registrada</p>';
         }
         
+        // 🔥 PLANTEL CON FOTOS
         if (plantelGrid) {
             plantelGrid.innerHTML = plantel.map(j => `
-                <div class="card">
+                <div class="card" style="text-align: center;">
+                    <img src="${j.avatarUrl || 'https://i.ibb.co/4pDNDk1/avatar1.png'}" 
+                         style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;">
                     <h3>#${j.numeroCamiseta || '-'} ${j.nombre} ${j.apellido}</h3>
                     <p>${j.posicion || 'Jugador'}</p>
                     ${j.rol && j.rol !== 'Jugador' ? `<small style="color: var(--primary); font-weight: 600;">🛡️ ${j.rol}</small>` : ''}
                 </div>
-            `).join('');
+            `).join('') || '<p style="text-align: center; color: #64748b;">Sin jugadores en el plantel</p>';
         }
+        
         // Actualizar link del botón para unirse al equipo
-document.getElementById('btnUnirse').href = `registro-jugador.html?equipo=${window.currentEquipoId}`;
+        const btnUnirse = document.getElementById('btnUnirse');
+        if (btnUnirse) {
+            btnUnirse.href = `registro-jugador.html?equipo=${window.currentEquipoId}`;
+        }
         
     } catch (error) {
         console.error('Error cargando jugadores:', error);

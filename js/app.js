@@ -152,6 +152,41 @@ document.addEventListener('DOMContentLoaded', function() {
 // ============================================
 
 function initIndex() {
+    // Mostrar loading screen
+    const loadingScreen = document.getElementById('loadingScreen');
+    const progressBar = document.getElementById('progressBar');
+    const loadingText = document.getElementById('loadingText');
+    
+    // Simular progreso
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress > 90) progress = 90;
+        progressBar.style.width = progress + '%';
+        
+        // Cambiar texto según progreso
+        if (progress > 30 && progress < 60) {
+            loadingText.textContent = 'Buscando equipos...';
+        } else if (progress > 60) {
+            loadingText.textContent = 'Preparando todo...';
+        }
+    }, 200);
+    
+    // Ocultar después de 3 segundos
+    setTimeout(() => {
+        clearInterval(progressInterval);
+        progressBar.style.width = '100%';
+        loadingText.textContent = '¡Listo!';
+        
+        setTimeout(() => {
+            loadingScreen.classList.add('loading-hidden');
+            // Eliminar del DOM después de la transición
+            setTimeout(() => {
+                loadingScreen.remove();
+            }, 500);
+        }, 300);
+    }, 3000);
+    
 const input = document.getElementById("searchInput");
 if(input){
     input.addEventListener("input", buscarEquipos);

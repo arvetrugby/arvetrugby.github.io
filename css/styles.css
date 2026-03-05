@@ -913,19 +913,20 @@ h1, h2, h3 {
 
 .galeria-item {
     flex: 0 0 auto;
-    scroll-snap-align: start;
+    scroll-snap-align: center;
     height: 250px;
-    width: auto;
-    max-width: 400px;
-    border-radius: 8px;
-    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .galeria-item img {
     height: 250px;
-    width: 100%;
-    object-fit: cover;
+    width: auto;
+    max-width: none;
+    object-fit: contain;
     display: block;
+    border-radius: 8px;
 }
 
 /* ============================================

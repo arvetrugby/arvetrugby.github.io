@@ -1088,6 +1088,52 @@ margin-bottom:10px;
   font-size: 13px;
   opacity: 0.8;
 }
+.equipo-card-busqueda{
+display:flex;
+align-items:center;
+gap:15px;
+background:#fff;
+border-radius:12px;
+padding:12px;
+margin-bottom:10px;
+cursor:pointer;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+transition:0.2s;
+}
+
+.equipo-card-busqueda:hover{
+transform:translateY(-3px);
+}
+
+.equipo-logo{
+width:60px;
+height:60px;
+border-radius:10px;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.equipo-logo img{
+max-width:45px;
+max-height:45px;
+}
+
+.equipo-info h3{
+margin:0;
+font-size:16px;
+}
+
+.equipo-info p{
+margin:2px 0;
+font-size:13px;
+color:#666;
+}
+
+.equipo-info span{
+font-size:12px;
+color:#999;
+}
 .team-result{
 display:flex;
 align-items:center;

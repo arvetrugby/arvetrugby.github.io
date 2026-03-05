@@ -1047,39 +1047,38 @@ height:180px;
 /* ============================================
    EQUIPOS BUSCADOR INDEX
    ============================================ */
-.equipos-slider {
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  padding: 20px 0;
-  scroll-behavior: smooth;
+.equipos-slider{
+display:flex;
+gap:16px;
+overflow-x:auto;
+padding:20px 0;
+scroll-behavior:smooth;
 }
 
-.equipos-slider::-webkit-scrollbar {
-  display: none;
+.equipos-slider::-webkit-scrollbar{
+display:none;
 }
 
-.equipo-card {
-  min-width: 180px;
-  border-radius: 12px;
-  padding: 15px;
-  color: white;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: transform .2s;
+.equipo-card{
+min-width:180px;
+border-radius:12px;
+padding:15px;
+color:white;
+cursor:pointer;
+flex-shrink:0;
+transition:transform .2s;
 }
 
-.equipo-card:hover {
-  transform: scale(1.05);
+.equipo-card:hover{
+transform:scale(1.05);
 }
 
-.equipo-card img {
-  width: 60px;
-  height: 60px;
-  object-fit: contain;
-  margin-bottom: 10px;
+.equipo-card img{
+width:60px;
+height:60px;
+object-fit:contain;
+margin-bottom:10px;
 }
-
 .equipo-card h3 {
   font-size: 16px;
   margin: 0;

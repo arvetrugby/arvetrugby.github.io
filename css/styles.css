@@ -69,7 +69,7 @@ h1, h2, h3 {
 }
 
 /* ============================================
-   NAVBAR
+   NAVBAR - CON VARIABLE DINÁMICA
    ============================================ */
 
 .navbar {
@@ -80,10 +80,11 @@ h1, h2, h3 {
   z-index: 9999;
   height: 70px;
 
-  background: rgba(7, 31, 74, 0.92);
+  /* 🔥 VARIABLE DINÁMICA CON FALLBACK AZUL */
+  background: var(--equipo-color-rgba, rgba(7, 31, 74, 0.92));
+  
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
@@ -159,17 +160,19 @@ h1, h2, h3 {
 }
 
 /* ============================================
-   HERO
+   HERO - CON VARIABLES DINÁMICAS
    ============================================ */
 
 .hero {
   position: relative;
+  
+  /* 🔥 GRADIENTE DINÁMICO CON FALLBACK AZUL */
   background-image:
     linear-gradient(
       140deg,
-      rgba(7, 31, 74, 0.95) 0%,
-      rgba(13, 53, 112, 0.90) 60%,
-      rgba(5, 20, 55, 0.95) 100%
+      var(--equipo-hero-start, rgba(7, 31, 74, 0.95)) 0%,
+      var(--equipo-hero-mid, rgba(13, 53, 112, 0.90)) 60%,
+      var(--equipo-hero-end, rgba(5, 20, 55, 0.95)) 100%
     ),
     url("../images/b32d250f-8409-400e-89f0-8034bf5b5fb5.png");
 
@@ -183,6 +186,7 @@ h1, h2, h3 {
   text-align: center;
   overflow: hidden;
 }
+
 
 .hero > * {
   position: relative;

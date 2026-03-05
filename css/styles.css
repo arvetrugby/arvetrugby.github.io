@@ -923,7 +923,7 @@ h1, h2, h3 {
 .galeria-item img {
     height: 250px;
     width: auto;
-    max-width: none;
+    max-width: 80vw;
     object-fit: contain;
     display: block;
     border-radius: 8px;

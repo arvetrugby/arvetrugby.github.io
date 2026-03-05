@@ -731,6 +731,30 @@ async function cargarEquipo(slug) {
            cargarGaleriaEquipo(equipo.galeria);
         }
 
+        // Aplicar color personalizado del equipo
+if (equipo.colorPrimario) {
+    const r = document.querySelector(':root');
+    
+    // Helper: hex a rgba
+    const hexToRgba = (hex, alpha) => {
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+    
+    // Color base
+    const baseColor = equipo.colorPrimario;
+    
+    // Aplicar variables
+    r.style.setProperty('--equipo-color-rgba', hexToRgba(baseColor, 0.92));      // Navbar
+    r.style.setProperty('--equipo-hero-start', hexToRgba(baseColor, 0.95));       // Hero inicio
+    r.style.setProperty('--equipo-hero-mid', hexToRgba(baseColor, 0.85));        // Hero medio (más claro)
+    r.style.setProperty('--equipo-hero-end', hexToRgba(baseColor, 0.98));        // Hero fin (más oscuro)
+    
+    console.log('🎨 Color aplicado:', baseColor);
+}
+
         // Configurar mapa...
         if (equipo.lat && equipo.lng) {
             window.equipoCoords = {

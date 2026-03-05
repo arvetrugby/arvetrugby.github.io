@@ -721,14 +721,21 @@ async function cargarEquipo(slug) {
         // Cargar datos adicionales si hay ID
         if (equipo.id) {
             console.log('Cargando jugadores, partidos y galería para equipo ID:', equipo.id);
-            if (comisionGrid && plantelGrid) {
-                await cargarJugadoresEquipo(equipo.id);
-            }
-            if (partidosList) {
-                await cargarPartidosEquipoPublico(equipo.id);
-            }
-            // 🔵 CARGAR GALERÍA
-           cargarGaleriaEquipo(equipo.galeria);
+            const tareas = [];
+
+if (comisionGrid && plantelGrid) {
+    tareas.push(cargarJugadoresEquipo(equipo.id));
+}
+
+if (partidosList) {
+    tareas.push(cargarPartidosEquipoPublico(equipo.id));
+}
+
+if (equipo.galeria) {
+    cargarGaleriaEquipo(equipo.galeria); // no necesita await
+}
+
+await Promise.all(tareas);
         }
 
         // Aplicar color personalizado del equipo

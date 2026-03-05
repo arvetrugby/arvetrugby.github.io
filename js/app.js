@@ -915,8 +915,8 @@ async function cargarJugadoresEquipo(equipoId) {
                 <div class="card" style="text-align: center;">
                     <img src="${j.avatarUrl || 'https://i.ibb.co/4pDNDk1/avatar1.png'}" 
                          style="width: 120px; height: 120px; border-radius: 5%; object-fit: cover; margin-bottom: 10px;">
-                    <h3>#${j.numeroCamiseta || '-'} ${j.nombre} ${j.apellido}</h3>
-                    <p>${j.posicion || 'Jugador'}</p>
+                    <h3> ${j.nombre} ${j.apellido}</h3>
+                    
                     ${j.rol && j.rol !== 'Jugador' ? `<small style="color: var(--primary); font-weight: 600;">🛡️ ${j.rol}</small>` : ''}
                 </div>
             `).join('') || '<p style="text-align: center; color: #64748b;">Sin jugadores en el plantel</p>';

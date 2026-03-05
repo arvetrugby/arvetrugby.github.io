@@ -806,7 +806,17 @@ function cargarGaleriaEquipo(galeria) {
     console.log('Galería cargada:', galeria.length, 'imágenes');
     
     // Generar HTML del carrusel
-    container.innerHTML = galeria.map((url, index) => `
+    container.innerHTML = galeria.map((url, index) => {
+
+const rotacion = (Math.random()*10 - 5).toFixed(2);
+
+return `
+<div class="galeria-item" style="transform:rotate(${rotacion}deg)">
+    <img src="${url}" loading="lazy" onclick="verFoto('${url}')">
+</div>
+`;
+
+}).join('');
         <div class="galeria-item" style="flex: 0 0 85%; scroll-snap-align: center; 
                                           border-radius: 12px; overflow: hidden; 
                                           box-shadow: 0 4px 12px rgba(0,0,0,0.1);">

@@ -8,6 +8,153 @@
     <link href="https://fonts.googleapis.com/css2?family=Georama:wdth,wght@75..100,400;75..100,600;75..100,700;75..100,800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+     <!-- LOADING SCREEN - PANTALLA COMPLETA -->
+<div id="loadingScreen" style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+">
+    <!-- Logo ARVET -->
+    <div style="
+        position: relative;
+        margin-bottom: 40px;
+    ">
+        <img id="loadingLogo" src="images/ARVET.png" alt="ARVET" style="
+            width: 230px;
+            height: auto;
+            filter: drop-shadow(0 0 30px rgba(255,255,255,0.3));
+            animation: pulseLogo 3s ease-in-out infinite;
+        ">
+        <!-- Anillo de luz alrededor -->
+        <div style="
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 220px;
+            height: 220px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-radius: 60%;
+            animation: rotateRing 4s linear infinite;
+        "></div>
+    </div>
+
+    <!-- Barra de progreso -->
+    <div style="
+        width: 280px;
+        height: 4px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 2px;
+        overflow: hidden;
+        margin-bottom: 20px;
+    ">
+        <div id="progressBar" style="
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #60a5fa, #3b82f6);
+            background-size: 200% 100%;
+            border-radius: 2px;
+            animation: progressMove 2.5s ease-in-out infinite, shimmer 1.5s linear infinite;
+            transition: width 0.3s ease;
+        "></div>
+    </div>
+
+    <!-- Texto de carga -->
+    <div style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    ">
+        <p id="loadingText" style="
+            color: #94a3b8;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin: 0;
+            animation: fadeText 1.5s ease-in-out infinite;
+        ">
+            Estamos cargando los equipos
+        </p>
+        <div style="
+            display: flex;
+            gap: 4px;
+            margin-top: 4px;
+        ">
+            <span class="loadingDot" style="
+                width: 6px;
+                height: 6px;
+                background: #60a5fa;
+                border-radius: 50%;
+                animation: bounce 1.4s ease-in-out infinite;
+            "></span>
+            <span class="loadingDot" style="
+                width: 6px;
+                height: 6px;
+                background: #60a5fa;
+                border-radius: 50%;
+                animation: bounce 1.4s ease-in-out infinite 0.2s;
+            "></span>
+            <span class="loadingDot" style="
+                width: 6px;
+                height: 6px;
+                background: #60a5fa;
+                border-radius: 50%;
+                animation: bounce 1.4s ease-in-out infinite 0.4s;
+            "></span>
+        </div>
+    </div>
+</div>
+
+<!-- ANIMACIONES CSS -->
+<style>
+@keyframes pulseLogo {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 30px rgba(255,255,255,0.3)); }
+    50% { transform: scale(1.05); filter: drop-shadow(0 0 50px rgba(255,255,255,0.5)); }
+}
+
+@keyframes rotateRing {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes progressMove {
+    0% { width: 0%; }
+    50% { width: 70%; }
+    100% { width: 100%; }
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+@keyframes fadeText {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+@keyframes bounce {
+    0%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-8px); }
+}
+
+/* Clase para ocultar el loading */
+.loading-hidden {
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+</style>
 </head>
 <body>
     <!-- Navbar -->

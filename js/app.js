@@ -191,73 +191,53 @@ async function cargarPaises() {
 }
 
 async function buscarEquipos() {
+
     const termino = document.getElementById('searchInput').value;
     const container = document.getElementById('searchResults');
-    
-    if (!termino) return;
-    
+
+    if (!termino) {
+        container.innerHTML = '';
+        return;
+    }
+
     container.innerHTML = '<div class="loading">Buscando...</div>';
-    
+
     try {
+
         const response = await window.fetchAPI('buscar', { termino });
-        console.log(response);
+
         if (response.success && response.data.equipos.length > 0) {
+
             container.innerHTML = response.data.equipos.map(equipo => `
-    container.innerHTML = response.data.equipos.map(equipo => `
-<div class="team-result"
-     onclick="window.location.href='equipo.html?slug=${equipo.slug}'"
-     style="background:${equipo.colorPrimario || '#333'}">
+            
+                <div class="team-result"
+                     onclick="window.location.href='equipo.html?slug=${equipo.slug}'"
+                     style="background:${equipo.colorPrimario || '#333'}">
 
-    <img src="${equipo.logoUrl || 'images/default-team.png'}" class="team-logo">
+                    <img src="${equipo.logoUrl || 'img/default-team.png'}" class="team-logo">
 
-    <div class="team-info">
-        <h3>${equipo.nombre}</h3>
-        <p>${equipo.pais || ''}</p>
-        <p>${equipo.provincia || ''} - ${equipo.ciudad || ''}</p>
-    </div>
+                    <div class="team-info">
+                        <h3>${equipo.nombre}</h3>
+                        <p>${equipo.pais || ''}</p>
+                        <p>${equipo.provincia || ''} - ${equipo.ciudad || ''}</p>
+                    </div>
 
-</div>
-`).join('');
+                </div>
+            
+            `).join('');
+
         } else {
+
             container.innerHTML = '<p>No se encontraron equipos</p>';
+
         }
+
     } catch (error) {
+
+        console.error(error);
         container.innerHTML = '<p>Error en la búsqueda</p>';
-    }
-}
-async function cargarEquiposInicio() {
-
-    const container = document.getElementById("equiposSlider");
-
-    try {
-
-        const response = await window.fetchAPI("buscar", { termino: "" });
-
-        if (!response.success) return;
-
-        container.innerHTML = response.data.equipos.map(e => `
-        
-            <div class="equipo-card"
-                 style="background:${e.colorPrimario || '#444'}"
-                 onclick="window.location.href='equipo.html?slug=${e.slug}'">
-
-                <img src="${e.logoUrl || 'img/default-team.png'}">
-
-                <h3>${e.nombre}</h3>
-                
-                <p>${e.pais}</p>
-                <p>${e.provincia} - ${e.ciudad}</p>
-
-            </div>
-
-        `).join("");
-
-    } catch (err) {
-
-        console.error(err);
 
     }
-
 }
 async function cargarProximosPartidos() {
     const container = document.getElementById('partidosList');

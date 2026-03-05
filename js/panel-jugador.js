@@ -3,10 +3,10 @@ document.addEventListener('DOMContentLoaded', async function() {
   const adminEditId = localStorage.getItem('admin_edit_jugador');
 let user = JSON.parse(localStorage.getItem('arvet_user'));
 
-let jugadorId = user?.id;
-
-
 const esAdminEditando = !!adminEditId;
+
+// 🔥 SI VIENE DESDE ADMIN → editar ese jugador
+let jugadorId = esAdminEditando ? adminEditId : user?.id;
   
   if (!user) {
   window.location.href = 'login.html';
@@ -203,7 +203,9 @@ if (jugador.deslinde) {
           email: datosActualizados.email
         };
 
-        localStorage.setItem('arvet_user', JSON.stringify(updatedUser));
+        if (!esAdminEditando) {
+  localStorage.setItem('arvet_user', JSON.stringify(updatedUser));
+}
 
       } else {
         mostrarMensaje('Error al actualizar', 'error');

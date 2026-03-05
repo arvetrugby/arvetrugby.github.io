@@ -203,10 +203,20 @@ async function buscarEquipos() {
         console.log(response);
         if (response.success && response.data.equipos.length > 0) {
             container.innerHTML = response.data.equipos.map(equipo => `
-    <div class="card" onclick="window.location.href='equipo.html?slug=${equipo.slug}'">
+    container.innerHTML = response.data.equipos.map(equipo => `
+<div class="team-result"
+     onclick="window.location.href='equipo.html?slug=${equipo.slug}'"
+     style="background:${equipo.colorPrimario || '#333'}">
+
+    <img src="${equipo.logoUrl || 'images/default-team.png'}" class="team-logo">
+
+    <div class="team-info">
         <h3>${equipo.nombre}</h3>
-        <p>${equipo.ciudad}, ${equipo.provincia}</p>
+        <p>${equipo.pais || ''}</p>
+        <p>${equipo.provincia || ''} - ${equipo.ciudad || ''}</p>
     </div>
+
+</div>
 `).join('');
         } else {
             container.innerHTML = '<p>No se encontraron equipos</p>';

@@ -893,45 +893,65 @@ h1, h2, h3 {
 }
 
 /* ============================================
-   GALERÍA - Alto fijo 250px, ancho adaptable
+   GALERÍA - Fotos desordenadas estilo muro
    ============================================ */
 
- #galeriaCarrusel{
+#galeriaCarrusel{
     display:flex;
     flex-wrap:wrap;
-    gap:20px;
     justify-content:center;
+    gap:20px;
+    padding:20px;
     overflow:visible;
 }
 
-.galeria-item{
-    height:200px;
-    width:auto;
-    position:relative;
+#galeriaCarrusel::-webkit-scrollbar{
+    display:none;
 }
 
+.galeria-item{
+    position:relative;
+    transition:transform .25s, z-index .25s;
+}
+
+/* foto base */
 .galeria-item img{
-    height:200px;
+    height:250px;
     width:auto;
+    max-width:100%;
     border-radius:10px;
     box-shadow:0 6px 16px rgba(0,0,0,0.25);
     cursor:pointer;
-    transition:transform .25s;
+    display:block;
 }
 
-.galeria-item img:hover{
-    transform:scale(1.05) rotate(0deg);
-    z-index:5;
-}
-    
-    .galeria-item {
-        max-width: 300px;
-    }
+/* tamaños variados */
+.galeria-item:nth-child(3n) img{
+    height:230px;
 }
 
-#galeriaCarrusel::-webkit-scrollbar {
-    display: none;
+.galeria-item:nth-child(5n) img{
+    height:200px;
 }
+
+/* superposición leve */
+.galeria-item:nth-child(4n){
+    margin-top:-20px;
+}
+
+.galeria-item:nth-child(6n){
+    margin-top:-30px;
+}
+
+/* efecto hover */
+.galeria-item:hover{
+    transform:scale(1.08) rotate(0deg);
+    z-index:10;
+}
+
+/* ============================================
+   VISOR FOTO GRANDE
+   ============================================ */
 
 #visorFoto{
 position:fixed;
@@ -949,34 +969,30 @@ z-index:999;
 #visorFoto img{
 max-width:90%;
 max-height:90%;
+border-radius:10px;
 }
+
 /* ============================================
-   RESPONSIVE - Mobile
+   RESPONSIVE
    ============================================ */
 
-@media (max-width: 1024px) {
-    #comisionGrid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    #plantelGrid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+@media (max-width:1024px){
+
+.galeria-item img{
+height:220px;
 }
 
-@media (max-width: 600px) {
-    #comisionGrid {
-        grid-template-columns: 1fr;
-    }
-    
-    #plantelGrid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-    }
-    
-    #plantelGrid > div {
-        height: 240px;
-    }
-     }
+}
 
-  
+@media (max-width:600px){
+
+#galeriaCarrusel{
+gap:15px;
+padding:10px;
+}
+
+.galeria-item img{
+height:180px;
+}
+
+}

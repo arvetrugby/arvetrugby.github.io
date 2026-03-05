@@ -152,7 +152,10 @@ document.addEventListener('DOMContentLoaded', function() {
 // ============================================
 
 function initIndex() {
-
+const input = document.getElementById("searchInput");
+if(input){
+    input.addEventListener("input", buscarEquipos);
+}
     console.log('Ejecutando initIndex');
 
     if (document.getElementById('equiposSlider')) {

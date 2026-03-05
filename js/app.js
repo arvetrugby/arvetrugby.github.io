@@ -152,13 +152,22 @@ document.addEventListener('DOMContentLoaded', function() {
 // ============================================
 
 function initIndex() {
+
     console.log('Ejecutando initIndex');
+
+    if (document.getElementById('equiposSlider')) {
+        cargarEquiposInicio();
+        activarDragEquipos();
+    }
+
     if (document.getElementById('paisesGrid')) {
         cargarPaises();
     }
+
     if (document.getElementById('partidosList')) {
         cargarProximosPartidos();
     }
+
 }
 
 async function cargarPaises() {
@@ -206,7 +215,40 @@ async function buscarEquipos() {
         container.innerHTML = '<p>Error en la búsqueda</p>';
     }
 }
+async function cargarEquiposInicio() {
 
+    const container = document.getElementById("equiposSlider");
+
+    try {
+
+        const response = await window.fetchAPI("buscar", { termino: "" });
+
+        if (!response.success) return;
+
+        container.innerHTML = response.data.equipos.map(e => `
+        
+            <div class="equipo-card"
+                 style="background:${e.colorPrimario || '#444'}"
+                 onclick="window.location.href='equipo.html?slug=${e.slug}'">
+
+                <img src="${e.logoUrl || 'img/default-team.png'}">
+
+                <h3>${e.nombre}</h3>
+                
+                <p>${e.pais}</p>
+                <p>${e.provincia} - ${e.ciudad}</p>
+
+            </div>
+
+        `).join("");
+
+    } catch (err) {
+
+        console.error(err);
+
+    }
+
+}
 async function cargarProximosPartidos() {
     const container = document.getElementById('partidosList');
     if (!container) return;
@@ -238,7 +280,44 @@ async function cargarProximosPartidos() {
         container.innerHTML = '<p>Error al cargar partidos</p>';
     }
 }
+function activarDragEquipos(){
 
+    const slider = document.getElementById("equiposSlider");
+
+    if(!slider) return;
+
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    slider.addEventListener("mousedown", (e) => {
+        isDown = true;
+        startX = e.pageX - slider.offsetLeft;
+        scrollLeft = slider.scrollLeft;
+    });
+
+    slider.addEventListener("mouseleave", () => {
+        isDown = false;
+    });
+
+    slider.addEventListener("mouseup", () => {
+        isDown = false;
+    });
+
+    slider.addEventListener("mousemove", (e) => {
+
+        if(!isDown) return;
+
+        e.preventDefault();
+
+        const x = e.pageX - slider.offsetLeft;
+        const walk = (x - startX) * 2;
+
+        slider.scrollLeft = scrollLeft - walk;
+
+    });
+
+}
 // ============================================
 // PÁGINA: REGISTRO
 // ============================================

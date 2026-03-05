@@ -810,8 +810,7 @@ function cargarGaleriaEquipo(galeria) {
         <div class="galeria-item" style="flex: 0 0 85%; scroll-snap-align: center; 
                                           border-radius: 12px; overflow: hidden; 
                                           box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-            <img src="${url}" alt="Foto del equipo" 
-                 style="width: 100%; height: 250px; object-fit: cover; display: block;">
+            <img src="${url}" alt="Foto del equipo">
         </div>
     `).join('');
     

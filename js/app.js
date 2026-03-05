@@ -174,23 +174,25 @@ if(input){
 }
 
 async function cargarPaises() {
-    const container = document.getElementById('paisesGrid');
-    if (!container) return;
-    
-    try {
-        const response = await window.fetchAPI('getPaises');
-        if (response.success) {
-            container.innerHTML = response.data.map(pais => `
-                <div class="pais-card" onclick="filtrarPorPais('${pais.id}')">
-                    <div class="pais-flag">${pais.flag || '🏳️'}</div>
-                    <h3>${pais.nombre}</h3>
-                    <p>${pais.cantidadEquipos || 0} equipos</p>
-                </div>
-            `).join('');
-        }
-    } catch (error) {
-        container.innerHTML = '<p>Error al cargar países</p>';
+  const container = document.getElementById('paisesGrid');
+  if (!container) return;
+  
+  try {
+    const response = await window.fetchAPI('getPaises');
+    if (response.success) {
+      container.innerHTML = response.data.map(pais => `
+        <div class="pais-card" onclick="filtrarPorPais('${pais.id}')">
+          <div class="pais-logo">
+            <img src="${pais.logoUrl}" alt="${pais.nombre}">
+          </div>
+          <h3>${pais.nombre}</h3>
+          <p>${pais.cantidadEquipos} equipos</p>
+        </div>
+      `).join('');
     }
+  } catch (error) {
+    container.innerHTML = '<p>Error al cargar países</p>';
+  }
 }
 
 async function buscarEquipos() {

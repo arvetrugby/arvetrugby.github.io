@@ -1277,6 +1277,8 @@ function initConfigEquipo() {
     const inputLogo = document.getElementById('inputLogo');
     const btnGuardarLogo = document.getElementById('btnGuardarLogo');
     const msgConfig = document.getElementById('msgConfig');
+    const colorInput = document.getElementById('colorPrimario');
+    const btnGuardarColor = document.getElementById('btnGuardarColor');
     
     if (!btnCambiarLogo || !inputLogo) {
         console.log('No están los elementos del logo');
@@ -1388,6 +1390,48 @@ function initConfigEquipo() {
         }
     });
     
+    // Cargar color existente
+async function cargarColorExistente() {
+    try {
+        const response = await fetch(`${API_URL}?action=getEquipoById&id=${currentUser.equipoId}`);
+        const data = await response.json();
+        
+        if (data.success && data.data.colorPrimario) {
+            colorInput.value = data.data.colorPrimario;
+        }
+    } catch (e) {
+        console.log('No se pudo cargar color existente');
+    }
+}
+cargarColorExistente();
+
+// Guardar color
+btnGuardarColor.addEventListener('click', async function() {
+    const color = colorInput.value;
+    
+    showMsg('Guardando color...', 'info');
+    
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: 'updateEquipo',
+                id: currentUser.equipoId,
+                colorPrimario: color
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showMsg('✅ Color guardado', 'success');
+        } else {
+            showMsg('❌ Error: ' + result.error, 'error');
+        }
+    } catch (err) {
+        showMsg('❌ Error de conexión', 'error');
+    }
+});
     // ============================================
     // GALERÍA (máximo 5 fotos)
     // ============================================

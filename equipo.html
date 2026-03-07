@@ -10,6 +10,43 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
     <style>
+        /* LOGO PORTADA */
+
+.logo-portada{
+display:flex;
+justify-content:center;
+margin-top:20px;
+transition:all .45s ease;
+}
+
+#equipoLogo{
+width:250px;
+height:250px;
+object-fit:contain;
+padding:10px;
+box-shadow:0 4px 12px rgba(0,0,0,0.15);
+transition:all .45s ease;
+}
+
+/* estado al hacer scroll */
+
+.logo-small{
+
+position:fixed;
+top:10px;
+left:20px;
+z-index:2000;
+
+}
+
+.logo-small #equipoLogo{
+
+width:40px;
+height:40px;
+padding:0;
+box-shadow:none;
+
+}
      #navbarEquipoLogo{
 height:45px;
 width:auto;
@@ -53,7 +90,7 @@ opacity:0;
 <section id="portada" class="hero" style="margin-top: -10px; padding: 120px 0;">
     <div class="container">
          <!-- Logo del equipo -->
-        <div id="equipoLogoContainer" style="margin-top: 20px; text-align: center;">
+        <div id="equipoLogoContainer" class="logo-portada">
             <img id="equipoLogo" src="" alt="Logo del equipo" 
                  style="width: 250px; height: 250px; object-fit: contain;  
                          padding: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: none;">
@@ -198,32 +235,17 @@ Solicitar unirme al equipo
     <script src="js/app.js"></script>
     <script>
 
-const portadaLogo = document.getElementById("equipoLogo");
-const navbarEquipoLogo = document.getElementById("navbarEquipoLogo");
-const navbarLogo = document.getElementById("navbarLogo");
-
-function copiarLogo(){
-
-if(portadaLogo.src){
-navbarEquipoLogo.src = portadaLogo.src;
-}
-
-}
-
-const observer = new MutationObserver(copiarLogo);
-observer.observe(portadaLogo,{attributes:true});
+const logoContainer = document.getElementById("equipoLogoContainer");
 
 window.addEventListener("scroll",()=>{
 
 if(window.scrollY > 120){
 
-navbarEquipoLogo.classList.add("visible");
-navbarLogo.classList.add("hide");
+logoContainer.classList.add("logo-small");
 
 }else{
 
-navbarEquipoLogo.classList.remove("visible");
-navbarLogo.classList.remove("hide");
+logoContainer.classList.remove("logo-small");
 
 }
 

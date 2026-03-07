@@ -10,52 +10,54 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
     <style>
-        /* LOGO PORTADA */
-.logo-portada{
+        .logo-portada{
 display:flex;
 justify-content:center;
 margin-top:20px;
 }
 
 #equipoLogo{
+
 width:250px;
 height:250px;
 object-fit:contain;
+
 padding:10px;
 box-shadow:0 4px 12px rgba(0,0,0,0.15);
-transition:transform .1s linear;
-transform-origin:center;
+
+position:relative;
+z-index:5;
+
+transition:
+transform .15s linear,
+top .35s ease,
+left .35s ease,
+width .35s ease,
+height .35s ease;
 }
+
+/* estado cuando llega al navbar */
 
 .logo-navbar{
-height:70px !important;
-width:auto !important;
-padding:0 !important;
-box-shadow:none !important;
-margin-right:10px;
 
-position:relative !important;
-top:auto !important;
-transform:none !important;
+position:fixed;
+
+top:10px;
+left:20px;
+
+width:60px;
+height:60px;
+
+padding:0;
+box-shadow:none;
+
+z-index:2000;
+
 }
 
-     #navbarEquipoLogo{
-height:45px;
-width:auto;
-object-fit:contain;
-opacity:0;
-transform:translateY(-10px) scale(.8);
-transition:all .35s ease;
-}
+     
 
-#navbarEquipoLogo.visible{
-opacity:1;
-transform:translateY(0) scale(1);
-}
 
-.navbar #navbarLogo.hide{
-opacity:0;
-}
         #navbarLogo{
 transition:opacity .3s ease;
 }
@@ -228,54 +230,46 @@ Solicitar unirme al equipo
 </section>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="js/app.js"></script>
-<script>
-
 const logo = document.getElementById("equipoLogo");
-const navbar = document.querySelector(".navbar .logo");
-const portadaContainer = document.getElementById("equipoLogoContainer");
 const navbarLogo = document.getElementById("navbarLogo");
 
-let moved = false;
+let fixed = false;
 
-window.addEventListener("scroll",()=>{
+window.addEventListener("scroll", () => {
 
-let scroll = window.scrollY;
-let maxScroll = 300;
+const scroll = window.scrollY;
+const trigger = 220;
 
 /* reducción suave */
 
-let scale = 1 - (scroll / maxScroll);
+let scale = 1 - (scroll / 400);
 
-if(scale < 0.18){
-scale = 0.18;
-}
+if(scale < 0.25) scale = 0.25;
 
 logo.style.transform = `scale(${scale})`;
 
-/* mover logo al navbar */
+/* cuando llega al navbar */
 
-if(scroll > maxScroll && !moved){
+if(scroll > trigger && !fixed){
 
-navbar.appendChild(logo);
 logo.classList.add("logo-navbar");
-navbarLogo.style.opacity="0";
-moved = true;
+navbarLogo.style.opacity = "0";
+
+fixed = true;
 
 }
 
-/* devolver logo a portada */
+/* volver a portada */
 
-if(scroll <= maxScroll && moved){
+if(scroll <= trigger && fixed){
 
-portadaContainer.appendChild(logo);
 logo.classList.remove("logo-navbar");
-navbarLogo.style.opacity="1";
-moved = false;
+navbarLogo.style.opacity = "1";
+
+fixed = false;
 
 }
 
 });
-
-</script>
     </body>
 </html>

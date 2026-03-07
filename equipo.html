@@ -10,15 +10,11 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
     <style>
-       /* contenedor portada */
-
-.logo-portada{
+     .logo-portada{
 display:flex;
 justify-content:center;
 margin-top:40px;
 }
-
-/* logo grande */
 
 #equipoLogo{
 
@@ -27,42 +23,17 @@ height:260px;
 object-fit:contain;
 
 padding:12px;
-background:white;
 
-border-radius:16px;
+position:relative;
 
-box-shadow:0 10px 25px rgba(0,0,0,0.15);
-
-transition:transform .45s cubic-bezier(.4,0,.2,1);
+transition:
+transform .6s cubic-bezier(.4,0,.2,1);
 
 z-index:10;
-
 }
-
-/* estado cuando llega al navbar */
-
-.logo-navbar{
-
-position:fixed;
-
-top:8px;
-left:20px;
-
-width:60px;
-height:60px;
-
-padding:0;
-box-shadow:none;
-border-radius:0;
-
-z-index:2000;
-
-}
-
-/* animación suave */
 
 #navbarLogo{
-transition:opacity .35s ease;
+transition:opacity .3s ease;
 }
         </style>
 </head>
@@ -70,7 +41,7 @@ transition:opacity .35s ease;
     <!-- Navbar -->
     <nav class="navbar">
         <div class="container">
-            <a href="index.html" class="logo">
+           <a href="index.html" class="logo">
       <img id="navbarLogo" src="images/ARVET.png" alt="ARVET">
     </a>
 
@@ -87,7 +58,7 @@ transition:opacity .35s ease;
     </nav>
 
     <!-- Portada -->
-   <!-- REEMPLAZAR la sección de Portada completa -->
+   
 <section id="portada" class="hero" style="margin-top: -10px; padding: 120px 0;">
     <div class="container">
          <!-- Logo del equipo -->
@@ -238,42 +209,39 @@ Solicitar unirme al equipo
 const logo = document.getElementById("equipoLogo");
 const navbarLogo = document.getElementById("navbarLogo");
 
-let fixed = false;
+let animado = false;
 
 window.addEventListener("scroll", () => {
 
-const scroll = window.scrollY;
 const trigger = 260;
+const scroll = window.scrollY;
 
-/* reducción progresiva */
+if(scroll > trigger && !animado){
 
-let scale = 1 - scroll / 500;
+const start = logo.getBoundingClientRect();
+const end = navbarLogo.getBoundingClientRect();
 
-if(scale < 0.35) scale = 0.35;
+const dx = end.left - start.left;
+const dy = end.top - start.top;
 
-logo.style.transform = `scale(${scale})`;
+const scale = end.width / start.width;
 
-/* llegar al navbar */
-
-if(scroll > trigger && !fixed){
-
-logo.classList.add("logo-navbar");
+logo.style.transform =
+`translate(${dx}px, ${dy}px) scale(${scale})`;
 
 navbarLogo.style.opacity = "0";
 
-fixed = true;
+animado = true;
 
 }
 
-/* volver arriba */
+if(scroll <= trigger && animado){
 
-if(scroll <= trigger && fixed){
-
-logo.classList.remove("logo-navbar");
+logo.style.transform = "translate(0,0) scale(1)";
 
 navbarLogo.style.opacity = "1";
 
-fixed = false;
+animado = false;
 
 }
 

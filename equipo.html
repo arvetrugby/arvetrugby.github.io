@@ -15,7 +15,6 @@
 display:flex;
 justify-content:center;
 margin-top:20px;
-position:relative;
 }
 
 #equipoLogo{
@@ -24,10 +23,16 @@ height:250px;
 object-fit:contain;
 padding:10px;
 box-shadow:0 4px 12px rgba(0,0,0,0.15);
-transition:transform .1s linear, top .25s ease, left .25s ease;
+transition:transform .1s linear;
 transform-origin:center;
-position:relative;
-z-index:1500;
+}
+
+.logo-navbar{
+height:40px !important;
+width:auto !important;
+padding:0 !important;
+box-shadow:none !important;
+margin-right:10px;
 }
 
 /* cuando llega al navbar */
@@ -236,14 +241,18 @@ Solicitar unirme al equipo
 <script>
 
 const logo = document.getElementById("equipoLogo");
+const navbar = document.querySelector(".navbar .logo");
+const portadaContainer = document.getElementById("equipoLogoContainer");
 const navbarLogo = document.getElementById("navbarLogo");
+
+let moved = false;
 
 window.addEventListener("scroll",()=>{
 
 let scroll = window.scrollY;
 let maxScroll = 300;
 
-/* escala progresiva */
+/* reducción suave */
 
 let scale = 1 - (scroll / maxScroll);
 
@@ -253,17 +262,25 @@ scale = 0.18;
 
 logo.style.transform = `scale(${scale})`;
 
-/* cuando llega al navbar */
+/* mover logo al navbar */
 
-if(scroll > maxScroll){
+if(scroll > maxScroll && !moved){
 
-logo.classList.add("logo-fixed");
-navbarLogo.style.opacity = "0";
+navbar.appendChild(logo);
+logo.classList.add("logo-navbar");
+navbarLogo.style.opacity="0";
+moved = true;
 
-}else{
+}
 
-logo.classList.remove("logo-fixed");
-navbarLogo.style.opacity = "1";
+/* devolver logo a portada */
+
+if(scroll <= maxScroll && moved){
+
+portadaContainer.appendChild(logo);
+logo.classList.remove("logo-navbar");
+navbarLogo.style.opacity="1";
+moved = false;
 
 }
 

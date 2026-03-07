@@ -10,11 +10,17 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
     <style>
-     .logo-portada{
+    /* ===== CONTENEDOR PORTADA ===== */
+
+.logo-portada{
 display:flex;
 justify-content:center;
 margin-top:40px;
+position:relative;
+z-index:5;
 }
+
+/* ===== LOGO EQUIPO PORTADA ===== */
 
 #equipoLogo{
 
@@ -22,18 +28,100 @@ width:260px;
 height:260px;
 object-fit:contain;
 
-padding:12px;
-
-position:relative;
-
 transition:
-transform .6s cubic-bezier(.4,0,.2,1);
+transform .65s cubic-bezier(.22,1,.36,1),
+filter .4s ease,
+opacity .35s ease,
+box-shadow .4s ease;
 
-z-index:10;
+filter:blur(0px);
+
+z-index:50;
+
 }
 
+/* ===== EFECTO MOVIMIENTO ===== */
+
+.logo-moving{
+
+filter:blur(1.5px);
+
+}
+
+/* ===== CUANDO LLEGA AL NAVBAR ===== */
+
+.logo-final{
+
+opacity:0;
+transform:scale(.25);
+
+}
+
+/* ===== LOGO NAVBAR ===== */
+
 #navbarLogo{
-transition:opacity .3s ease;
+
+height:65px;
+width:auto;
+
+transition:
+opacity .45s ease,
+transform .45s ease;
+
+transform:scale(1);
+
+}
+
+/* oculto inicialmente */
+
+#navbarLogo.logo-hidden{
+
+opacity:0;
+transform:scale(.8);
+
+}
+
+/* aparece cuando llega el equipo */
+
+#navbarLogo.logo-show{
+
+opacity:1;
+transform:scale(1);
+
+}
+
+/* ===== SOMBRA QUE DESAPARECE ===== */
+
+#equipoLogo{
+
+box-shadow:0 12px 30px rgba(0,0,0,0.18);
+
+}
+
+.logo-moving{
+
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+
+}
+
+/* ===== NAVBAR CONTRAE (opcional) ===== */
+
+.navbar{
+
+transition:
+padding .35s ease,
+background .35s ease,
+box-shadow .35s ease;
+
+}
+
+.navbar.navbar-compact{
+
+padding-top:6px;
+padding-bottom:6px;
+
+box-shadow:0 4px 14px rgba(0,0,0,0.08);
+
 }
         </style>
 </head>
@@ -208,38 +296,62 @@ Solicitar unirme al equipo
     <script>
 const logo = document.getElementById("equipoLogo");
 const navbarLogo = document.getElementById("navbarLogo");
+const navbar = document.querySelector(".navbar");
 
 let animado = false;
 
 window.addEventListener("scroll", () => {
 
-const trigger = 260;
 const scroll = window.scrollY;
 
-if(scroll > trigger && !animado){
+const triggerStart = 120;
+const triggerEnd = 260;
 
-const start = logo.getBoundingClientRect();
-const end = navbarLogo.getBoundingClientRect();
+/* escala progresiva */
 
-const dx = end.left - start.left;
-const dy = end.top - start.top;
+let scale = 1 - scroll / 500;
 
-const scale = end.width / start.width;
+if(scale < 0.35) scale = 0.35;
 
-logo.style.transform =
-`translate(${dx}px, ${dy}px) scale(${scale})`;
+logo.style.transform = `scale(${scale})`;
 
-navbarLogo.style.opacity = "0";
+/* efecto velocidad */
+
+if(scroll > triggerStart){
+
+logo.classList.add("logo-moving");
+
+}else{
+
+logo.classList.remove("logo-moving");
+
+}
+
+/* cuando llega al navbar */
+
+if(scroll > triggerEnd && !animado){
+
+logo.classList.add("logo-final");
+
+navbarLogo.classList.add("logo-show");
+navbarLogo.classList.remove("logo-hidden");
+
+navbar.classList.add("navbar-compact");
 
 animado = true;
 
 }
 
-if(scroll <= trigger && animado){
+/* volver arriba */
 
-logo.style.transform = "translate(0,0) scale(1)";
+if(scroll <= triggerEnd && animado){
 
-navbarLogo.style.opacity = "1";
+logo.classList.remove("logo-final");
+
+navbarLogo.classList.remove("logo-show");
+navbarLogo.classList.add("logo-hidden");
+
+navbar.classList.remove("navbar-compact");
 
 animado = false;
 

@@ -1378,11 +1378,13 @@ height:180px;
 .pais-card h3{
     font-size:16px;
     margin:5px 0;
+   color:#ffffff;
 }
 
 .pais-card p{
     font-size:13px;
     opacity:0.7;
+   color:#ffffff;
 }
 
 pais-logo {

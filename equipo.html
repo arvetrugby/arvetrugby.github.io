@@ -95,39 +95,43 @@ opacity:0;
 transform:scale(.8);
 
 }
-        @media (max-width:768px){
+      @media (max-width:768px){
 
 .menu-toggle{
 display:block;
+z-index:1001;
 }
 
-/* menu */
+/* MENU */
 
 .nav-links{
 
 position:fixed;
 
-top:0px;
+top:70px;
 right:0;
 
 width:100%;
 
-background:#00000099;
+background:#ffffff;
 
 flex-direction:column;
 
 align-items:center;
 
-gap:20px;
+gap:22px;
 
-padding:30px 0;
+padding:35px 0;
 
 transform:translateY(-120%);
+
 opacity:0;
 
 transition:
 transform .35s ease,
 opacity .35s ease;
+
+z-index:1000;
 
 }
 
@@ -136,6 +140,7 @@ opacity .35s ease;
 .nav-links.open{
 
 transform:translateY(0);
+
 opacity:1;
 
 }
@@ -145,10 +150,47 @@ opacity:1;
 .nav-links a{
 
 font-size:18px;
-color:#fff;
+
+color:#111;
+
 font-weight:600;
 
+text-decoration:none;
+
 }
+
+}
+        /* OVERLAY OSCURO */
+
+#menuOverlay{
+
+position:fixed;
+
+top:0;
+left:0;
+
+width:100%;
+height:100%;
+
+background:rgba(0,0,0,0.35);
+
+opacity:0;
+
+pointer-events:none;
+
+transition:opacity .3s ease;
+
+z-index:900;
+
+}
+
+/* overlay visible */
+
+#menuOverlay.active{
+
+opacity:1;
+
+pointer-events:auto;
 
 }
         </style>
@@ -175,7 +217,7 @@ font-weight:600;
             </div>
         </div>
     </nav>
-
+<div id="menuOverlay"></div>
     <!-- Portada -->
    
 <section id="portada" class="hero" style="margin-top: -10px; padding: 120px 0;">
@@ -371,12 +413,14 @@ equipoLogo.style.transform = `scale(${scale})`;
 
         const menuToggle = document.getElementById("menuToggle");
 const navLinks = document.querySelector(".nav-links");
+const overlay = document.getElementById("menuOverlay");
 
-/* abrir cerrar menu */
+/* abrir cerrar */
 
 menuToggle.addEventListener("click", () => {
 
 navLinks.classList.toggle("open");
+overlay.classList.toggle("active");
 
 });
 
@@ -387,20 +431,18 @@ document.querySelectorAll(".nav-links a").forEach(link => {
 link.addEventListener("click", () => {
 
 navLinks.classList.remove("open");
+overlay.classList.remove("active");
 
 });
 
 });
 
-/* cerrar tocando fuera */
+/* cerrar tocando overlay */
 
-document.addEventListener("click", (e) => {
-
-if(!navLinks.contains(e.target) && !menuToggle.contains(e.target)){
+overlay.addEventListener("click", () => {
 
 navLinks.classList.remove("open");
-
-}
+overlay.classList.remove("active");
 
 });
 </script>

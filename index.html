@@ -35,7 +35,8 @@ width:200px;
 height:auto;
 position:relative;
 z-index:2;
-animation:logoIntro 1.4s ease, logoFloat 4s ease-in-out infinite 1.4s;
+opacity:0;
+animation:logoFloat 4s ease-in-out infinite 1.4s;
 ">
 
 <!-- glow detrás -->
@@ -79,7 +80,16 @@ Cargando equipos
 
 </div>
 
+<script>
+const logo = document.getElementById("loadingLogo");
 
+logo.onload = function(){
+
+    logo.style.opacity = "1";
+    logo.style.animation = "logoIntro 1.4s ease, logoFloat 4s ease-in-out infinite 1.4s";
+
+};
+</script>
 <style>
 
 /* partículas fondo */

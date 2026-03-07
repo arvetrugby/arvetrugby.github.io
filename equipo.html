@@ -20,6 +20,7 @@ transition:opacity .25s ease;
 #navbarLogoEquipo.loaded{
 opacity:1;
 }
+       
   /* ===== LOGO PORTADA ===== */
 
 .logo-portada{
@@ -39,23 +40,26 @@ transition:transform .35s ease;
 }
 
 /* ===== LOGOS NAVBAR ===== */
-#navbarLogoArvet,
+
+#navbarLogoArvet{
+opacity:1;
+transition:opacity .35s ease;
+}
+
 #navbarLogoEquipo{
 
-position:relative;
-left:10px;
-top:35px;
+opacity:0;
+position:absolute;
 
-height:55px;
+left:0;
+top:50%;
+transform:translateY(-50%);
+
+height:42px;
+
+transition:opacity .35s ease;
 
 }
-.logo{
-position:relative;
-display:flex;
-align-items:center;
-height:70px;
-}
-
 /* ARVET */
 
 #navbarLogoArvet{
@@ -88,21 +92,18 @@ transform .35s ease;
 
 }
 
-/* cuando aparece */
-
-#navbarLogoEquipo.visible{
-
-opacity:1;
-transform:scale(1);
-
-}
-
-/* cuando ARVET desaparece */
+/* estados */
 
 #navbarLogoArvet.hidden{
 
 opacity:0;
-transform:scale(.8);
+pointer-events:none;
+
+}
+
+#navbarLogoEquipo.visible{
+
+opacity:1;
 
 }
       @media (max-width:768px){

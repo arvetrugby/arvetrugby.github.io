@@ -10,6 +10,16 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
     <style>
+        #equipoLogo,
+#navbarLogoEquipo{
+opacity:0;
+transition:opacity .25s ease;
+}
+
+#equipoLogo.loaded,
+#navbarLogoEquipo.loaded{
+opacity:1;
+}
   /* ===== LOGO PORTADA ===== */
 
 .logo-portada{

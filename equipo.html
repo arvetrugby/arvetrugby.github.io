@@ -203,6 +203,56 @@ opacity:1;
 pointer-events:auto;
 
 }
+        /* ===== LOADER LOGO EQUIPO ===== */
+
+.logo-loader{
+
+width:50px;
+height:50px;
+
+border:3px solid rgba(0,0,0,0.08);
+border-top:3px solid #2563eb;
+
+border-radius:50%;
+
+animation:spin 1s linear infinite;
+
+position:absolute;
+
+}
+
+@keyframes spin{
+
+0%{transform:rotate(0deg);}
+100%{transform:rotate(360deg);}
+
+}
+
+/* ocultar cuando cargue */
+
+.logo-loader.hidden{
+
+opacity:0;
+pointer-events:none;
+
+}
+
+/* ocultar logo hasta que cargue */
+
+#equipoLogo,
+#navbarLogoEquipo{
+
+opacity:0;
+transition:opacity .3s ease;
+
+}
+
+#equipoLogo.loaded,
+#navbarLogoEquipo.loaded{
+
+opacity:1;
+
+}
         </style>
 </head>
 <body>
@@ -211,7 +261,7 @@ pointer-events:auto;
         <div class="container">
            <a href="index.html" class="logo">
       <img id="navbarLogoArvet" src="images/ARVET.png" alt="ARVET">
-      <img id="navbarLogoEquipo">
+      <img id="navbarLogoEquipo" src="">
     </a>
 
 
@@ -235,7 +285,8 @@ pointer-events:auto;
          <!-- Logo del equipo -->
         <div id="equipoLogoContainer" class="logo-portada">
             <div class="logo-portada">
- <img id="equipoLogo">
+                <div id="logoLoader" class="logo-loader"></div>
+ <img id="equipoLogo" src="">
 </div>
         </div>
         <div id="equipoHeader">
@@ -378,41 +429,35 @@ Solicitar unirme al equipo
     <script src="js/app.js"></script>
     <script>
 
-        const equipoLogo = document.getElementById("equipoLogo");
+/* ===== ELEMENTOS ===== */
+
+const equipoLogo = document.getElementById("equipoLogo");
 const navbarLogoEquipo = document.getElementById("navbarLogoEquipo");
+const navbarLogoArvet = document.getElementById("navbarLogoArvet");
+const logoLoader = document.getElementById("logoLoader");
 
-equipoLogo.src = data.logo;
-navbarLogoEquipo.src = data.logo;
+/* ===== CUANDO CARGA EL LOGO ===== */
 
-/* cuando cargue */
+equipoLogo.addEventListener("load", () => {
 
-equipoLogo.onload = () => {
+logoLoader.classList.add("hidden");
 
 equipoLogo.classList.add("loaded");
 navbarLogoEquipo.classList.add("loaded");
 
-};
-const equipoLogo = document.getElementById("equipoLogo");
-const navbarLogoEquipo = document.getElementById("navbarLogoEquipo");
-const navbarLogoArvet = document.getElementById("navbarLogoArvet");
-
-/* copiar logo equipo al navbar */
-
-function sincronizarLogo(){
+/* copiar logo al navbar */
 
 navbarLogoEquipo.src = equipoLogo.src;
 
-}
+});
 
-/* cuando cargue el logo */
-
-equipoLogo.addEventListener("load", sincronizarLogo);
-
-/* scroll */
+/* ===== SCROLL NAVBAR ===== */
 
 window.addEventListener("scroll", () => {
 
 const scroll = window.scrollY;
+
+/* cambiar logos navbar */
 
 if(scroll > 220){
 
@@ -426,7 +471,7 @@ navbarLogoEquipo.classList.remove("visible");
 
 }
 
-/* leve reducción del logo de portada */
+/* animación logo portada */
 
 let scale = 1 - scroll / 600;
 
@@ -436,11 +481,11 @@ equipoLogo.style.transform = `scale(${scale})`;
 
 });
 
-        const menuToggle = document.getElementById("menuToggle");
+/* ===== MENU MOBILE ===== */
+
+const menuToggle = document.getElementById("menuToggle");
 const navLinks = document.querySelector(".nav-links");
 const overlay = document.getElementById("menuOverlay");
-
-/* abrir cerrar */
 
 menuToggle.addEventListener("click", () => {
 
@@ -470,6 +515,8 @@ navLinks.classList.remove("open");
 overlay.classList.remove("active");
 
 });
+
+
 </script>
     </body>
 </html>

@@ -4,221 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Equipo - ARVET</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Georama:wdth,wght@75..100,400;75..100,600;75..100,700;75..100,800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
+    
+    <!-- Preconexiones críticas -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com">
+    
+    <!-- Fuentes optimizadas (solo pesos necesarios) -->
+    <link href="https://fonts.googleapis.com/css2?family=Georama:wght@400;600;700;800&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS crítico inline (solo lo necesario para above-the-fold) -->
     <style>
-        /* ===== LOGO PORTADA ===== */
-
-.logo-portada{
-display:flex;
-justify-content:center;
-margin-top:20px;
-position:relative;
-}
-
-#equipoLogo{
-
-width:250px;
-height:250px;
-
-object-fit:contain;
-
-opacity:0;
-
-transition:
-opacity .3s ease,
-transform .35s ease;
-
-}
-
-#equipoLogo.loaded{
-opacity:1;
-}
-
-/* ===== NAVBAR LOGOS ===== */
-
-#navbarLogoArvet{
-top: 60%;
-left: -8px;
-height:85px;
-width:auto;
-
-opacity:1;
-
-transition:opacity .35s ease;
-
-}
-
-/* logo equipo navbar */
-
-#navbarLogoEquipo{
-
-position:absolute;
-
-left:0;
-top:85%;
-
-transform:translateY(-70%);
-
-height:65px;
-width:auto;
-
-opacity:0;
-
-transition:opacity .35s ease;
-
-}
-
-/* estados */
-
-#navbarLogoArvet.hidden{
-opacity:0;
-pointer-events:none;
-}
-
-#navbarLogoEquipo.visible{
-opacity:1;
-}
-
-/* ===== LOADER ===== */
-
-.logo-loader{
-
-width:50px;
-height:50px;
-
-border:3px solid rgba(0,0,0,0.08);
-border-top:3px solid #2563eb;
-
-border-radius:50%;
-
-animation:spin 1s linear infinite;
-
-position:absolute;
-
-}
-
-@keyframes spin{
-
-0%{transform:rotate(0deg);}
-100%{transform:rotate(360deg);}
-
-}
-
-.logo-loader.hidden{
-opacity:0;
-pointer-events:none;
-}
-
-/* ===== MOBILE MENU ===== */
-
-@media (max-width:768px){
-
-.menu-toggle{
-display:block;
-z-index:1001;
-}
-
-.nav-links{
-
-position:fixed;
-
-top:0;
-right:0;
-
-width:100%;
-
-background:#00000099;
-
-flex-direction:column;
-
-align-items:center;
-
-gap:22px;
-
-padding:35px 0;
-
-transform:translateY(-120%);
-opacity:0;
-
-transition:
-transform .35s ease,
-opacity .35s ease;
-
-z-index:1000;
-
-}
-
-.nav-links.open{
-
-transform:translateY(0);
-opacity:1;
-
-}
-
-.nav-links a{
-
-font-size:18px;
-
-color:#fff;
-
-font-weight:600;
-
-text-decoration:none;
-
-}
-
-}
-
-/* ===== OVERLAY ===== */
-
-#menuOverlay{
-
-position:fixed;
-
-top:0;
-left:0;
-
-width:100%;
-height:100%;
-
-background:rgba(0,0,0,0.35);
-
-opacity:0;
-
-pointer-events:none;
-
-transition:opacity .3s ease;
-
-z-index:900;
-
-}
-
-#menuOverlay.active{
-
-opacity:1;
-pointer-events:auto;
-
-}
-        </style>
+        /* Reset mínimo y estilos críticos */
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:Montserrat,sans-serif;line-height:1.6}
+        .container{max-width:1200px;margin:0 auto;padding:0 20px}
+        
+        /* Navbar crítico */
+        .navbar{position:fixed;top:0;width:100%;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,0.1);z-index:1000;height:70px}
+        .navbar .container{display:flex;justify-content:space-between;align-items:center;height:100%}
+        .logo{position:relative;display:flex;align-items:center}
+        #navbarLogoArvet{height:50px;width:auto}
+        #navbarLogoEquipo{position:absolute;left:0;height:50px;width:auto;opacity:0;transition:opacity .3s}
+        #navbarLogoEquipo.visible{opacity:1}
+        
+        /* Loader crítico */
+        .logo-loader{width:50px;height:50px;border:3px solid rgba(0,0,0,0.08);border-top:3px solid #2563eb;border-radius:50%;animation:spin 1s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        
+        /* Hero crítico */
+        .hero{margin-top:70px;padding:80px 0;text-align:center;min-height:60vh}
+        .logo-portada{display:flex;justify-content:center;margin-bottom:30px}
+        #equipoLogo{width:250px;height:250px;object-fit:contain;opacity:0;transition:opacity .3s}
+        #equipoLogo.loaded{opacity:1}
+        
+        /* Ocultar contenido hasta carga */
+        .loading{text-align:center;padding:40px;color:#64748b}
+    </style>
+    
+    <!-- CSS no crítico cargado asíncrono -->
+    <link rel="preload" href="css/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/styles.css"></noscript>
+    
+    <!-- Leaflet solo si se usa (carga diferida) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" media="print" onload="this.media='all'">
 </head>
 <body>
-    <!-- Navbar -->
     <nav class="navbar">
         <div class="container">
-           <a href="index.html" class="logo">
-      <img id="navbarLogoArvet" src="images/ARVET.png" alt="ARVET">
-      <img id="navbarLogoEquipo" src="">
-    </a>
-
-
-<button id="menuToggle" class="menu-toggle">
-☰
-</button>
-            <div class="nav-links">
+            <a href="index.html" class="logo">
+                <img id="navbarLogoArvet" src="images/ARVET.png" alt="ARVET" width="120" height="50" fetchpriority="high">
+                <img id="navbarLogoEquipo" src="" alt="Logo equipo" width="50" height="50" loading="lazy" style="opacity:0">
+            </a>
+            <button id="menuToggle" class="menu-toggle" aria-label="Menú">☰</button>
+            <div class="nav-links" style="display:none">
                 <a href="#portada">Inicio</a>
                 <a href="#quienes-somos">Nosotros</a>
                 <a href="#plantel">Plantel</a>
@@ -227,25 +66,20 @@ pointer-events:auto;
             </div>
         </div>
     </nav>
-<div id="menuOverlay"></div>
-    <!-- Portada -->
-   
-<section id="portada" class="hero" style="margin-top: -10px; padding: 120px 0;">
-    <div class="container">
-         <!-- Logo del equipo -->
-        <div id="equipoLogoContainer" class="logo-portada">
+    
+    <div id="menuOverlay" style="display:none"></div>
+
+    <section id="portada" class="hero">
+        <div class="container">
             <div class="logo-portada">
                 <div id="logoLoader" class="logo-loader"></div>
- <img id="equipoLogo" src="">
-</div>
+                <img id="equipoLogo" src="" alt="Logo del equipo" width="250" height="250" fetchpriority="high" style="opacity:0">
+            </div>
+            <div id="equipoHeader">
+                <div class="loading">Cargando equipo...</div>
+            </div>
         </div>
-        <div id="equipoHeader">
-            <div class="loading">Cargando equipo...</div>
-        </div>
-       
-    </div>
-</section>
-
+    </section>
 
     <!-- Quiénes Somos -->
     <section id="quienes-somos" class="section">
@@ -375,98 +209,57 @@ Solicitar unirme al equipo
         <div id="map" style="height: 400px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></div>
     </div>
 </section>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="js/app.js"></script>
+
+    <!-- Scripts al final con defer -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+    <script src="js/app.js" defer></script>
+    
     <script>
-
-/* ===== ELEMENTOS ===== */
-
-const equipoLogo = document.getElementById("equipoLogo");
-const navbarLogoEquipo = document.getElementById("navbarLogoEquipo");
-const navbarLogoArvet = document.getElementById("navbarLogoArvet");
-const logoLoader = document.getElementById("logoLoader");
-
-/* ===== CUANDO CARGA EL LOGO ===== */
-
-equipoLogo.addEventListener("load", () => {
-
-logoLoader.classList.add("hidden");
-
-equipoLogo.classList.add("loaded");
-navbarLogoEquipo.classList.add("loaded");
-
-/* copiar logo al navbar */
-
-navbarLogoEquipo.src = equipoLogo.src;
-
-});
-
-/* ===== SCROLL NAVBAR ===== */
-
-window.addEventListener("scroll", () => {
-
-const scroll = window.scrollY;
-
-/* cambiar logos navbar */
-
-if(scroll > 220){
-
-navbarLogoArvet.classList.add("hidden");
-navbarLogoEquipo.classList.add("visible");
-
-}else{
-
-navbarLogoArvet.classList.remove("hidden");
-navbarLogoEquipo.classList.remove("visible");
-
-}
-
-/* animación logo portada */
-
-let scale = 1 - scroll / 600;
-
-if(scale < 0.25) scale = 0.25;
-
-equipoLogo.style.transform = `scale(${scale})`;
-
-});
-
-/* ===== MENU MOBILE ===== */
-
-const menuToggle = document.getElementById("menuToggle");
-const navLinks = document.querySelector(".nav-links");
-const overlay = document.getElementById("menuOverlay");
-
-menuToggle.addEventListener("click", () => {
-
-navLinks.classList.toggle("open");
-overlay.classList.toggle("active");
-
-});
-
-/* cerrar al tocar link */
-
-document.querySelectorAll(".nav-links a").forEach(link => {
-
-link.addEventListener("click", () => {
-
-navLinks.classList.remove("open");
-overlay.classList.remove("active");
-
-});
-
-});
-
-/* cerrar tocando overlay */
-
-overlay.addEventListener("click", () => {
-
-navLinks.classList.remove("open");
-overlay.classList.remove("active");
-
-});
-
-
-</script>
-    </body>
+        // JavaScript mínimo crítico inline
+        document.addEventListener('DOMContentLoaded', () => {
+            const equipoLogo = document.getElementById("equipoLogo");
+            const navbarLogoEquipo = document.getElementById("navbarLogoEquipo");
+            const logoLoader = document.getElementById("logoLoader");
+            
+            // Manejar carga de logo
+            if(equipoLogo.complete && equipoLogo.naturalHeight !== 0) {
+                logoLoader.classList.add("hidden");
+                equipoLogo.style.opacity = "1";
+            } else {
+                equipoLogo.addEventListener("load", () => {
+                    logoLoader.classList.add("hidden");
+                    equipoLogo.style.opacity = "1";
+                    navbarLogoEquipo.src = equipoLogo.src;
+                }, {once: true});
+            }
+            
+            // Scroll handler optimizado (throttle)
+            let ticking = false;
+            window.addEventListener("scroll", () => {
+                if(!ticking) {
+                    window.requestAnimationFrame(() => {
+                        const scroll = window.scrollY;
+                        const navbarArvet = document.getElementById("navbarLogoArvet");
+                        
+                        if(scroll > 100) {
+                            navbarArvet.style.opacity = "0";
+                            navbarLogoEquipo.style.opacity = "1";
+                        } else {
+                            navbarArvet.style.opacity = "1";
+                            navbarLogoEquipo.style.opacity = "0";
+                        }
+                        
+                        // Animación logo con transform (GPU)
+                        const scale = Math.max(0.5, 1 - scroll / 800);
+                        equipoLogo.style.transform = `scale(${scale})`;
+                        
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            }, {passive: true});
+        });
+    </script>
+</body>
 </html>
+

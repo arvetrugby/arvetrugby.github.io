@@ -1726,20 +1726,12 @@ height:180px;
 
     margin:0 auto 14px auto;
 
-    border-radius:50%;
-    overflow:hidden;
-
     display:flex;
     align-items:center;
     justify-content:center;
 
-    background:#f1f5f9;
-
-    box-shadow:
-        0 6px 18px rgba(0,0,0,0.4),
-        inset 0 2px 4px rgba(255,255,255,0.4);
-
-    transition:transform .3s;
+    background:none;
+    box-shadow:none;
 }
 
 .pais-card:hover .pais-logo{

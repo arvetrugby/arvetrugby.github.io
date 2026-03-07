@@ -10,117 +10,80 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
     <style>
-    /* ===== CONTENEDOR PORTADA ===== */
+  /* ===== LOGO PORTADA ===== */
 
 .logo-portada{
 display:flex;
 justify-content:center;
-margin-top:40px;
-position:relative;
-z-index:5;
+margin-top:20px;
 }
-
-/* ===== LOGO EQUIPO PORTADA ===== */
 
 #equipoLogo{
 
-width:260px;
-height:260px;
+width:250px;
+height:250px;
 object-fit:contain;
 
-transition:
-transform .65s cubic-bezier(.22,1,.36,1),
-filter .4s ease,
-opacity .35s ease,
-box-shadow .4s ease;
-
-filter:blur(0px);
-
-z-index:50;
+transition:transform .35s ease;
 
 }
 
-/* ===== EFECTO MOVIMIENTO ===== */
+/* ===== LOGOS NAVBAR ===== */
 
-.logo-moving{
-
-filter:blur(1.5px);
-
+.logo{
+position:relative;
+display:flex;
+align-items:center;
+height:70px;
 }
 
-/* ===== CUANDO LLEGA AL NAVBAR ===== */
+/* ARVET */
 
-.logo-final{
+#navbarLogoArvet{
 
-opacity:0;
-transform:scale(.25);
-
-}
-
-/* ===== LOGO NAVBAR ===== */
-
-#navbarLogo{
-
-height:65px;
+height:60px;
 width:auto;
 
 transition:
-opacity .45s ease,
-transform .45s ease;
-
-transform:scale(1);
+opacity .35s ease,
+transform .35s ease;
 
 }
 
-/* oculto inicialmente */
+/* LOGO EQUIPO NAVBAR */
 
-#navbarLogo.logo-hidden{
+#navbarLogoEquipo{
+
+position:absolute;
+
+height:55px;
+width:auto;
 
 opacity:0;
+
 transform:scale(.8);
+
+transition:
+opacity .35s ease,
+transform .35s ease;
 
 }
 
-/* aparece cuando llega el equipo */
+/* cuando aparece */
 
-#navbarLogo.logo-show{
+#navbarLogoEquipo.visible{
 
 opacity:1;
 transform:scale(1);
 
 }
 
-/* ===== SOMBRA QUE DESAPARECE ===== */
+/* cuando ARVET desaparece */
 
-#equipoLogo{
+#navbarLogoArvet.hidden{
 
-box-shadow:0 12px 30px rgba(0,0,0,0.18);
-
-}
-
-.logo-moving{
-
-box-shadow:0 4px 10px rgba(0,0,0,0.1);
-
-}
-
-/* ===== NAVBAR CONTRAE (opcional) ===== */
-
-.navbar{
-
-transition:
-padding .35s ease,
-background .35s ease,
-box-shadow .35s ease;
-
-}
-
-.navbar.navbar-compact{
-
-padding-top:6px;
-padding-bottom:6px;
-
-box-shadow:0 4px 14px rgba(0,0,0,0.08);
+opacity:0;
+transform:scale(.8);
 
 }
         </style>
@@ -130,7 +93,8 @@ box-shadow:0 4px 14px rgba(0,0,0,0.08);
     <nav class="navbar">
         <div class="container">
            <a href="index.html" class="logo">
-      <img id="navbarLogo" src="images/ARVET.png" alt="ARVET">
+      <img id="navbarLogoArvet" src="images/ARVET.png" alt="ARVET">
+      <img id="navbarLogoEquipo" src="" alt="Equipo">
     </a>
 
 
@@ -294,68 +258,47 @@ Solicitar unirme al equipo
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="js/app.js"></script>
     <script>
-const logo = document.getElementById("equipoLogo");
-const navbarLogo = document.getElementById("navbarLogo");
-const navbar = document.querySelector(".navbar");
+const equipoLogo = document.getElementById("equipoLogo");
+const navbarLogoEquipo = document.getElementById("navbarLogoEquipo");
+const navbarLogoArvet = document.getElementById("navbarLogoArvet");
 
-let animado = false;
+/* copiar logo equipo al navbar */
+
+function sincronizarLogo(){
+
+navbarLogoEquipo.src = equipoLogo.src;
+
+}
+
+/* cuando cargue el logo */
+
+equipoLogo.addEventListener("load", sincronizarLogo);
+
+/* scroll */
 
 window.addEventListener("scroll", () => {
 
 const scroll = window.scrollY;
 
-const triggerStart = 120;
-const triggerEnd = 260;
+if(scroll > 220){
 
-/* escala progresiva */
-
-let scale = 1 - scroll / 500;
-
-if(scale < 0.35) scale = 0.35;
-
-logo.style.transform = `scale(${scale})`;
-
-/* efecto velocidad */
-
-if(scroll > triggerStart){
-
-logo.classList.add("logo-moving");
+navbarLogoArvet.classList.add("hidden");
+navbarLogoEquipo.classList.add("visible");
 
 }else{
 
-logo.classList.remove("logo-moving");
+navbarLogoArvet.classList.remove("hidden");
+navbarLogoEquipo.classList.remove("visible");
 
 }
 
-/* cuando llega al navbar */
+/* leve reducción del logo de portada */
 
-if(scroll > triggerEnd && !animado){
+let scale = 1 - scroll / 600;
 
-logo.classList.add("logo-final");
+if(scale < 0.65) scale = 0.65;
 
-navbarLogo.classList.add("logo-show");
-navbarLogo.classList.remove("logo-hidden");
-
-navbar.classList.add("navbar-compact");
-
-animado = true;
-
-}
-
-/* volver arriba */
-
-if(scroll <= triggerEnd && animado){
-
-logo.classList.remove("logo-final");
-
-navbarLogo.classList.remove("logo-show");
-navbarLogo.classList.add("logo-hidden");
-
-navbar.classList.remove("navbar-compact");
-
-animado = false;
-
-}
+equipoLogo.style.transform = `scale(${scale})`;
 
 });
 </script>

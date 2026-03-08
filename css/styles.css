@@ -241,53 +241,20 @@ h1, h2, h3 {
 .paises-section,
 .partidos-section,
 .main-content {
-  position: relative;
-  padding: 80px 0;
-  background-image:
-    linear-gradient(rgba(34, 61, 72, 0.9), rgba(34, 61, 72, 0.9)),
-    url("../images/fondodecancha.png");
-
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-   color: white;
-   
-  
+  background: linear-gradient(
+    140deg,
+    rgba(10, 35, 80, 0.95),
+    rgba(15, 60, 120, 0.85)
+  );
+   color: white;  
 }
 .paises-section{
-  position: relative;
-  color: white;
-  overflow: hidden;
-}
-
-/* imagen en blanco y negro */
-.paises-section::before{
-  content:"";
-  position:absolute;
-  inset:0;
-
-  background-image: url("../images/fondopaises.png");
-  background-size: cover;
-  background-position: center;
-
-  filter: grayscale(100%) contrast(0.5);
-  z-index:0;
-}
-
-/* overlay azul */
-.paises-section::after{
-  content:"";
-  position:absolute;
-  inset:0;
-
-  background: rgba(34,61,72,0.95);
-  z-index:1;
-}
-
-/* contenido encima */
-.paises-section > *{
-  position: relative;
-  z-index:2;
+  background: linear-gradient(
+    140deg,
+    rgba(10, 35, 80, 0.95),
+    rgba(15, 60, 120, 0.85)
+  );
+   color: white;
 }
 
 .partidos-section {

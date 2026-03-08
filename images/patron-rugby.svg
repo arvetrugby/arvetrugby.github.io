@@ -1,109 +1,32 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
 
-<style>
+<rect width="800" height="400" fill="#0b2a5b"/>
 
-body{
-  margin:0;
-  font-family:Arial;
-}
+<!-- líneas de fondo (touch lines) -->
+<line x1="0" y1="40" x2="800" y2="40" stroke="#2e5fb3" stroke-width="2" stroke-opacity="0.25"/>
+<line x1="0" y1="360" x2="800" y2="360" stroke="#2e5fb3" stroke-width="2" stroke-opacity="0.25"/>
 
-.main-content{
-  position:relative;
-  height:400px;
-  overflow:hidden;
-  color:white;
-}
+<!-- línea central -->
+<line x1="400" y1="40" x2="400" y2="360" stroke="#2e5fb3" stroke-width="2" stroke-opacity="0.35"/>
 
-.wave-background{
-  position:absolute;
-  inset:0;
-  z-index:0;
-}
+<!-- líneas de 22 -->
+<line x1="200" y1="40" x2="200" y2="360" stroke="#2e5fb3" stroke-width="2" stroke-opacity="0.25"/>
+<line x1="600" y1="40" x2="600" y2="360" stroke="#2e5fb3" stroke-width="2" stroke-opacity="0.25"/>
 
-.wave-background svg{
-  width:100%;
-  height:100%;
-  display:block;
-}
+<!-- líneas de 10m -->
+<line x1="320" y1="40" x2="320" y2="360"
+stroke="#2e5fb3"
+stroke-width="1.5"
+stroke-opacity="0.2"
+stroke-dasharray="8 8"/>
 
-.contenido{
-  position:relative;
-  z-index:2;
-  padding:60px;
-}
+<line x1="480" y1="40" x2="480" y2="360"
+stroke="#2e5fb3"
+stroke-width="1.5"
+stroke-opacity="0.2"
+stroke-dasharray="8 8"/>
 
-.wave1{ animation: waveMove1 18s linear infinite; }
-.wave2{ animation: waveMove2 25s linear infinite; }
-
-@keyframes waveMove1{
-  from{ transform: translateX(0); }
-  to{ transform: translateX(-300px); }
-}
-
-@keyframes waveMove2{
-  from{ transform: translateX(0); }
-  to{ transform: translateX(-600px); }
-}
-
-</style>
-</head>
-
-<body>
-
-<section class="main-content">
-
-<div class="wave-background">
-
-<svg viewBox="0 0 1440 400" preserveAspectRatio="none">
-
-<rect width="100%" height="100%" fill="#0b1f44"/>
-
-<path class="wave1"
-fill="#1742ff"
-opacity="0.35"
-d="M0 200 
-C200 150 400 250 600 200
-C800 150 1000 250 1200 200
-C1400 150 1600 250 1800 200
-V400 H0 Z"/>
-
-<path class="wave2"
-fill="#22dd8a"
-opacity="0.25"
-d="M0 220
-C200 180 400 260 600 220
-C800 180 1000 260 1200 220
-C1400 180 1600 260 1800 220
-V400 H0 Z"/>
+<!-- marcas de scrum -->
+<circle cx="400" cy="200" r="6" fill="#2e5fb3" opacity="0.35"/>
 
 </svg>
-
-</div>
-
-<div class="contenido">
-<h1>Sección importante</h1>
-<p>Contenido encima del fondo animado</p>
-</div>
-
-</section>
-
-<script>
-
-const waves = document.querySelectorAll('.wave-background path');
-
-window.addEventListener('mousemove', e => {
-  const speed = e.clientX / window.innerWidth;
-
-  waves.forEach((w,i)=>{
-    w.style.transform = `translateX(${-speed*50*(i+1)}px)`;
-  });
-
-});
-
-</script>
-
-</body>
-</html>

@@ -7,7 +7,6 @@
 :root {
   --arvet-blue-dark: #071f4a;
   --arvet-blue-mid: #0d3570;
-
   --primary: #6366f1;
   --primary-dark: #4f46e5;
   --secondary: #ec4899;
@@ -276,7 +275,7 @@ h1, h2, h3 {
 .card,
 .table-container,
 .stat-card {
-  background: white url("/img/patron-rugby.svg");
+  background: white url("/images/patron-rugby.svg");
   background-repeat: repeat;
   background-size: 200px;
   color: var(--dark);

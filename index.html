@@ -7,198 +7,423 @@
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Georama:wdth,wght@75..100,400;75..100,600;75..100,700;75..100,800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <!-- LOADING SCREEN - ARVET -->
-<div id="loadingScreen" style="
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background: radial-gradient(circle at center,#1e293b 0%,#0f172a 60%,#020617 100%);
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-z-index:9999;
-overflow:hidden;
-transition:opacity .6s ease, visibility .6s ease;
-">
+    
+    <!-- LOADING SCREEN -->
+    <div id="loadingScreen" style="
+        position:fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background: radial-gradient(circle at center,#1e293b 0%,#0f172a 60%,#020617 100%);
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        z-index:9999;
+        overflow:hidden;
+        transition:opacity .6s ease, visibility .6s ease;
+    ">
+        <div class="loading-particles"></div>
+        <div style="position:relative;margin-bottom:50px;">
+            <img id="loadingLogo" src="images/ARVET.png" alt="ARVET" style="
+                width:200px;
+                height:auto;
+                position:relative;
+                z-index:2;
+                opacity:0;
+                animation:logoFloat 4s ease-in-out infinite 1.4s;
+            ">
+            <div class="logo-glow"></div>
+        </div>
+        <div style="
+            width:300px;
+            height:4px;
+            background:rgba(255,255,255,0.08);
+            border-radius:10px;
+            overflow:hidden;
+            margin-bottom:25px;
+        ">
+            <div id="progressBar" style="
+                width:0%;
+                height:100%;
+                background:linear-gradient(90deg,#38bdf8,#60a5fa,#38bdf8);
+                background-size:200% 100%;
+                border-radius:10px;
+                animation:progressGlow 2s linear infinite;
+                transition:width .4s ease;
+            "></div>
+        </div>
+        <p id="loadingText" style="
+            color:#94a3b8;
+            font-size:14px;
+            letter-spacing:3px;
+            text-transform:uppercase;
+            margin:0;
+            animation:textPulse 2s ease-in-out infinite;
+        ">Cargando equipos</p>
+    </div>
 
-<!-- partículas fondo -->
-<div class="loading-particles"></div>
+    <style>
+        /* ===== ANIMACIONES LOADING ===== */
+        .loading-particles {
+            position:absolute;
+            width:100%;
+            height:100%;
+            background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size:40px 40px;
+            animation:particlesMove 20s linear infinite;
+            opacity:.4;
+        }
+        .logo-glow {
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%,-50%);
+            width:220px;
+            height:220px;
+            background:radial-gradient(circle,#3b82f6 0%,transparent 70%);
+            filter:blur(60px);
+            opacity:.45;
+            animation:glowPulse 3s ease-in-out infinite;
+        }
+        @keyframes logoIntro {
+            0% { opacity:0; transform:scale(.6); filter:blur(10px); }
+            60% { opacity:1; transform:scale(1.05); filter:blur(0); }
+            100% { transform:scale(1); }
+        }
+        @keyframes logoFloat {
+            0%,100% { transform:translateY(0) }
+            50% { transform:translateY(-8px) }
+        }
+        @keyframes glowPulse {
+            0%,100% { opacity:.35; transform:translate(-50%,-50%) scale(1) }
+            50% { opacity:.65; transform:translate(-50%,-50%) scale(1.1) }
+        }
+        @keyframes progressGlow {
+            0% { background-position:200% 0 }
+            100% { background-position:-200% 0 }
+        }
+        @keyframes textPulse {
+            0%,100% { opacity:.6 }
+            50% { opacity:1 }
+        }
+        @keyframes particlesMove {
+            0% { transform:translateY(0) }
+            100% { transform:translateY(-200px) }
+        }
+        .loading-hidden {
+            opacity:0!important;
+            visibility:hidden!important;
+            pointer-events:none;
+        }
+        @media(max-width:768px) {
+            #loadingLogo { width:160px!important; }
+            .logo-glow { width:180px; height:180px; }
+        }
 
-<!-- LOGO -->
-<div style="position:relative;margin-bottom:50px;">
+        /* ===== NUEVOS ESTILOS HERO ===== */
+        .hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/></svg>') repeat;
+            background-size: 100px 100px;
+            opacity: 0.5;
+        }
+        .hero-container {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        .hero-content h1 span {
+            color: #38bdf8;
+            display: block;
+        }
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #94a3b8;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: #38bdf8;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+        .hero-cta {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+        .btn-primary-large {
+            background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.3);
+        }
+        .btn-primary-large:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(56, 189, 248, 0.4);
+        }
+        .btn-secondary-large {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .btn-secondary-large:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .hero-trust {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        .hero-trust-icons {
+            display: flex;
+            gap: -10px;
+        }
+        .trust-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid #0f172a;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.8rem;
+            margin-left: -10px;
+        }
+        .trust-avatar:first-child { margin-left: 0; }
 
-<img id="loadingLogo" src="images/ARVET.png" alt="ARVET" style="
-width:200px;
-height:auto;
-position:relative;
-z-index:2;
-opacity:0;
-animation:logoFloat 4s ease-in-out infinite 1.4s;
-">
+        /* Preview Card */
+        .hero-preview {
+            position: relative;
+        }
+        .preview-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            transform: perspective(1000px) rotateY(-5deg) rotateX(5deg);
+            transition: transform 0.3s ease;
+        }
+        .preview-card:hover {
+            transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
+        }
+        .preview-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .preview-logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 1.5rem;
+        }
+        .preview-title h3 {
+            color: white;
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        .preview-title p {
+            color: #64748b;
+            margin: 5px 0 0 0;
+            font-size: 0.9rem;
+        }
+        .preview-features {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .preview-feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+        .feature-icon {
+            width: 24px;
+            height: 24px;
+            background: rgba(56, 189, 248, 0.1);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #38bdf8;
+            font-size: 0.8rem;
+        }
+        .preview-url {
+            margin-top: 20px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            font-family: monospace;
+            color: #38bdf8;
+            font-size: 0.85rem;
+            text-align: center;
+        }
 
-<!-- glow detrás -->
-<div class="logo-glow"></div>
+        /* Features Grid Section */
+        .features-section {
+            background: #0f172a;
+            padding: 100px 20px;
+        }
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .section-header h2 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        .section-header p {
+            color: #94a3b8;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .feature-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+        .feature-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(56, 189, 248, 0.3);
+            transform: translateY(-5px);
+        }
+        .feature-card-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.2) 0%, rgba(37, 99, 235, 0.2) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+        .feature-card h3 {
+            color: white;
+            margin: 0 0 10px 0;
+            font-size: 1.25rem;
+        }
+        .feature-card p {
+            color: #94a3b8;
+            margin: 0;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
 
-</div>
-
-<!-- BARRA PROGRESO -->
-<div style="
-width:300px;
-height:4px;
-background:rgba(255,255,255,0.08);
-border-radius:10px;
-overflow:hidden;
-margin-bottom:25px;
-">
-
-<div id="progressBar" style="
-width:0%;
-height:100%;
-background:linear-gradient(90deg,#38bdf8,#60a5fa,#38bdf8);
-background-size:200% 100%;
-border-radius:10px;
-animation:progressGlow 2s linear infinite;
-transition:width .4s ease;
-"></div>
-
-</div>
-
-<!-- TEXTO -->
-<p id="loadingText" style="
-color:#94a3b8;
-font-size:14px;
-letter-spacing:3px;
-text-transform:uppercase;
-margin:0;
-animation:textPulse 2s ease-in-out infinite;
-">
-Cargando equipos
-</p>
-
-</div>
-
-<script>
-const logo = document.getElementById("loadingLogo");
-
-logo.onload = function(){
-
-    logo.style.opacity = "1";
-    logo.style.animation = "logoIntro 1.4s ease, logoFloat 4s ease-in-out infinite 1.4s";
-
-};
-</script>
-<style>
-
-/* partículas fondo */
-
-.loading-particles{
-position:absolute;
-width:100%;
-height:100%;
-background-image:
-radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
-background-size:40px 40px;
-animation:particlesMove 20s linear infinite;
-opacity:.4;
-}
-
-
-/* glow logo */
-
-.logo-glow{
-position:absolute;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-width:220px;
-height:220px;
-background:radial-gradient(circle,#3b82f6 0%,transparent 70%);
-filter:blur(60px);
-opacity:.45;
-animation:glowPulse 3s ease-in-out infinite;
-}
-
-
-/* animaciones */
-
-@keyframes logoIntro{
-0%{
-opacity:0;
-transform:scale(.6);
-filter:blur(10px);
-}
-60%{
-opacity:1;
-transform:scale(1.05);
-filter:blur(0);
-}
-100%{
-transform:scale(1);
-}
-}
-
-@keyframes logoFloat{
-0%,100%{transform:translateY(0)}
-50%{transform:translateY(-8px)}
-}
-
-@keyframes glowPulse{
-0%,100%{opacity:.35;transform:translate(-50%,-50%) scale(1)}
-50%{opacity:.65;transform:translate(-50%,-50%) scale(1.1)}
-}
-
-@keyframes progressGlow{
-0%{background-position:200% 0}
-100%{background-position:-200% 0}
-}
-
-@keyframes textPulse{
-0%,100%{opacity:.6}
-50%{opacity:1}
-}
-
-@keyframes particlesMove{
-0%{transform:translateY(0)}
-100%{transform:translateY(-200px)}
-}
-
-
-/* ocultar loading */
-
-.loading-hidden{
-opacity:0!important;
-visibility:hidden!important;
-pointer-events:none;
-}
-
-
-/* mobile */
-
-@media(max-width:768px){
-
-#loadingLogo{
-width:160px!important;
-}
-
-.logo-glow{
-width:180px;
-height:180px;
-}
-
-}
-
-</style>
+        /* Responsive */
+        @media (max-width: 968px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 40px;
+            }
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            .hero-cta {
+                justify-content: center;
+            }
+            .hero-trust {
+                justify-content: center;
+            }
+            .preview-card {
+                transform: none;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+        }
+    </style>
 </head>
 <body>
    
     <nav class="navbar">
         <div class="container">
             <a href="index.html" class="logo">
-    <img src="images/ARVET.png" alt="ARVET">
-</a>
+                <img src="images/ARVET.png" alt="ARVET">
+            </a>
             <div class="nav-links">
                 <a href="#paises">Países</a>
                 <a href="#buscador">Buscar</a>
@@ -208,73 +433,170 @@ height:180px;
         </div>
     </nav>
 
-    
+    <!-- HERO SECTION REDISEÑADA -->
     <section class="hero">
-        <div class="container">
-            <h1>RUGBY CLASSIC</h1>
-            <h1 style="color: #47A9DF; ">ORGANIZADO</h1>
-            <p>Conectamos equipos de toda Latinoamérica para organizar encuentros, compartir reglas y seguir disfrutando del rugby.</p>
-            
-            
-            <div class="hero-buttons">
-                <a href="#buscador" class="btn-primary">Buscar Equipo</a>
-                <a href="registro.html" class="btn-secondary">Crear Equipo</a>
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span>✨</span>
+                    <span>100% Gratuito para equipos</span>
+                </div>
+                <h1>
+                    Tu equipo de rugby
+                    <span>con presencia profesional</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Creá tu landing page oficial, gestioná jugadores, cobrá cuotas y organizá encuentros con otros equipos. Todo en un solo lugar, sin costo.
+                </p>
+                <div class="hero-cta">
+                    <a href="registro.html" class="btn-primary-large">
+                        Crear mi equipo gratis →
+                    </a>
+                    <a href="#como-funciona" class="btn-secondary-large">
+                        Ver cómo funciona
+                    </a>
+                </div>
+                <div class="hero-trust">
+                    <div class="hero-trust-icons">
+                        <div class="trust-avatar">+50</div>
+                    </div>
+                    <span>equipos ya están usando ARVET</span>
+                </div>
             </div>
-            <p style="font-size: 0.5em; margin-top: 30px; margin-bottom: 10px;">
-  IMPORTANTE: Esta plataforma no tiene costo alguno para los equipos ni sus integrantes
-</p>
+
+            <div class="hero-preview">
+                <div class="preview-card">
+                    <div class="preview-header">
+                        <div class="preview-logo">TC</div>
+                        <div class="preview-title">
+                            <h3>Tigres RC</h3>
+                            <p>Veteranos - Buenos Aires</p>
+                        </div>
+                    </div>
+                    <div class="preview-features">
+                        <div class="preview-feature">
+                            <div class="feature-icon">🌐</div>
+                            <span>Página web propia: arvet.com/tigresrc</span>
+                        </div>
+                        <div class="preview-feature">
+                            <div class="feature-icon">👥</div>
+                            <span>Plantel completo con fotos y datos</span>
+                        </div>
+                        <div class="preview-feature">
+                            <div class="feature-icon">💳</div>
+                            <span>Cobro de cuotas mensuales online</span>
+                        </div>
+                        <div class="preview-feature">
+                            <div class="feature-icon">🏉</div>
+                            <span>Encuentros automáticos con otros equipos</span>
+                        </div>
+                        <div class="preview-feature">
+                            <div class="feature-icon">📱</div>
+                            <span>Comunicación directa WhatsApp</span>
+                        </div>
+                    </div>
+                    <div class="preview-url">arvet.com/tigresrc</div>
+                </div>
+            </div>
         </div>
     </section>
 
-    
-    <section id="buscador" class="buscador-section">
-    <div class="container">
-        
-
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Buscar: Nombre del equipo, ciudad...">
-            <!--<button onclick="buscarEquipos()" class="btn-primary">Buscar</button>-->
+    <!-- FEATURES SECTION -->
+    <section class="features-section" id="como-funciona">
+        <div class="features-container">
+            <div class="section-header">
+                <h2>Todo lo que necesita tu equipo</h2>
+                <p>Gestioná tu club de veteranos sin complicaciones. Desde la landing hasta los cobros.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-card-icon">🎨</div>
+                    <h3>Landing Personalizada</h3>
+                    <p>Tu propia página con logo, colores, descripción, ubicación en mapa y galería de fotos. URL profesional: arvet.com/tu-equipo</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card-icon">👤</div>
+                    <h3>Gestión de Plantel</h3>
+                    <p>Los jugadores se registran solos, suben sus datos y foto. Vos como admin o capitán tenés el control total del roster.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card-icon">💰</div>
+                    <h3>Cobros Simplificados</h3>
+                    <p>Cobrá cuotas del club, gastos de pelotas, viajes o lo que necesites. Los jugadores pagan desde su panel y queda todo registrado.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card-icon">🏆</div>
+                    <h3>Encuentros Automáticos</h3>
+                    <p>Creá un partido y llega automáticamente a todos los equipos de la plataforma. Ellos aceptan, sus jugadores reciben notificación con precio y documentación.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card-icon">📞</div>
+                    <h3>Comunicación Directa</h3>
+                    <p>Acceso a números de managers y capitanes. Integración con WhatsApp para coordinar sin intermediarios.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card-icon">🆓</div>
+                    <h3>Sin Costos Ocultos</h3>
+                    <p>La plataforma es gratuita para equipos y jugadores. Sin suscripciones, sin comisiones, sin sorpresas.</p>
+                </div>
+            </div>
         </div>
+    </section>
 
-        <div id="searchResults" class="results-grid"></div>
+    <!-- RESTO DEL CONTENIDO ORIGINAL -->
+    <section id="buscador" class="buscador-section">
+        <div class="container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Buscar: Nombre del equipo, ciudad...">
+            </div>
+            <div id="searchResults" class="results-grid"></div>
+            <h2>Equipos Creados</h2>
+            <div class="equipos-slider" id="equiposSlider"></div>
+        </div>
+    </section>
 
-        <!-- Slider de equipos -->
-        <h2>Equipos Creados</h2>
-        <div class="equipos-slider" id="equiposSlider"></div>
-
-    </div>
-</section>
-
-    
     <section id="paises" class="paises-section">
         <div class="container">
-            <h2> PAISES</h2> 
+            <h2>PAISES</h2> 
             <div id="paisesGrid" class="paises-slider">
                 <div class="loading">Cargando países...</div>
             </div>
         </div>
     </section>
 
-    
     <section id="partidos" class="partidos-section">
         <div class="container">
-            <h2> PRÓXIMOS ENCUENTROS</h2><p> En Construcción</p>
+            <h2>PRÓXIMOS ENCUENTROS</h2>
+            <p>En Construcción</p>
             <div id="partidosList" class="partidos-list">
-                <p style="margin-top:20px; opacity:0.8;">
-Por el momento no hay encuentros publicados.
-</p>
-              <!--  <div class="loading">Cargando partidos...</div>-->
+                <p style="margin-top:20px; opacity:0.8;">Por el momento no hay encuentros publicados.</p>
             </div>
         </div>
     </section>
 
-   
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2026 ARVET. Todos los derechos reservados.</p>
+            <p>&copy; 2026 ARVET. Todos los derechos reservos.</p>
         </div>
     </footer>
 
+    <script>
+        // Loading screen logic
+        const logo = document.getElementById("loadingLogo");
+        logo.onload = function() {
+            logo.style.opacity = "1";
+            logo.style.animation = "logoIntro 1.4s ease, logoFloat 4s ease-in-out infinite 1.4s";
+        };
+        
+        // Simular carga
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('loading-hidden');
+            }, 2000);
+        });
+    </script>
     <script src="js/app.js"></script>
 </body>
-</html>  
+</html>
+
+

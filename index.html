@@ -523,6 +523,7 @@
             <div id="searchResults" class="results-grid"></div>
             <h2>Equipos Creados</h2>
             <div class="equipos-slider" id="equiposSlider"></div>
+            
         </div>
     </section>
 
@@ -567,6 +568,21 @@
         });
     </script>
     <script src="js/app.js"></script>
+    <script>
+    // Contar equipos y países automáticamente
+function actualizarStatsBar() {
+    const equipos = document.querySelectorAll('.equipo-card').length;
+    const paises = document.querySelectorAll('.pais-card').length;
+    
+    const statsBar = document.querySelector('.stats-bar');
+    if (statsBar) {
+        statsBar.innerHTML = `🏉 <strong>${equipos} equipos</strong> activos en <strong>${paises} países</strong> de Latinoamérica`;
+    }
+}
+
+// Ejecutar cuando cargue
+window.addEventListener('load', actualizarStatsBar);
+        </script>
 </body>
 </html>
 

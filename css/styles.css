@@ -242,17 +242,19 @@ h1, h2, h3 {
 .paises-section,
 .partidos-section,
 .main-content {
-    background: linear-gradient(
+  position: relative;
+  padding: 80px 0;
+  background: linear-gradient(
     140deg,
-    rgba(10, 35, 80, 0.95),
-    rgba(15, 60, 120, 0.85)
+    rgba(7, 31, 74, 0.92),
+    rgba(13, 53, 112, 0.85)
   );
+  color: white;
+   background: url("../images/fondodecancha.png");
+  
 }
-.buscador-section {
-  background: url("../images/fondodecancha.png");
-  background-repeat: no-repeat;
-background-size: cover;
-background-position: center;
+
+  
   
    .paises-section {
   background: linear-gradient(

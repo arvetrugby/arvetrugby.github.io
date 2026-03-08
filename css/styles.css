@@ -260,26 +260,34 @@ h1, h2, h3 {
   overflow: hidden;
 }
 
+/* imagen en blanco y negro */
 .paises-section::before{
   content:"";
   position:absolute;
   inset:0;
 
-  background-image:
-    linear-gradient(rgba(34,61,72,0.6), rgba(34,61,72,0.6)),
-    url("../images/fondopaises.png");
-
+  background-image: url("../images/fondopaises.png");
   background-size: cover;
   background-position: center;
 
   filter: grayscale(100%) contrast(1.2);
-
   z-index:0;
 }
 
+/* overlay azul */
+.paises-section::after{
+  content:"";
+  position:absolute;
+  inset:0;
+
+  background: rgba(34,61,72,0.65);
+  z-index:1;
+}
+
+/* contenido encima */
 .paises-section > *{
   position: relative;
-  z-index: 2;
+  z-index:2;
 }
 
 .partidos-section {

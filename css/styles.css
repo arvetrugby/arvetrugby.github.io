@@ -255,7 +255,15 @@ h1, h2, h3 {
   
 }
 .paises-section{
+  position: relative;
   color: white;
+  overflow: hidden;
+}
+
+.paises-section::before{
+  content:"";
+  position:absolute;
+  inset:0;
 
   background-image:
     linear-gradient(rgba(34,61,72,0.6), rgba(34,61,72,0.6)),
@@ -263,11 +271,16 @@ h1, h2, h3 {
 
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
 
   filter: grayscale(100%) contrast(1.2);
+
+  z-index:0;
 }
- 
+
+.paises-section > *{
+  position: relative;
+  z-index: 2;
+}
 
 .partidos-section {
   background: linear-gradient(

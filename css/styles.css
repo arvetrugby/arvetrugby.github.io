@@ -259,8 +259,9 @@ h1, h2, h3 {
   
    .paises-section {
   background-image:
-    linear-gradient(rgba(10,20,60,0.7), rgba(10,20,60,0.7)),
+    linear-gradient(rgba(255, 0, 150, 0.6), rgba(255, 0, 150, 0.6)),
     url("../images/fondopaises.png");
+
 
   background-size: cover;
   background-position: center;

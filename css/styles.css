@@ -1127,9 +1127,6 @@ height:180px;
     width:100%;
     min-height:220px;
     align-items:flex-start;
-
-    background:linear-gradient(135deg,#f8fafc99 0%,#223D4899 100%);
-    border-radius:22px;
     margin-top:20px;
     position:relative;
 }

@@ -256,8 +256,8 @@ h1, h2, h3 {
   background-repeat: no-repeat;
   
 }
-
-  
+ 
+ 
   
    .paises-section {
   background: linear-gradient(
@@ -265,6 +265,10 @@ h1, h2, h3 {
     rgba(5, 20, 55, 0.95),
     rgba(10, 40, 95, 0.90)
   );
+      background: url("../images/fondopaises.png");
+   background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .partidos-section {

@@ -251,6 +251,7 @@ h1, h2, h3 {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+   color: white;
   
 }
  
@@ -264,6 +265,7 @@ h1, h2, h3 {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+      color: white;
 }
 
 .partidos-section {
@@ -272,6 +274,7 @@ h1, h2, h3 {
     rgba(10, 35, 80, 0.95),
     rgba(15, 60, 120, 0.85)
   );
+   color: white;
 }
 
 /* Mantengo cards blancas para contraste */
@@ -281,7 +284,7 @@ h1, h2, h3 {
 .card,
 .table-container,
 .stat-card {
-  background: ;
+  background: transparent ;
   
 }
 /* ============================================

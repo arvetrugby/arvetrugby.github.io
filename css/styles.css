@@ -244,14 +244,14 @@ h1, h2, h3 {
   position: relative;
   padding: 80px 0;
   background-image:
-    linear-gradient(rgba(34, 61, 72, 0.6), rgba(34, 61, 72, 0.6)),
+    linear-gradient(rgba(34, 61, 72, 0.9), rgba(34, 61, 72, 0.9)),
     url("../images/fondodecancha.png");
 
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
    color: white;
-   filter: grayscale(100%) contrast(1.2);
+   
   
 }
 .paises-section{

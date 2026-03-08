@@ -12,212 +12,154 @@
     <style>
         /* ===== LOGO PORTADA ===== */
 
-.logo-portada{
-display:flex;
-justify-content:center;
-margin-top:20px;
-position:relative;
-}
-
-#equipoLogo{
-
-width:250px;
-height:250px;
-
-object-fit:contain;
-
-opacity:0;
-
-transition:
-opacity .3s ease,
-transform .35s ease;
-
-}
-
-#equipoLogo.loaded{
-opacity:1;
-}
-
-/* ===== NAVBAR LOGOS ===== */
-
-#navbarLogoArvet{
-top: 60%;
-left: -8px;
-height:85px;
-width:auto;
-
-opacity:1;
-
-transition:opacity .35s ease;
-
-}
-
-/* logo equipo navbar */
-
-#navbarLogoEquipo{
-
-position:absolute;
-
-left:0;
-top:85%;
-
-transform:translateY(-70%);
-
-height:65px;
-width:auto;
-
-opacity:0;
-
-transition:opacity .35s ease;
-
-}
-
-/* estados */
-
-#navbarLogoArvet.hidden{
-opacity:0;
-pointer-events:none;
-}
-
-#navbarLogoEquipo.visible{
-opacity:1;
-}
-
-/* ===== LOADER ===== */
-
-.logo-loader{
-
-width:50px;
-height:50px;
-
-border:3px solid rgba(0,0,0,0.08);
-border-top:3px solid #2563eb;
-
-border-radius:50%;
-
-animation:spin 1s linear infinite;
-
-position:absolute;
-
-}
-
-@keyframes spin{
-
-0%{transform:rotate(0deg);}
-100%{transform:rotate(360deg);}
-
-}
-
-.logo-loader.hidden{
-opacity:0;
-pointer-events:none;
-}
-
-/* ===== MOBILE MENU ===== */
-
-@media (max-width:768px){
-
-.menu-toggle{
-display:block;
-z-index:1001;
-}
-
-.nav-links{
-
-position:fixed;
-
-top:0;
-right:0;
-
-width:100%;
-
-background:#00000099;
-
-flex-direction:column;
-
-align-items:center;
-
-gap:22px;
-
-padding:35px 0;
-
-transform:translateY(-120%);
-opacity:0;
-
-transition:
-transform .35s ease,
-opacity .35s ease;
-
-z-index:1000;
-
-}
-
-.nav-links.open{
-
-transform:translateY(0);
-opacity:1;
-
-}
-
-.nav-links a{
-
-font-size:18px;
-
-color:#fff;
-
-font-weight:600;
-
-text-decoration:none;
-
-}
-
-}
-
-/* ===== OVERLAY ===== */
-
-#menuOverlay{
-
-position:fixed;
-
-top:0;
-left:0;
-
-width:100%;
-height:100%;
-
-background:rgba(0,0,0,0.35);
-
-opacity:0;
-
-pointer-events:none;
-
-transition:opacity .3s ease;
-
-z-index:900;
-
-}
-
-#menuOverlay.active{
-
-opacity:1;
-pointer-events:auto;
-
-}
-        </style>
+        .logo-portada {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        #equipoLogo {
+            width: 250px;
+            height: 250px;
+            object-fit: contain;
+            opacity: 0;
+            /* Agregamos will-change para optimizar la animación */
+            will-change: transform, opacity;
+            transition: opacity .3s ease;
+            /* Posicionamos el logo para poder moverlo */
+            position: relative;
+        }
+
+        #equipoLogo.loaded {
+            opacity: 1;
+        }
+
+        /* ===== NAVBAR LOGOS ===== */
+
+        #navbarLogoArvet {
+            top: 60%;
+            left: -8px;
+            height: 85px;
+            width: auto;
+            opacity: 1;
+            transition: opacity .35s ease;
+        }
+
+        /* logo equipo navbar */
+
+        #navbarLogoEquipo {
+            position: absolute;
+            left: 0;
+            top: 85%;
+            transform: translateY(-70%);
+            height: 65px;
+            width: auto;
+            opacity: 0;
+            transition: opacity .35s ease;
+        }
+
+        /* estados */
+
+        #navbarLogoArvet.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #navbarLogoEquipo.visible {
+            opacity: 1;
+        }
+
+        /* ===== LOADER ===== */
+
+        .logo-loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(0, 0, 0, 0.08);
+            border-top: 3px solid #2563eb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            position: absolute;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .logo-loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* ===== MOBILE MENU ===== */
+
+        @media (max-width:768px) {
+            .menu-toggle {
+                display: block;
+                z-index: 1001;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: 0;
+                width: 100%;
+                background: #00000099;
+                flex-direction: column;
+                align-items: center;
+                gap: 22px;
+                padding: 35px 0;
+                transform: translateY(-120%);
+                opacity: 0;
+                transition: transform .35s ease, opacity .35s ease;
+                z-index: 1000;
+            }
+
+            .nav-links.open {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            .nav-links a {
+                font-size: 18px;
+                color: #fff;
+                font-weight: 600;
+                text-decoration: none;
+            }
+        }
+
+        /* ===== OVERLAY ===== */
+
+        #menuOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.35);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .3s ease;
+            z-index: 900;
+        }
+
+        #menuOverlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
 </head>
 <body>
     <!-- Navbar -->
     <nav class="navbar">
         <div class="container">
-           <a href="index.html" class="logo">
-      <img id="navbarLogoArvet" src="images/ARVET.png" alt="ARVET">
-      <img id="navbarLogoEquipo" src="">
-    </a>
+            <a href="index.html" class="logo">
+                <img id="navbarLogoArvet" src="images/ARVET.png" alt="ARVET">
+                <img id="navbarLogoEquipo" src="">
+            </a>
 
-
-<button id="menuToggle" class="menu-toggle">
-☰
-</button>
+            <button id="menuToggle" class="menu-toggle">☰</button>
             <div class="nav-links">
                 <a href="#portada">Inicio</a>
                 <a href="#quienes-somos">Nosotros</a>
@@ -227,25 +169,23 @@ pointer-events:auto;
             </div>
         </div>
     </nav>
-<div id="menuOverlay"></div>
-    <!-- Portada -->
-   
-<section id="portada" class="hero" style="margin-top: -10px; padding: 120px 0;">
-    <div class="container">
-         <!-- Logo del equipo -->
-        <div id="equipoLogoContainer" class="logo-portada">
-            <div class="logo-portada">
-                <div id="logoLoader" class="logo-loader"></div>
- <img id="equipoLogo" src="">
-</div>
-        </div>
-        <div id="equipoHeader">
-            <div class="loading">Cargando equipo...</div>
-        </div>
-       
-    </div>
-</section>
+    <div id="menuOverlay"></div>
 
+    <!-- Portada -->
+    <section id="portada" class="hero" style="margin-top: -10px; padding: 120px 0;">
+        <div class="container">
+            <!-- Logo del equipo -->
+            <div id="equipoLogoContainer" class="logo-portada">
+                <div class="logo-portada">
+                    <div id="logoLoader" class="logo-loader"></div>
+                    <img id="equipoLogo" src="">
+                </div>
+            </div>
+            <div id="equipoHeader">
+                <div class="loading">Cargando equipo...</div>
+            </div>
+        </div>
+    </section>
 
     <!-- Quiénes Somos -->
     <section id="quienes-somos" class="section">
@@ -267,95 +207,70 @@ pointer-events:auto;
         </div>
     </section>
 
-    
     <!-- Plantel -->
-<section id="plantel" class="section">
-    <div class="container">
-        <h2>Plantel</h2>
-        <div id="plantelGrid" class="results-grid">
-            <div class="loading">Cargando plantel...</div>
-        </div>
-        <!-- Botón para unirse al equipo 
-        <div id="unirseContainer" style="margin-top: 40px; text-align: center; padding: 30px; background: #f8fafc; border-radius: 12px; border: 2px dashed #cbd5e0;">
-            <p style="margin-bottom: 15px; color: var(--gray); font-size: 16px;">¿Sos jugador de este equipo?</p>
-            <a href="#" id="btnUnirse" class="btn-primary" style="display: inline-flex; align-items: center; gap: 10px;">
-                <i class="fas fa-user-plus"></i> Unirme al plantel
-            </a>
-        </div>-->
-     <div id="unirseContainer" style="
-margin-top:40px;
-text-align:center;
-padding:40px 25px;
-background:#ffffff;
-border-radius:18px;
-box-shadow:0 12px 30px rgba(0,0,0,0.08);
-max-width:520px;
-margin-left:auto;
-margin-right:auto;
-">
-
-<p style="
-font-size:18px;
-font-weight:600;
-color:#1e293b;
-margin-bottom:6px;
-">
-¿Formás parte de este equipo?
-</p>
-
-<p style="
-font-size:14px;
-color:#64748b;
-margin-bottom:22px;
-">
-Solicitá que te agreguen al plantel oficial
-</p>
-
-<a href="#"
-id="btnUnirse"
-class="btn-primary"
-style="
-display:inline-block;
-padding:14px 32px;
-background:linear-gradient(135deg,#000000,#B5B6B6);
-color:white;
-border-radius:10px;
-font-size:15px;
-font-weight:600;
-text-decoration:none;
-box-shadow:0 8px 18px rgba(37,99,235,0.35);
-transition:all .25s ease;
-"
-onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 24px rgba(37,99,235,0.45)'"
-onmouseout="this.style.transform='none'; this.style.boxShadow='0 8px 18px rgba(37,99,235,0.35)'"
->
-Solicitar unirme al equipo
-</a>
-
-</div>
-    </div>
-</section>
-<!--  Galería completa -->
-<section id="galeria" class="section">
-    <div class="container">
-        <h2>📸 Galería</h2>
-        <div id="galeriaContainer" style="position: relative; max-width: 100%; overflow: hidden;">
-            <!-- Carrusel Mobile-First -->
-            <div id="galeriaCarrusel" style="display: flex; overflow-x: auto; scroll-snap-type: x mandatory; 
-                                              scroll-behavior: smooth; -webkit-overflow-scrolling: touch; 
-                                              gap: 12px; padding: 20px 0; scrollbar-width: none;">
-                <!-- Las imágenes se cargan dinámicamente -->
+    <section id="plantel" class="section">
+        <div class="container">
+            <h2>Plantel</h2>
+            <div id="plantelGrid" class="results-grid">
+                <div class="loading">Cargando plantel...</div>
             </div>
-            
-            
-            
-            
-        <p id="sinGaleria" style="text-align: center; color: #64748b; display: none;">No hay fotos en la galería</p>
-    </div>
-    <div id="visorFoto">
-    <img id="visorImg">
-</div>
-</section>
+            <div id="unirseContainer" style="
+                margin-top: 40px;
+                text-align: center;
+                padding: 40px 25px;
+                background: #ffffff;
+                border-radius: 18px;
+                box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+                max-width: 520px;
+                margin-left: auto;
+                margin-right: auto;
+            ">
+                <p style="
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #1e293b;
+                    margin-bottom: 6px;
+                ">¿Formás parte de este equipo?</p>
+                <p style="
+                    font-size: 14px;
+                    color: #64748b;
+                    margin-bottom: 22px;
+                ">Solicitá que te agreguen al plantel oficial</p>
+                <a href="#" id="btnUnirse" class="btn-primary" style="
+                    display: inline-block;
+                    padding: 14px 32px;
+                    background: linear-gradient(135deg,#000000,#B5B6B6);
+                    color: white;
+                    border-radius: 10px;
+                    font-size: 15px;
+                    font-weight: 600;
+                    text-decoration: none;
+                    box-shadow: 0 8px 18px rgba(37,99,235,0.35);
+                    transition: all .25s ease;
+                " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 24px rgba(37,99,235,0.45)'"
+                   onmouseout="this.style.transform='none'; this.style.boxShadow='0 8px 18px rgba(37,99,235,0.35)'">
+                    Solicitar unirme al equipo
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Galería completa -->
+    <section id="galeria" class="section">
+        <div class="container">
+            <h2>📸 Galería</h2>
+            <div id="galeriaContainer" style="position: relative; max-width: 100%; overflow: hidden;">
+                <div id="galeriaCarrusel" style="display: flex; overflow-x: auto; scroll-snap-type: x mandatory; 
+                                                  scroll-behavior: smooth; -webkit-overflow-scrolling: touch; 
+                                                  gap: 12px; padding: 20px 0; scrollbar-width: none;">
+                </div>
+                <p id="sinGaleria" style="text-align: center; color: #64748b; display: none;">No hay fotos en la galería</p>
+            </div>
+            <div id="visorFoto">
+                <img id="visorImg">
+            </div>
+        </div>
+    </section>
 
     <!-- Partidos -->
     <section id="partidos" class="section" style="background: #f1f5f9;">
@@ -367,106 +282,90 @@ Solicitar unirme al equipo
         </div>
     </section>
 
-  
-<!-- Mapa -->
-<section id="ubicacion" class="section" style="background: #f1f5f9;">
-    <div class="container">
-        <h2>📍 Ubicación</h2>
-        <div id="map" style="height: 400px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></div>
-    </div>
-</section>
+    <!-- Mapa -->
+    <section id="ubicacion" class="section" style="background: #f1f5f9;">
+        <div class="container">
+            <h2>📍 Ubicación</h2>
+            <div id="map" style="height: 400px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></div>
+        </div>
+    </section>
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="js/app.js"></script>
     <script>
+        /* ===== ELEMENTOS ===== */
+        const equipoLogo = document.getElementById("equipoLogo");
+        const navbarLogoEquipo = document.getElementById("navbarLogoEquipo");
+        const navbarLogoArvet = document.getElementById("navbarLogoArvet");
+        const logoLoader = document.getElementById("logoLoader");
 
-/* ===== ELEMENTOS ===== */
+        /* ===== CUANDO CARGA EL LOGO ===== */
+        equipoLogo.addEventListener("load", () => {
+            logoLoader.classList.add("hidden");
+            equipoLogo.classList.add("loaded");
+            navbarLogoEquipo.classList.add("loaded");
+            /* copiar logo al navbar */
+            navbarLogoEquipo.src = equipoLogo.src;
+        });
 
-const equipoLogo = document.getElementById("equipoLogo");
-const navbarLogoEquipo = document.getElementById("navbarLogoEquipo");
-const navbarLogoArvet = document.getElementById("navbarLogoArvet");
-const logoLoader = document.getElementById("logoLoader");
+        /* ===== SCROLL NAVBAR CON TRASLACIÓN ===== */
+        window.addEventListener("scroll", () => {
+            const scroll = window.scrollY;
+            
+            /* cambiar logos navbar */
+            if (scroll > 220) {
+                navbarLogoArvet.classList.add("hidden");
+                navbarLogoEquipo.classList.add("visible");
+            } else {
+                navbarLogoArvet.classList.remove("hidden");
+                navbarLogoEquipo.classList.remove("visible");
+            }
 
-/* ===== CUANDO CARGA EL LOGO ===== */
+            /* animación logo portada: escala + traslación hacia arriba-izquierda */
+            const maxScroll = 400; // Distancia total de la animación
+            let progress = scroll / maxScroll;
+            if (progress > 1) progress = 1;
+            if (progress < 0) progress = 0;
 
-equipoLogo.addEventListener("load", () => {
+            // Escala de 1 a 0.25
+            const scale = 1 - (progress * 0.75);
+            
+            // Traslación hacia arriba y izquierda (45 grados aprox)
+            // Ajustá estos valores según la distancia exacta a tu navbar
+            const translateX = -progress * 45; // Mueve 45vw hacia la izquierda (ajustable)
+            const translateY = -progress * 30; // Mueve hacia arriba (ajustable)
+            
+            // Aplicamos transform combinado
+            equipoLogo.style.transform = `translate(${translateX}vw, ${translateY}vh) scale(${scale})`;
+            
+            // Opacidad gradual (opcional, para que desaparezca suavemente)
+            equipoLogo.style.opacity = 1 - (progress * 0.3);
+        });
 
-logoLoader.classList.add("hidden");
+        /* ===== MENU MOBILE ===== */
+        const menuToggle = document.getElementById("menuToggle");
+        const navLinks = document.querySelector(".nav-links");
+        const overlay = document.getElementById("menuOverlay");
 
-equipoLogo.classList.add("loaded");
-navbarLogoEquipo.classList.add("loaded");
+        menuToggle.addEventListener("click", () => {
+            navLinks.classList.toggle("open");
+            overlay.classList.toggle("active");
+        });
 
-/* copiar logo al navbar */
+        /* cerrar al tocar link */
+        document.querySelectorAll(".nav-links a").forEach(link => {
+            link.addEventListener("click", () => {
+                navLinks.classList.remove("open");
+                overlay.classList.remove("active");
+            });
+        });
 
-navbarLogoEquipo.src = equipoLogo.src;
-
-});
-
-/* ===== SCROLL NAVBAR ===== */
-
-window.addEventListener("scroll", () => {
-
-const scroll = window.scrollY;
-
-/* cambiar logos navbar */
-
-if(scroll > 220){
-
-navbarLogoArvet.classList.add("hidden");
-navbarLogoEquipo.classList.add("visible");
-
-}else{
-
-navbarLogoArvet.classList.remove("hidden");
-navbarLogoEquipo.classList.remove("visible");
-
-}
-
-/* animación logo portada */
-
-let scale = 1 - scroll / 600;
-
-if(scale < 0.25) scale = 0.25;
-
-equipoLogo.style.transform = `scale(${scale})`;
-
-});
-
-/* ===== MENU MOBILE ===== */
-
-const menuToggle = document.getElementById("menuToggle");
-const navLinks = document.querySelector(".nav-links");
-const overlay = document.getElementById("menuOverlay");
-
-menuToggle.addEventListener("click", () => {
-
-navLinks.classList.toggle("open");
-overlay.classList.toggle("active");
-
-});
-
-/* cerrar al tocar link */
-
-document.querySelectorAll(".nav-links a").forEach(link => {
-
-link.addEventListener("click", () => {
-
-navLinks.classList.remove("open");
-overlay.classList.remove("active");
-
-});
-
-});
-
-/* cerrar tocando overlay */
-
-overlay.addEventListener("click", () => {
-
-navLinks.classList.remove("open");
-overlay.classList.remove("active");
-
-});
-
-
-</script>
-    </body>
+        /* cerrar tocando overlay */
+        overlay.addEventListener("click", () => {
+            navLinks.classList.remove("open");
+            overlay.classList.remove("active");
+        });
+    </script>
+</body>
 </html>
+

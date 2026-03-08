@@ -253,18 +253,25 @@ h1, h2, h3 {
    color: white;
   
 }
- 
- .paises-section {
-  background-image:
-    linear-gradient(rgba(34, 61, 72, 0.6), rgba(34, 61, 72, 0.6)),
-    url("../images/fondopaises.png");
+.paises-section{
+  position: relative;
+   color: white;
+  background: linear-gradient(rgba(34, 61, 72, 0.6), rgba(34, 61, 72, 0.6));
+}
 
+.paises-section::before{
+  content:"";
+  position:absolute;
+  inset:0;
 
+  background-image: url("../images/fondopaises.png");
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
-      color: white;
-}
+
+  filter: grayscale(100%) contrast(1.2);
+  z-index:-1;
+} 
+ 
 
 .partidos-section {
   background: linear-gradient(

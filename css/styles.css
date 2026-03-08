@@ -242,10 +242,10 @@ h1, h2, h3 {
 .paises-section,
 .partidos-section,
 .main-content {
-  position: relative;
-  padding: 80px 0;
- background: url("../images/patron-rugby.svg");
-   background-size: 800px auto;
+  background: url("../images/patron-rugby.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }
 .paises-section {
   background: linear-gradient(

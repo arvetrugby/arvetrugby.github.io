@@ -1210,6 +1210,7 @@ background:
 .equipo-card-slider .equipo-logo{
     width:300px;
     height:500px;
+   background-blend-mode:multiply;
     margin:0;
     border-radius:0%;
 

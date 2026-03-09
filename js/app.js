@@ -300,7 +300,7 @@ async function cargarEquiposInicio(){
 
     try{
 
-        const response = await window.fetchAPI("buscarEquipos?query=");
+        const response = await window.fetchAPI("getEquipos");
         console.log("Datos de getEquipos:", response.data);
 
         if(response.success){
@@ -318,8 +318,17 @@ async function cargarEquiposInicio(){
     </div>
 
     <p>${e.nombre}</p>
-    <p>${e.pais || ''}</p>
-    <p>${(e.provincia || '')} ${(e.ciudad ? ' - ' + e.ciudad : '')}</p>
+    <div class="equipo-info">
+
+        <p>${e.nombre}</p>
+
+        <p>${e.pais || ''}</p>
+
+        <span>
+        ${(e.provincia || '')} ${(e.ciudad ? ' - ' + e.ciudad : '')}
+        </span>
+
+    </div>
 
 </div>
 

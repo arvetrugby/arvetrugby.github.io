@@ -386,6 +386,41 @@
             margin: 0 auto;
         }
     }
+    /* ocultar features extras */
+.features-grid .feature-card:nth-child(n+4){
+display:none;
+}
+
+/* cuando se abre */
+.features-grid.open .feature-card{
+display:block;
+}
+
+/* boton */
+.features-toggle{
+text-align:center;
+margin-top:30px;
+}
+
+#toggleFeatures{
+background:#2563eb;
+color:white;
+border:none;
+padding:12px 28px;
+border-radius:8px;
+cursor:pointer;
+font-weight:600;
+}
+    .feature-card{
+transition:all .4s ease;
+}
+    .features-grid .feature-card:nth-child(n+4){
+display:none;
+}
+
+.features-grid.open .feature-card{
+display:block;
+}
 </style>
 </head>
 <body>
@@ -531,6 +566,9 @@
                     <p>La plataforma es gratuita para equipos y jugadores. Sin suscripciones, sin comisiones, sin sorpresas.</p>
                 </div>
             </div>
+            <div class="features-toggle">
+<button id="toggleFeatures">Ver más</button>
+</div>
         </div>
     </section>
 
@@ -605,6 +643,23 @@ function actualizarStatsBar() {
 // Ejecutar cuando cargue
 window.addEventListener('load', actualizarStatsBar);
         </script>
+    <script>
+
+const grid = document.querySelector(".features-grid");
+const button = document.getElementById("toggleFeatures");
+
+button.addEventListener("click", () => {
+
+grid.classList.toggle("open");
+
+button.textContent =
+grid.classList.contains("open")
+? "Ver menos"
+: "Ver más";
+
+});
+
+</script>
 </body>
 </html>
 

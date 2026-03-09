@@ -1141,11 +1141,14 @@ height:180px;
     flex:0 0 auto;
     width:300px;
    Height:500px;
-background-image: url("../images/fondocards.png");
+background:
+        linear-gradient(#ffffff99,#ffffff99),
+        url("../images/fondocards.png");
+
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-    background: #ffffff99;
+   
     backdrop-filter:blur(12px);
 
     border-radius:10px;

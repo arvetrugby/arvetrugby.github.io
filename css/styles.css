@@ -1265,30 +1265,46 @@ border:1px solid rgba(255,215,0,.6);
         opacity:0;
     }
 
-    15%{
+    10%{
         opacity:.6;
+        transform:translateY(40px) translateX(-4px);
     }
 
-    25%{
-        transform:translateY(30px) translateX(-6px);
+    20%{
+        transform:translateY(20px) translateX(4px);
+    }
+
+    30%{
+        transform:translateY(0px) translateX(-5px);
+    }
+
+    40%{
+        transform:translateY(-20px) translateX(5px);
     }
 
     50%{
-        transform:translateY(-10px) translateX(6px);
+        transform:translateY(-40px) translateX(-4px);
         opacity:.9;
     }
 
-    75%{
-        transform:translateY(-60px) translateX(-4px);
+    60%{
+        transform:translateY(-60px) translateX(4px);
+    }
+
+    70%{
+        transform:translateY(-80px) translateX(-3px);
+    }
+
+    80%{
+        transform:translateY(-95px) translateX(3px);
     }
 
     100%{
-        transform:translateY(-120px) translateX(4px);
+        transform:translateY(-120px) translateX(0px);
         opacity:0;
     }
 
 }
-
 .equipo-card-slider .gold-particles3{
     position:absolute;
     inset:0;

@@ -1279,7 +1279,7 @@ margin-left: 15px;
 
 .equipo-ubicacion {
     position: absolute;
-    bottom: 32px; /* ajustá según necesites */
+    bottom: 350px; 
     left: 50%;
     transform: translateX(-50%);
     
@@ -1292,7 +1292,14 @@ margin-left: 15px;
     padding: 4px 10px;
     background: #f8fafc;
     border: 1px solid #e2e8f0;
-    border-radius: 20px;
+    clip-path: polygon(
+    0% 50%,   /* punta izquierda */
+    10% 0%, 
+    90% 0%, 
+    100% 50%, /* punta derecha */
+    90% 100%, 
+    10% 100%
+  );
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

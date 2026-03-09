@@ -1278,14 +1278,23 @@ margin-left: 15px;
 /* NOMBRE EQUIPO */
 
 .equipo-card-slider p{
-    font-size:14px;
-    font-weight:700;
-    color:#0f172a;
-    margin:0;
-
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
+    position: absolute;
+    bottom: 12px;        /* distancia desde abajo */
+    left: 50%;
+    transform: translateX(-50%); /* centrado horizontal */
+    
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+    
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+    /* ancho máximo para el ellipsis */
+    max-width: 90%;
+    text-align: center;
 }
 
 

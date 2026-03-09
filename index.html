@@ -421,6 +421,16 @@ display:none;
 .features-grid.open .feature-card{
 display:block;
 }
+    .feature-card{
+opacity:0;
+transform:translateY(10px);
+transition:all .3s ease;
+}
+
+.features-grid.open .feature-card{
+opacity:1;
+transform:translateY(0);
+}
 </style>
 </head>
 <body>

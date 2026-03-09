@@ -309,7 +309,7 @@ async function cargarEquiposInicio(){
 
 <div class="equipo-card-slider"
      onclick="window.location.href='equipo.html?slug=${e.slug}'">
-<div class="gold-particles"></div>
+<div class="gold-particles"></div><div class="gold-particles2"></div>
     <div class="equipo-logo"
          style="background:${e.colorPrimario || '#334155'}">
 

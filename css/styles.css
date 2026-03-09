@@ -1218,17 +1218,9 @@ background:
     align-items:center;
     justify-content:center;
     overflow:hidden;
+   mix-blend-mode:multiply; 
 }
-.equipo-card-slider .equipo-logo::before{
-    content:"";
-    position:absolute;
-    inset:0;
 
-    background:inherit; /* usa el color que llega desde JS */
-    opacity:0.65;       /* transparencia del tinte */
-    background-blend-mode:multiply;
-    z-index:0;
-}
 
 
 .equipo-card-slider .equipo-logo img{

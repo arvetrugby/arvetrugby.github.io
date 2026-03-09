@@ -1272,6 +1272,9 @@ margin-left: 15px;
     height:150px;
    margin-bottom: 80px;
     object-fit:contain;
+   filter:
+        drop-shadow(0 0 10px rgba(255,255,255,.4))
+        drop-shadow(0 0 20px rgba(255,255,255,.25));
 }
 
 
@@ -1485,6 +1488,9 @@ margin-left: 15px;
     height:150px;
    margin-bottom: 80px;
     object-fit:contain;
+   filter:
+        drop-shadow(0 0 10px rgba(255,255,255,.4))
+        drop-shadow(0 0 20px rgba(255,255,255,.25));
 }
 .pais-logo{
     width:150px;

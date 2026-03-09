@@ -1117,17 +1117,17 @@ height:180px;
 .equipos-slider{
     display:flex;
     flex-wrap:nowrap;
-    gap:20px;
+    gap:10px;
     overflow-x:auto;
     overflow-y:hidden;
-    padding:30px 20px;
+    padding:0px 0px;
     scroll-behavior:smooth;
     scrollbar-width:none;
     -ms-overflow-style:none;
     width:100%;
     min-height:220px;
     align-items:flex-start;
-    margin-top:20px;
+    margin-top:0px;
     position:relative;
 }
 
@@ -1139,8 +1139,8 @@ height:180px;
 /* CARD SLIDER */
 .equipo-card-slider{
     flex:0 0 auto;
-    width:300px;
-    height:500px;
+    width:200px;
+    height:400px;
 
     background:url("../images/fondocards.png");
     background-size:cover;
@@ -1154,7 +1154,7 @@ height:180px;
     text-align:center;
     cursor:pointer;
 
-    border:1px solid rgba(60,50,15,.5);
+    border:2px solid rgba(60,50,15,.5);
 
  
         box-shadow:
@@ -1237,8 +1237,8 @@ height:180px;
 /* LOGO BURBUJA */
 
 .equipo-card-slider .equipo-logo{
-    width:300px;
-    height:500px;
+    width:200px;
+    height:400px;
    
     margin:0;
     border-radius:0%;
@@ -1253,9 +1253,9 @@ height:180px;
 
 
 .equipo-card-slider .equipo-logo img{
-    width:200px;
-    height:200px;
-   margin-bottom: 100px;
+    width:150px;
+    height:150px;
+   margin-bottom: 80px;
     object-fit:contain;
 }
 
@@ -1436,8 +1436,8 @@ height:180px;
 }
 
 .equipo-card-slider{
-     width:300px;
-   Height:500px;
+     width:200px;
+   Height:400px;
     padding:0px 0px;
 }
 
@@ -1446,13 +1446,13 @@ height:180px;
 }
 
 .equipo-card-slider .equipo-logo{
-    width:300px;
-    height:500px;
+    width:200px;
+    height:400px;
 }
 
 .pais-logo{
-    width:200px;
-    height:200px;
+    width:150px;
+    height:150px;
 }
 
 }

@@ -1230,7 +1230,6 @@ border:1px solid rgba(255,215,0,.6);
 
 }
 .equipo-card-slider .gold-particles2{
-content:"";
     position:absolute;
     inset:0;
     pointer-events:none;
@@ -1238,28 +1237,31 @@ content:"";
 
     background:
     radial-gradient(circle at 10% 30%, rgba(255,215,0,.7) 0px, transparent 3px),
-radial-gradient(circle at 15% 55%, rgba(255,215,0,.8) 0px, transparent 4px),
-radial-gradient(circle at 22% 10%, rgba(255,215,0,.7) 0px, transparent 3px),
-radial-gradient(circle at 35% 60%, rgba(255,215,0,.8) 0px, transparent 4px),
-radial-gradient(circle at 40% 35%, rgba(255,215,0,.7) 0px, transparent 3px),
-radial-gradient(circle at 55% 50%, rgba(255,215,0,.8) 0px, transparent 4px),
-radial-gradient(circle at 65% 40%, rgba(255,215,0,.7) 0px, transparent 3px),
-radial-gradient(circle at 70% 65%, rgba(255,215,0,.8) 0px, transparent 4px),
-radial-gradient(circle at 82% 45%, rgba(255,215,0,.7) 0px, transparent 3px),
-radial-gradient(circle at 90% 30%, rgba(255,215,0,.8) 0px, transparent 4px),
-radial-gradient(circle at 12% 75%, rgba(255,215,0,.7) 0px, transparent 3px),
-radial-gradient(circle at 33% 82%, rgba(255,215,0,.8) 0px, transparent 4px),
-radial-gradient(circle at 58% 88%, rgba(255,215,0,.7) 0px, transparent 3px),
-radial-gradient(circle at 77% 78%, rgba(255,215,0,.8) 0px, transparent 4px),
-radial-gradient(circle at 92% 70%, rgba(255,215,0,.7) 0px, transparent 3px),
+    radial-gradient(circle at 15% 55%, rgba(255,215,0,.8) 0px, transparent 4px),
+    radial-gradient(circle at 22% 10%, rgba(255,215,0,.7) 0px, transparent 3px),
+    radial-gradient(circle at 35% 60%, rgba(255,215,0,.8) 0px, transparent 4px),
+    radial-gradient(circle at 40% 35%, rgba(255,215,0,.7) 0px, transparent 3px),
+    radial-gradient(circle at 55% 50%, rgba(255,215,0,.8) 0px, transparent 4px),
+    radial-gradient(circle at 65% 40%, rgba(255,215,0,.7) 0px, transparent 3px),
+    radial-gradient(circle at 70% 65%, rgba(255,215,0,.8) 0px, transparent 4px),
+    radial-gradient(circle at 82% 45%, rgba(255,215,0,.7) 0px, transparent 3px),
+    radial-gradient(circle at 90% 30%, rgba(255,215,0,.8) 0px, transparent 4px),
+    radial-gradient(circle at 12% 75%, rgba(255,215,0,.7) 0px, transparent 3px),
+    radial-gradient(circle at 33% 82%, rgba(255,215,0,.8) 0px, transparent 4px),
+    radial-gradient(circle at 58% 88%, rgba(255,215,0,.7) 0px, transparent 3px),
+    radial-gradient(circle at 77% 78%, rgba(255,215,0,.8) 0px, transparent 4px),
+    radial-gradient(circle at 92% 70%, rgba(255,215,0,.7) 0px, transparent 3px);
+
+    background-repeat:no-repeat;
+
     mix-blend-mode:screen;
 
     animation:particlesUp 6s linear infinite;
-   }
+}
 @keyframes particlesUp{
 
-    %{
-        transform:translateY(60px); /* empiezan debajo del card */
+    0%{
+        transform:translateY(60px);
         opacity:0;
     }
 
@@ -1277,7 +1279,7 @@ radial-gradient(circle at 92% 70%, rgba(255,215,0,.7) 0px, transparent 3px),
     }
 
     100%{
-        transform:translateY(-120px); /* terminan bien arriba */
+        transform:translateY(-120px);
         opacity:0;
     }
 

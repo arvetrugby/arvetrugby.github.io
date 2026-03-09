@@ -1169,7 +1169,7 @@ margin-left: 15px;
     text-align:center;
     cursor:pointer;
 
-    border:2px solid rgba(60,50,15,.5);
+    border:1px solid rgba(255,255,255,.15);
 
  
         box-shadow:
@@ -1183,14 +1183,12 @@ margin-left: 15px;
     overflow:hidden;
 }
 .equipo-card-slider:hover{
-
+border:1px solid rgba(255,215,0,.6);
     transform:translateY(-8px) scale(1.03);
 
     box-shadow:
-        box-shadow:
-    0 22px 35px rgba(0,0,0,0.12),
-    0 10px 15px rgba(0,0,0,0.06),
-    0 0 45px rgba(255,215,0,.35);
+        0 25px 45px rgba(0,0,0,.35),
+        0 0 35px rgba(255,215,0,.45);
 }
 .equipo-card-slider .gold-particles{
     position:absolute;
@@ -1222,7 +1220,30 @@ margin-left: 15px;
     background:linear-gradient(180deg,#f8fafc99,transparent);
     pointer-events:none;
 }
+.equipo-card-slider::before{
+    content:'';
+    position:absolute;
+    top:-100%;
+    left:-100%;
+    width:200%;
+    height:200%;
 
+    background:linear-gradient(
+        120deg,
+        transparent 40%,
+        rgba(255,255,255,.35),
+        transparent 60%
+    );
+
+    transform:rotate(25deg);
+    opacity:.25;
+    transition:.7s;
+}
+
+.equipo-card-slider:hover::before{
+    top:100%;
+    left:100%;
+}
 /* línea inferior */
 .equipo-card-slider::after{
     content:'';
@@ -1275,6 +1296,8 @@ margin-left: 15px;
    filter:
         drop-shadow(0 0 10px rgba(255,255,255,.4))
         drop-shadow(0 0 20px rgba(255,255,255,.25));
+   transform:scale(1.06) rotate(-1deg);
+    transition:.4s;
 }
 
 
@@ -1320,7 +1343,22 @@ margin-left: 15px;
     text-overflow: ellipsis;
     max-width: 90%;
 }
+.equipo-card-slider .equipo-nombre::before{
+    content:"";
+    position:absolute;
+    left:-30px;
+    right:-30px;
+    bottom:-15px;
+    height:80px;
 
+    background:linear-gradient(
+        to top,
+        rgba(0,0,0,.7),
+        transparent
+    );
+
+    z-index:-1;
+}
 /* ============================================
    PAISES SLIDER - MISMO ESTILO QUE EQUIPOS
    ============================================ */
@@ -1491,6 +1529,8 @@ margin-left: 15px;
    filter:
         drop-shadow(0 0 10px rgba(255,255,255,.4))
         drop-shadow(0 0 20px rgba(255,255,255,.25));
+   transform:scale(1.06) rotate(-1deg);
+    transition:.4s;
 }
 .pais-logo{
     width:150px;

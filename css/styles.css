@@ -1256,7 +1256,7 @@ border:1px solid rgba(255,215,0,.6);
 
     mix-blend-mode:screen;
 
-    animation:particlesUp 9s ease-in-out infinite;
+    animation:particlesUp 8s linear infinite;
 }
 @keyframes particlesUp{
 

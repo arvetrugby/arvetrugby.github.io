@@ -1478,8 +1478,8 @@ height:180px;
 
     background:linear-gradient(
         to right,
-        rgba(255,255,255,1),
-        rgba(255,255,255,0)
+        rgba(10, 35, 80, 0.95),
+    rgba(15, 60, 120, 0.85)
     );
 }
 
@@ -1493,10 +1493,9 @@ height:180px;
     height:100%;
     z-index:20;
     pointer-events:none;
-
     background:linear-gradient(
         to left,
-        rgba(255,255,255,1),
-        rgba(255,255,255,0)
+        rgba(10, 35, 80, 0.95),
+    rgba(15, 60, 120, 0.85)
     );
 }

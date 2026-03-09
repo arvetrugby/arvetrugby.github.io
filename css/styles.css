@@ -1201,7 +1201,7 @@ border:1px solid rgba(255,215,0,.6);
     background:
     radial-gradient(circle at 10% 15%, rgb(255 0 122 / 70%) 0px, transparent 54px), 
        radial-gradient(circle at 90% 15%, rgb(179 32 92 / 60%) 0px, transparent 64px), 
-       radial-gradient(circle at 50% 78%, rgba(255, 215, 0, .7) 0px, transparent 3px)
+       radial-gradient(circle at 50% 78%, rgba(255, 215, 0, .7) 0px, transparent 3px);
 
     background-repeat:no-repeat;
 

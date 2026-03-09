@@ -1261,7 +1261,7 @@ border:1px solid rgba(255,215,0,.6);
 @keyframes particlesUp{
 
     0%{
-        transform:translateY(60px);
+        transform:translateY(60px) translateX(0px);
         opacity:0;
     }
 
@@ -1269,17 +1269,21 @@ border:1px solid rgba(255,215,0,.6);
         opacity:.6;
     }
 
+    25%{
+        transform:translateY(30px) translateX(-6px);
+    }
+
     50%{
-        transform:translateY(-10px);
+        transform:translateY(-10px) translateX(6px);
         opacity:.9;
     }
 
-    85%{
-        opacity:.5;
+    75%{
+        transform:translateY(-60px) translateX(-4px);
     }
 
     100%{
-        transform:translateY(-120px);
+        transform:translateY(-120px) translateX(4px);
         opacity:0;
     }
 

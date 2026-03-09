@@ -1256,7 +1256,7 @@ border:1px solid rgba(255,215,0,.6);
 
     mix-blend-mode:screen;
 
-    animation:particlesUp 6s linear infinite;
+    animation:particlesUp 9s ease-in-out infinite;
 }
 @keyframes particlesUp{
 
@@ -1287,6 +1287,31 @@ border:1px solid rgba(255,215,0,.6);
         opacity:0;
     }
 
+}
+
+.equipo-card-slider .gold-particles3{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:4;
+
+    background:
+    radial-gradient(circle at 18% 40%, rgba(255,215,0,.7) 0px, transparent 3px),
+    radial-gradient(circle at 28% 65%, rgba(255,215,0,.8) 0px, transparent 4px),
+    radial-gradient(circle at 38% 25%, rgba(255,215,0,.7) 0px, transparent 3px),
+    radial-gradient(circle at 48% 70%, rgba(255,215,0,.8) 0px, transparent 4px),
+    radial-gradient(circle at 60% 45%, rgba(255,215,0,.7) 0px, transparent 3px),
+    radial-gradient(circle at 72% 60%, rgba(255,215,0,.8) 0px, transparent 4px),
+    radial-gradient(circle at 85% 35%, rgba(255,215,0,.7) 0px, transparent 3px),
+    radial-gradient(circle at 92% 55%, rgba(255,215,0,.8) 0px, transparent 4px);
+
+    background-repeat:no-repeat;
+
+    mix-blend-mode:screen;
+
+    animation:particlesUp 7.5s ease-in-out infinite;
+
+    animation-delay:-3.5s; /* empieza en otra fase */
 }
 /* brillo superior */
 .equipo-card-slider::before{

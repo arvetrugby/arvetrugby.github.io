@@ -1120,7 +1120,7 @@ height:180px;
     gap:25px;
     overflow-x:auto;
     overflow-y:hidden;
-    padding:0px 0px;
+    padding:13px 10px;
     scroll-behavior:smooth;
     scrollbar-width:none;
     -ms-overflow-style:none;
@@ -1428,7 +1428,7 @@ height:180px;
 @media (max-width:768px){
 
 .equipos-slider{
-    padding:0px 0px;
+    padding:5px 5px;
 }
 
 .paises-slider{

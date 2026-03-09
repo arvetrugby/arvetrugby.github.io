@@ -318,17 +318,9 @@ async function cargarEquiposInicio(){
     </div>
 
     <p>${e.nombre}</p>
-    <div class="equipo-info">
-
-        <p>${e.nombre}</p>
-
-        <p>${e.pais || ''}</p>
-
-        <span>
-        ${(e.provincia || '')} ${(e.ciudad ? ' - ' + e.ciudad : '')}
-        </span>
-
-    </div>
+    <p>${e.ciudad || ''}</p>
+                <p>${e.provincia || ''}</p>
+                <p>${e.pais || ''}</p>
 
 </div>
 

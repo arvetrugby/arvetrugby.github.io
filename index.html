@@ -453,7 +453,38 @@
         </div>
     </nav>
 
-    <!-- HERO SECTION REDISEÑADA -->
+    
+    <!-- RESTO DEL CONTENIDO ORIGINAL -->
+    <section id="buscador" class="buscador-section">
+        <div class="container">
+            <div class="search-box">
+                <h2>Equipos</h2>
+                <input type="text" id="searchInput" placeholder="Buscar: Nombre del equipo, ciudad...">
+            </div>
+            <div id="searchResults" class="results-grid"></div>
+            <div class="equipos-slider" id="equiposSlider"></div>
+        </div>
+    </section>
+
+    <section id="paises" class="paises-section">
+        <div class="container">
+            <h2>PAISES</h2> 
+            <div id="paisesGrid" class="paises-slider">
+                <div class="loading">Cargando países...</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="partidos" class="partidos-section">
+        <div class="container">
+            <h2>PRÓXIMOS ENCUENTROS</h2>
+            <p>En Construcción</p>
+            <div id="partidosList" class="partidos-list">
+                <p style="margin-top:20px; opacity:0.8;">Por el momento no hay encuentros publicados.</p>
+            </div>
+        </div>
+    </section>
+<!-- HERO SECTION REDISEÑADA -->
     <section class="hero">
         <div class="hero-container">
             <div class="hero-content">
@@ -586,37 +617,6 @@
                 <button id="toggleFeatures" onclick="document.getElementById('featuresGrid').classList.toggle('open'); this.textContent = this.textContent === 'Ver más' ? 'Ver menos' : 'Ver más'">
                     Ver más
                 </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- RESTO DEL CONTENIDO ORIGINAL -->
-    <section id="buscador" class="buscador-section">
-        <div class="container">
-            <div class="search-box">
-                <h2>Equipos</h2>
-                <input type="text" id="searchInput" placeholder="Buscar: Nombre del equipo, ciudad...">
-            </div>
-            <div id="searchResults" class="results-grid"></div>
-            <div class="equipos-slider" id="equiposSlider"></div>
-        </div>
-    </section>
-
-    <section id="paises" class="paises-section">
-        <div class="container">
-            <h2>PAISES</h2> 
-            <div id="paisesGrid" class="paises-slider">
-                <div class="loading">Cargando países...</div>
-            </div>
-        </div>
-    </section>
-
-    <section id="partidos" class="partidos-section">
-        <div class="container">
-            <h2>PRÓXIMOS ENCUENTROS</h2>
-            <p>En Construcción</p>
-            <div id="partidosList" class="partidos-list">
-                <p style="margin-top:20px; opacity:0.8;">Por el momento no hay encuentros publicados.</p>
             </div>
         </div>
     </section>

@@ -245,7 +245,7 @@ h1, h2, h3 {
   min-height: 100vh;
 
   /* separación interna */
-  padding: 80px 0px;
+  padding: 20px 0px;
 
   background: linear-gradient(
     140deg,
@@ -285,7 +285,7 @@ h1, h2, h3 {
 .search-box {
   display: flex;
   max-width: 550px;
-  margin: 0 auto 30px;
+  margin: 20px auto 30px;
   gap: 12px;
   width: 100%;
 }

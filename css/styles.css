@@ -1053,7 +1053,7 @@ height:180px;
     display: flex;
     align-items: center;
     gap: 16px;
-    background: background: rgba(254, 254, 254, 0.8);
+    background: background: rgba(254, 254, 254, 0.1);
     border-radius: 10px;
     padding: 14px 16px;
     cursor: pointer;

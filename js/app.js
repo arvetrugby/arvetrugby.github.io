@@ -216,15 +216,12 @@ async function cargarPaises() {
     const response = await window.fetchAPI('getPaises');
     if (response.success) {
       container.innerHTML = response.data.map(pais => `
-        <div class="pais-card-slider" onclick="filtrarPorPais('${pais.id}')">
-          <div class="gold-particles"></div>
-          <div class="gold-particles2"></div>
-          <div class="gold-particles3"></div>
-          <div class="pais-logo">
-            <img src="${pais.logoUrl}" alt="${pais.nombre}">
-          </div>
-          <div class="pais-ubicacion">${pais.cantidadEquipos} equipos</div>
-          <div class="pais-nombre">${pais.nombre}</div>
+        <div class="pais-card-slider" 
+             style="background-image: url('${pais.logoUrl}');"
+             onclick="filtrarPorPais('${pais.id}')">
+          <div class="pais-overlay"></div>
+          <div class="pais-nombre-fondo">${pais.nombre}</div>
+          <div class="pais-equipos">${pais.cantidadEquipos} equipos</div>
         </div>
       `).join('');
     }
@@ -232,7 +229,6 @@ async function cargarPaises() {
     container.innerHTML = '<p>Error al cargar países</p>';
   }
 }
-
 async function buscarEquipos() {
 
     const termino = document.getElementById('searchInput').value.trim();

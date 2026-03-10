@@ -1480,113 +1480,7 @@ border:1px solid rgba(255,215,0,.6);
 
     z-index:-1;
 }
-/* ============================================
-   PAISES SLIDER - MISMO ESTILO QUE EQUIPOS
-   ============================================ */
 
-.paises-slider{
-
-    display:flex;
-    gap:20px;
-    overflow-x:auto;
-    overflow-y:hidden;
-
-    padding:30px 20px;
-    scroll-behavior:smooth;
-
-    scrollbar-width:none;
-
-    background:linear-gradient(135deg,#0f172a99 0%,#1e293b99 100%);
-    border-radius:22px;
-    margin-top:20px;
-}
-
-.paises-slider::-webkit-scrollbar{
-    display:none;
-}
-
-
-/* CARD PAIS */
-
-.pais-card{
-
-    flex:0 0 180px;
-
-    background:rgba(30,41,59,0.85);
-    backdrop-filter:blur(10px);
-
-    border-radius:24px;
-    padding:26px 16px;
-
-    text-align:center;
-
-    transition:all .35s ease;
-    cursor:pointer;
-
-    border:1px solid rgba(255,255,255,0.08);
-
-    box-shadow:
-        0 6px 12px rgba(0,0,0,0.25),
-        inset 0 1px 0 rgba(255,255,255,0.05);
-}
-
-.pais-card:hover{
-    transform:translateY(-8px) scale(1.04);
-    box-shadow:
-        0 22px 35px rgba(0,0,0,0.4);
-}
-
-
-/* LOGO PAIS */
-
-.pais-logo{
-
-    width:80px;
-    height:80px;
-
-    margin:0 auto 14px auto;
-
-    border-radius:50%;
-    overflow:hidden;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    background:#f1f5f9;
-
-    box-shadow:
-        0 6px 18px rgba(0,0,0,0.4),
-        inset 0 2px 4px rgba(255,255,255,0.4);
-
-    transition:transform .3s;
-}
-
-.pais-card:hover .pais-logo{
-    transform:scale(1.08);
-}
-
-.pais-logo img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-
-
-/* TEXTO */
-
-.pais-card h3{
-    font-size:15px;
-    margin:6px 0 2px;
-    color:#ffffff;
-    font-weight:700;
-}
-
-.pais-card p{
-    font-size:12px;
-    color:#94a3b8;
-    font-weight:500;
-}
 
 
 /* ============================================
@@ -1607,7 +1501,7 @@ border:1px solid rgba(255,215,0,.6);
 
 }
 
-.pais-card,
+
 .equipo-card-slider{
     animation:fadeInUp .5s ease backwards;
 }
@@ -1623,9 +1517,6 @@ border:1px solid rgba(255,215,0,.6);
     padding:5px 5px;
 }
 
-.paises-slider{
-    padding:24px 16px;
-}
 
 .equipo-card-slider{
      width:240px;
@@ -1634,9 +1525,7 @@ border:1px solid rgba(255,215,0,.6);
    margin-left: 15px;
 }
 
-.pais-card{
-    flex:0 0 70%;
-}
+
 
 .equipo-card-slider .equipo-logo{
     width:240px;
@@ -1653,10 +1542,294 @@ border:1px solid rgba(255,215,0,.6);
    transform:scale(1.06) rotate(-1deg);
     transition:.4s;
 }
-.pais-logo{
-    width:150px;
-    height:150px;
+
+
+}
+/* ============================================
+   PAISES SLIDER - ESTILO EQUIPOS (DUPLICADO)
+   ============================================ */
+
+/* Slider de países con MISMO estilo que equipos-slider */
+.paises-slider {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 25px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 13px 10px;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    width: 100%;
+    min-height: 220px;
+    align-items: flex-start;
+    margin-top: 0px;
+    position: relative;
+    
+    /* Misma máscara de borde */
+    -webkit-mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        black 8%,
+        black 92%,
+        transparent 100%
+    );
+    mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        black 8%,
+        black 92%,
+        transparent 100%
+    );
 }
 
+.paises-slider::-webkit-scrollbar {
+    display: none;
+}
+
+/* CARD PAIS - Estilo equipo-card-slider */
+.pais-card-slider {
+    flex: 0 0 auto;
+    width: 240px;
+    height: 400px;
+    margin-left: 15px;
+    
+    /* Mismo fondo de tarjeta */
+    background: url("../images/fondocards.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    backdrop-filter: blur(12px);
+    
+    border-radius: 10px;
+    padding: 0;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    
+    /* Misma sombra dorada */
+    box-shadow:
+        0 6px 10px rgba(0, 0, 0, 0.05),
+        0 18px 25px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7),
+        0 0 25px rgba(255, 215, 0, 0.15);
+    
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.pais-card-slider:hover {
+    border: 1px solid rgba(255, 215, 0, 0.6);
+    transform: translateY(-8px) scale(1.03);
+    box-shadow:
+        0 25px 45px rgba(0, 0, 0, 0.35),
+        0 0 35px rgba(255, 215, 0, 0.45);
+}
+
+/* Partículas doradas (copiadas de equipo) */
+.pais-card-slider .gold-particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 3;
+    background:
+        radial-gradient(circle at 10% 15%, rgb(255 0 122 / 70%) 0px, transparent 54px), 
+        radial-gradient(circle at 90% 15%, rgb(179 32 92 / 60%) 0px, transparent 64px), 
+        radial-gradient(circle at 50% 78%, rgba(255, 215, 0, 0.7) 0px, transparent 3px);
+    background-repeat: no-repeat;
+    mix-blend-mode: screen;
+    opacity: 0.6;
+    animation: stadiumLights 4s ease-in-out infinite;
+}
+
+.pais-card-slider .gold-particles2 {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 4;
+    background:
+        radial-gradient(circle at 10% 30%, rgba(255, 215, 0, 0.7) 0px, transparent 2px),
+        radial-gradient(circle at 15% 55%, rgba(255, 215, 0, 0.8) 0px, transparent 3px),
+        radial-gradient(circle at 22% 10%, rgba(255, 215, 0, 0.7) 0px, transparent 2px),
+        radial-gradient(circle at 35% 60%, rgba(255, 215, 0, 0.8) 0px, transparent 3px),
+        radial-gradient(circle at 40% 35%, rgba(255, 215, 0, 0.7) 0px, transparent 2px),
+        radial-gradient(circle at 55% 50%, rgba(255, 215, 0, 0.8) 0px, transparent 2px),
+        radial-gradient(circle at 65% 40%, rgba(255, 215, 0, 0.7) 0px, transparent 1px),
+        radial-gradient(circle at 70% 65%, rgba(255, 215, 0, 0.8) 0px, transparent 3px),
+        radial-gradient(circle at 82% 45%, rgba(255, 215, 0, 0.7) 0px, transparent 3px),
+        radial-gradient(circle at 90% 30%, rgba(255, 215, 0, 0.8) 0px, transparent 2px),
+        radial-gradient(circle at 12% 75%, rgba(255, 215, 0, 0.7) 0px, transparent 1px),
+        radial-gradient(circle at 33% 82%, rgba(255, 215, 0, 0.8) 0px, transparent 3px),
+        radial-gradient(circle at 58% 88%, rgba(255, 215, 0, 0.7) 0px, transparent 2px),
+        radial-gradient(circle at 77% 78%, rgba(255, 215, 0, 0.8) 0px, transparent 3px),
+        radial-gradient(circle at 92% 70%, rgba(255, 215, 0, 0.7) 0px, transparent 2px);
+    background-repeat: no-repeat;
+    mix-blend-mode: screen;
+    animation: particlesUp 8s linear infinite;
+}
+
+.pais-card-slider .gold-particles3 {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 4;
+    background:
+        radial-gradient(circle at 18% 40%, rgba(255, 215, 0, 0.7) 0px, transparent 3px),
+        radial-gradient(circle at 28% 65%, rgba(255, 215, 0, 0.8) 0px, transparent 2px),
+        radial-gradient(circle at 38% 25%, rgba(255, 215, 0, 0.7) 0px, transparent 3px),
+        radial-gradient(circle at 48% 70%, rgba(255, 215, 0, 0.8) 0px, transparent 2px),
+        radial-gradient(circle at 60% 45%, rgba(255, 215, 0, 0.7) 0px, transparent 3px),
+        radial-gradient(circle at 72% 60%, rgba(255, 215, 0, 0.8) 0px, transparent 2px),
+        radial-gradient(circle at 85% 35%, rgba(255, 215, 0, 0.7) 0px, transparent 3px),
+        radial-gradient(circle at 92% 55%, rgba(255, 215, 0, 0.8) 0px, transparent 2px);
+    background-repeat: no-repeat;
+    mix-blend-mode: screen;
+    animation: particlesUp 7.5s ease-in-out infinite;
+    animation-delay: -3.5s;
+}
+
+/* Brillos y efectos */
+.pais-card-slider::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 45%;
+    background: linear-gradient(180deg, #f8fafc99, transparent);
+    pointer-events: none;
+}
+
+.pais-card-slider::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 10%;
+    right: 10%;
+    height: 40px;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(255, 215, 0, 0.6) 0%,
+        rgba(255, 215, 0, 0.25) 40%,
+        transparent 75%
+    );
+    filter: blur(8px);
+    opacity: 0.45;
+    transition: 0.35s;
+}
+
+.pais-card-slider:hover::after {
+    opacity: 0.9;
+    transform: scale(1.15);
+}
+
+/* Logo bandera */
+.pais-card-slider .pais-logo {
+    width: 240px;
+    height: 400px;
+    margin: 0;
+    border-radius: 0%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    mix-blend-mode: multiply;
+}
+
+.pais-card-slider .pais-logo img {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 80px;
+    object-fit: contain;
+    filter:
+        drop-shadow(0 0 10px rgba(255, 255, 255, 0.4))
+        drop-shadow(0 0 20px rgba(255, 255, 255, 0.25));
+    transform: scale(1.06) rotate(-1deg);
+    transition: 0.4s;
+}
+
+/* Textos posicionados igual */
+.pais-card-slider .pais-ubicacion {
+    position: absolute;
+    bottom: 350px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 5%;
+    font-size: 11px;
+    font-weight: 600;
+    color: #0f172a;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+    padding: 4px 10px;
+    background: #f8fafc99;
+    border: 1px solid #e2e8f0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90%;
+}
+
+.pais-card-slider .pais-nombre {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 15px;
+    font-weight: 800;
+    color: #f8fafc;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90%;
+}
+
+.pais-card-slider .pais-nombre::before {
+    content: "";
+    position: absolute;
+    left: -30px;
+    right: -30px;
+    bottom: -15px;
+    height: 80px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+    z-index: -1;
+}
+
+/* Animación de entrada */
+.pais-card-slider {
+    animation: fadeInUp 0.5s ease backwards;
+}
+
+/* ============================================
+   RESPONSIVE PAISES (COPIADO DE EQUIPOS)
+   ============================================ */
+
+@media (max-width: 768px) {
+    .paises-slider {
+        padding: 5px 5px;
+    }
+    
+    .pais-card-slider {
+        width: 240px;
+        height: 400px;
+        padding: 0px 0px;
+        margin-left: 15px;
+    }
+    
+    .pais-card-slider .pais-logo {
+        width: 240px;
+        height: 400px;
+    }
+    
+    .pais-card-slider .pais-logo img {
+        width: 150px;
+        height: 150px;
+        margin-bottom: 80px;
+    }
 }
 

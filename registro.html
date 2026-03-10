@@ -138,9 +138,21 @@ button:disabled{opacity:.6;cursor:not-allowed}
 <div class="form-group">
 <input type="text" id="ciudadId" placeholder="Ciudad ID" required>
 </div>
-<div class="form-group">
-<input type="text" id="direccion" placeholder="Dirección (calle y número)" required>
+<div class="form-group" style="position: relative;">
+    <label>Dirección del club *</label>
+    <input type="text" id="direccionBusqueda" placeholder="Escribí calle y número..." autocomplete="off" required>
+    <div id="sugerenciasDireccion" class="sugerencias-lista"></div>
+    <!-- Estos hidden se llenan solos al seleccionar -->
+    <input type="hidden" id="direccion" name="direccion">
+    <input type="hidden" id="lat" name="lat">
+    <input type="hidden" id="lng" name="lng">
+    <input type="hidden" id="ciudadId" name="ciudadId">
+    <input type="hidden" id="provinciaId" name="provinciaId">
 </div>
+
+<!-- Mapa preview para confirmar -->
+<div id="mapPreview"></div>
+<p id="direccionConfirmada"></p>
 <!-- NUEVO: Nombre y Apellido separados -->
 <div class="form-group nombre-apellido-row">
     <input type="text" id="adminNombre" placeholder="Nombre" required>

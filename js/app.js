@@ -1915,11 +1915,25 @@ async function buscarDireccionesNominatim(query, pais, container) {
         }
         
         container.innerHTML = data.map(item => {
-            const displayName = item.display_name.replace(/'/g, "&apos;");
-            const addressStr = JSON.stringify(item.address).replace(/'/g, "&apos;");
+            // Escapar comillas simples para el onclick
+            const displayNameEscapado = item.display_name.replace(/'/g, "\\'");
+            const addressObj = item.address || {};
+            
+            // Crear string seguro para pasar al onclick
+            const addressParams = [
+                addressObj.city || '',
+                addressObj.town || '',
+                addressObj.village || '',
+                addressObj.locality || '',
+                addressObj.municipality || '',
+                addressObj.state || '',
+                addressObj.province || '',
+                addressObj.region || ''
+            ].join('|');
+            
             return `
                 <div class="sugerencia-item" 
-                     onclick="seleccionarDireccion('${displayName}', ${item.lat}, ${item.lon}, '${addressStr}')">
+                     onclick="seleccionarDireccionSimple('${displayNameEscapado}', ${item.lat}, ${item.lon}, '${addressParams}')">
                     <div class="titulo">${item.name || item.display_name.split(',')[0]}</div>
                     <div class="subtitulo">${item.display_name}</div>
                 </div>
@@ -1933,26 +1947,99 @@ async function buscarDireccionesNominatim(query, pais, container) {
     }
 }
 
-function seleccionarDireccion(direccion, lat, lng, addressStr) {
-    const address = JSON.parse(addressStr);
+// Versión simplificada que no usa JSON.parse
+function seleccionarDireccionSimple(direccion, lat, lng, addressParams) {
+    console.log('=== seleccionarDireccionSimple ===');
+    
+    const parts = addressParams.split('|');
+    const ciudad = parts[0] || parts[1] || parts[2] || parts[3] || parts[4] || '';
+    const provincia = parts[5] || parts[6] || parts[7] || '';
     
     document.getElementById('direccion').value = direccion;
     document.getElementById('lat').value = lat;
     document.getElementById('lng').value = lng;
-    
-    const ciudad = address.city || address.town || address.village || address.locality || '';
-    const provincia = address.state || address.province || address.region || '';
-    
     document.getElementById('ciudadId').value = ciudad;
     document.getElementById('provinciaId').value = provincia;
-    
     document.getElementById('direccionBusqueda').value = direccion.split(',')[0];
     document.getElementById('sugerenciasDireccion').style.display = 'none';
     document.getElementById('direccionConfirmada').textContent = `📍 ${direccion}`;
     
     mostrarMapaPreview(lat, lng);
 }
-
+function seleccionarDireccion(direccion, lat, lng, addressStr) {
+    console.log('=== seleccionarDireccion ===');
+    console.log('direccion:', direccion);
+    console.log('lat:', lat);
+    console.log('lng:', lng);
+    console.log('addressStr:', addressStr);
+    
+    try {
+        // Limpiar el addressStr de posibles problemas
+        let addressStrLimpio = addressStr;
+        
+        // Si viene codificado de más, limpiarlo
+        if (addressStrLimpio.includes('&quot;')) {
+            addressStrLimpio = addressStrLimpio.replace(/&quot;/g, '"');
+        }
+        
+        const address = JSON.parse(addressStrLimpio);
+        console.log('address parseado:', address);
+        
+        // Guardar en inputs hidden
+        const inputDireccion = document.getElementById('direccion');
+        const inputLat = document.getElementById('lat');
+        const inputLng = document.getElementById('lng');
+        const inputCiudad = document.getElementById('ciudadId');
+        const inputProvincia = document.getElementById('provinciaId');
+        const inputBusqueda = document.getElementById('direccionBusqueda');
+        const listaSugerencias = document.getElementById('sugerenciasDireccion');
+        const direccionConfirmada = document.getElementById('direccionConfirmada');
+        
+        if (inputDireccion) inputDireccion.value = direccion;
+        if (inputLat) inputLat.value = lat;
+        if (inputLng) inputLng.value = lng;
+        
+        // Extraer ciudad y provincia del address
+        const ciudad = address.city || address.town || address.village || address.locality || address.municipality || address.hamlet || '';
+        const provincia = address.state || address.province || address.region || address.county || '';
+        
+        console.log('ciudad extraída:', ciudad);
+        console.log('provincia extraída:', provincia);
+        
+        if (inputCiudad) inputCiudad.value = ciudad;
+        if (inputProvincia) inputProvincia.value = provincia;
+        
+        // Mostrar en el input visible (solo calle y número)
+        if (inputBusqueda) {
+            const primeraParte = direccion.split(',')[0];
+            inputBusqueda.value = primeraParte;
+        }
+        
+        // Ocultar sugerencias
+        if (listaSugerencias) listaSugerencias.style.display = 'none';
+        
+        // Mostrar confirmación
+        if (direccionConfirmada) direccionConfirmada.textContent = `📍 ${direccion}`;
+        
+        // Mostrar mapa preview
+        mostrarMapaPreview(lat, lng);
+        
+        console.log('✅ Dirección seleccionada correctamente');
+        
+    } catch (error) {
+        console.error('❌ Error en seleccionarDireccion:', error);
+        console.error('addressStr que falló:', addressStr);
+        
+        // Fallback: intentar sin parsear el address
+        document.getElementById('direccion').value = direccion;
+        document.getElementById('lat').value = lat;
+        document.getElementById('lng').value = lng;
+        document.getElementById('direccionBusqueda').value = direccion.split(',')[0];
+        document.getElementById('sugerenciasDireccion').style.display = 'none';
+        
+        alert('Error al procesar la dirección. Intentá de nuevo.');
+    }
+}
 function mostrarMapaPreview(lat, lng) {
     const container = document.getElementById('mapPreview');
     container.style.display = 'block';

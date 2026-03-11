@@ -1490,7 +1490,7 @@ const equipoIcon = L.divIcon({
             <div class="popupEquipo">
                 <img src="${document.getElementById("equipoLogo").src}" class="popupLogo">
                 <strong>Ubicación del equipo</strong>
-                📍 Cancha del club
+                Cancha del club
             </div>
         `);
 
@@ -1516,7 +1516,7 @@ const equipoIcon = L.divIcon({
             <div class="popupEquipo">
                 <img src="${document.getElementById("equipoLogo").src}" class="popupLogo">
                 <strong>Ubicación del equipo</strong>
-                📍 Cancha del club
+                Cancha del club
             </div>
         `);
 

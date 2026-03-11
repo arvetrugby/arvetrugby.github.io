@@ -217,6 +217,58 @@
     }
 
 }
+        .gridGaleriaMapa{
+
+    display:grid;
+
+    grid-template-columns: 2fr 1fr;
+
+    gap:40px;
+
+    align-items:start;
+
+}
+
+/* mapa */
+
+#map{
+
+    width:100%;
+
+    height:420px;
+
+    border-radius:14px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,0.15);
+
+}
+        @media (max-width:1024px){
+
+.gridGaleriaMapa{
+
+grid-template-columns:1fr;
+
+}
+
+#map{
+
+height:220px;
+
+}
+
+}
+
+        .bloqueMapa{
+
+background:white;
+
+padding:20px;
+
+border-radius:14px;
+
+box-shadow:0 8px 24px rgba(0,0,0,0.08);
+
+}
     </style>
 </head>
 <body>
@@ -266,28 +318,34 @@
         </div>
     </section>
     <!-- Galería completa -->
-    <section id="galeria" class="section">
-        <div class="container">
+    <section id="galeriaUbicacion" class="section">
+    <div class="container gridGaleriaMapa">
+
+        <!-- GALERIA -->
+        <div class="bloqueGaleria">
             <h2>📸 Galería</h2>
-            <div id="galeriaContainer" style="position: relative; max-width: 100%; overflow: hidden;">
-                <div id="galeriaCarrusel" style="display: flex; overflow-x: auto; scroll-snap-type: x mandatory; 
-                                                  scroll-behavior: smooth; -webkit-overflow-scrolling: touch; 
-                                                  gap: 12px; padding: 20px 0; scrollbar-width: none;">
-                </div>
-                <p id="sinGaleria" style="text-align: center; color: #64748b; display: none;">No hay fotos en la galería</p>
+
+            <div id="galeriaContainer">
+                <div id="galeriaCarrusel"></div>
+
+                <p id="sinGaleria">No hay fotos en la galería</p>
             </div>
+
             <div id="visorFoto">
                 <img id="visorImg">
             </div>
         </div>
-    </section>
-     <!-- Mapa -->
-    <section id="ubicacion" class="section" style="background: #f1f5f9;">
-        <div class="container">
+
+
+        <!-- MAPA -->
+        <div class="bloqueMapa">
             <h2>📍 Ubicación</h2>
-            <div id="map" style="height: 400px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></div>
+
+            <div id="map"></div>
         </div>
-    </section>
+
+    </div>
+</section>
     <!-- Comisión -->
     <section id="comision" class="section" style="background: #f1f5f9;">
         <div class="container">

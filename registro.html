@@ -110,6 +110,22 @@ button:disabled{opacity:.6;cursor:not-allowed}
     font-size: 12px;
     color: #64748b;
 }
+    #mapSelector {
+    width: 100%;
+    z-index: 1;
+}
+
+.datos-ubicacion label {
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.datos-ubicacion input[readonly] {
+    color: #334155;
+    font-weight: 600;
+}
 </style>
 </head>
 <body>
@@ -127,32 +143,42 @@ button:disabled{opacity:.6;cursor:not-allowed}
 </div>
     
 
+<!-- MAPA INTERACTIVO -->
 <div class="form-group">
-<input type="text" id="paisId" placeholder="Pais ID" required>
+    <label>📍 Ubicación del club *</label>
+    <p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">
+        Arrastrá el pin rojo hasta donde queda tu club
+    </p>
+    <div id="mapSelector" style="height: 300px; border-radius: 12px; border: 2px solid #e2e8f0;"></div>
 </div>
 
-<div class="form-group">
-<input type="text" id="provinciaId" placeholder="Provincia ID" required>
+<!-- DATOS DETECTADOS (solo lectura) -->
+<div class="form-group datos-ubicacion" style="display: none;">
+    <label>País detectado</label>
+    <input type="text" id="paisDisplay" readonly style="background: #f8fafc;">
+    <input type="hidden" id="paisId" name="paisId">
 </div>
 
-<div class="form-group">
-<input type="text" id="ciudadId" placeholder="Ciudad ID" required>
-</div>
-<div class="form-group" style="position: relative;">
-    <label>Dirección del club *</label>
-    <input type="text" id="direccionBusqueda" placeholder="Escribí calle y número..." autocomplete="off" required>
-    <div id="sugerenciasDireccion" class="sugerencias-lista"></div>
-    <!-- Estos hidden se llenan solos al seleccionar -->
-    <input type="hidden" id="direccion" name="direccion">
-    <input type="hidden" id="lat" name="lat">
-    <input type="hidden" id="lng" name="lng">
-    <input type="hidden" id="ciudadId" name="ciudadId">
+<div class="form-group datos-ubicacion" style="display: none;">
+    <label>Provincia/Estado detectado</label>
+    <input type="text" id="provinciaDisplay" readonly style="background: #f8fafc;">
     <input type="hidden" id="provinciaId" name="provinciaId">
 </div>
 
-<!-- Mapa preview para confirmar -->
-<div id="mapPreview"></div>
-<p id="direccionConfirmada"></p>
+<div class="form-group datos-ubicacion" style="display: none;">
+    <label>Ciudad detectada</label>
+    <input type="text" id="ciudadDisplay" readonly style="background: #f8fafc;">
+    <input type="hidden" id="ciudadId" name="ciudadId">
+</div>
+
+<div class="form-group">
+    <label>Dirección (opcional, para referencia)</label>
+    <input type="text" id="direccion" placeholder="Ej: Calle principal, entrada por colectora...">
+</div>
+
+<!-- Hidden para coordenadas -->
+<input type="hidden" id="lat" name="lat">
+<input type="hidden" id="lng" name="lng">
 <!-- NUEVO: Nombre y Apellido separados -->
 <div class="form-group nombre-apellido-row">
     <input type="text" id="adminNombre" placeholder="Nombre" required>

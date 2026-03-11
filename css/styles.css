@@ -992,16 +992,15 @@ h1, h2, h3 {
 
 }
 /* ============================================
-   GALERÍA - Fotos desordenadas estilo muro
+   GALERÍA - Estilo muro moderno
    ============================================ */
 
 #galeriaCarrusel{
     display:flex;
     flex-wrap:wrap;
     justify-content:center;
-    gap:20px;
-    padding:20px;
-    overflow:visible;
+    gap:22px;
+    padding:25px 10px;
 }
 
 #galeriaCarrusel::-webkit-scrollbar{
@@ -1010,42 +1009,59 @@ h1, h2, h3 {
 
 .galeria-item{
     position:relative;
-    transition:transform .25s, z-index .25s;
+    transition:transform .35s ease, box-shadow .35s ease;
 }
 
-/* foto base */
+/* FOTO */
+
 .galeria-item img{
-    height:250px;
+
+    height:240px;
     width:auto;
     max-width:100%;
-    border-radius:10px;
-    box-shadow:0 6px 16px rgba(0,0,0,0.25);
+
+    border-radius:14px;
+
+    object-fit:cover;
+
+    box-shadow:0 10px 24px rgba(0,0,0,0.25);
+
     cursor:pointer;
+
     display:block;
+
 }
 
-/* tamaños variados */
+/* tamaños levemente distintos */
+
 .galeria-item:nth-child(3n) img{
-    height:230px;
+    height:220px;
 }
 
 .galeria-item:nth-child(5n) img{
     height:200px;
 }
 
-/* superposición leve */
-.galeria-item:nth-child(4n){
-    margin-top:-20px;
+/* rotación leve tipo foto casual */
+
+.galeria-item:nth-child(odd){
+    transform:rotate(-1.5deg);
 }
 
-.galeria-item:nth-child(6n){
-    margin-top:-30px;
+.galeria-item:nth-child(even){
+    transform:rotate(1.5deg);
 }
 
-/* efecto hover */
+/* hover */
+
 .galeria-item:hover{
+
     transform:scale(1.08) rotate(0deg);
+
     z-index:10;
+
+    box-shadow:0 18px 40px rgba(0,0,0,0.35);
+
 }
 
 /* ============================================
@@ -1053,22 +1069,37 @@ h1, h2, h3 {
    ============================================ */
 
 #visorFoto{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.85);
-display:none;
-align-items:center;
-justify-content:center;
-z-index:999;
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    background:rgba(0,0,0,0.9);
+
+    display:none;
+
+    align-items:center;
+    justify-content:center;
+
+    z-index:999;
+
+    backdrop-filter:blur(4px);
+
 }
 
 #visorFoto img{
-max-width:90%;
-max-height:90%;
-border-radius:10px;
+
+    max-width:90%;
+    max-height:90%;
+
+    border-radius:14px;
+
+    box-shadow:0 20px 50px rgba(0,0,0,0.5);
+
 }
 
 /* ============================================
@@ -1077,25 +1108,24 @@ border-radius:10px;
 
 @media (max-width:1024px){
 
-.galeria-item img{
-height:220px;
-}
+    .galeria-item img{
+        height:200px;
+    }
 
 }
 
 @media (max-width:600px){
 
-#galeriaCarrusel{
-gap:15px;
-padding:10px;
-}
+    #galeriaCarrusel{
+        gap:14px;
+        padding:10px;
+    }
 
-.galeria-item img{
-height:180px;
-}
+    .galeria-item img{
+        height:150px;
+    }
 
 }
-
 /* ============================================
    BUSCADOR EQUIPOS - ARVET
    ============================================ */

@@ -403,9 +403,8 @@ function activarDragEquipos(){
 // ============================================
 
 function initRegistro() {
-    cargarPaisesSelect();
-    initAutocompleteDireccion();
-    
+    // Inicializar mapa selector (nuevo)
+    initMapaSelector();
     
     const form = document.getElementById("formRegistro");
     const btn = document.getElementById("btnCrear");
@@ -433,10 +432,18 @@ function initRegistro() {
         setLoading(true);
         msg.style.display = "none";
 
-        if (!document.getElementById('lat').value) {
-        showMessage('⚠️ Por favor seleccioná una dirección de la lista de sugerencias', 'error');
-        setLoading(false);
-        return;
+        // Validar que marcó ubicación en el mapa (nuevo)
+        if (!document.getElementById('lat').value || !document.getElementById('lng').value) {
+            showMessage('⚠️ Por favor marcá la ubicación de tu club en el mapa arrastrando el pin rojo', 'error');
+            setLoading(false);
+            return;
+        }
+    
+        // Validar que se detectó el país (nuevo)
+        if (!document.getElementById('paisId').value) {
+            showMessage('⚠️ No se pudo detectar el país. Intentá mover el pin a otra ubicación más cercana a una ciudad', 'error');
+            setLoading(false);
+            return;
         }
     
         const data = {
@@ -445,6 +452,8 @@ function initRegistro() {
             provinciaId: document.getElementById('provinciaId').value.trim(),
             ciudadId: document.getElementById('ciudadId').value.trim(),
             direccion: document.getElementById('direccion').value.trim(),
+            lat: document.getElementById('lat').value,           // ← NUEVO
+            lng: document.getElementById('lng').value,           // ← NUEVO
             adminNombre: document.getElementById('adminNombre').value.trim(),
             adminApellido: document.getElementById('adminApellido').value.trim(), 
             email: document.getElementById('email').value.trim(),
@@ -459,6 +468,8 @@ function initRegistro() {
                 `&provinciaId=${encodeURIComponent(data.provinciaId)}` +
                 `&ciudadId=${encodeURIComponent(data.ciudadId)}` +
                 `&direccion=${encodeURIComponent(data.direccion)}` +
+                `&lat=${encodeURIComponent(data.lat)}` +           // ← NUEVO
+                `&lng=${encodeURIComponent(data.lng)}` +           // ← NUEVO
                 `&adminNombre=${encodeURIComponent(data.adminNombre)}` +
                 `&adminApellido=${encodeURIComponent(data.adminApellido)}` +
                 `&email=${encodeURIComponent(data.email)}` +
@@ -485,7 +496,6 @@ function initRegistro() {
         }
     });
 }
-
 // ============================================
 // PÁGINA: LOGIN
 // ============================================
@@ -1860,222 +1870,103 @@ if (visor) {
     }
 }
 // ============================================
-// AUTOCOMPLETE DIRECCIONES - NUEVO
+// MAPA SELECTOR DE UBICACIÓN
 // ============================================
 
-let mapaPreview = null;
-let marcadorPreview = null;
+let mapSelector = null;
+let markerSelector = null;
 
-function initAutocompleteDireccion() {
-    const inputBusqueda = document.getElementById('direccionBusqueda');
-    const listaSugerencias = document.getElementById('sugerenciasDireccion');
-    const inputPais = document.getElementById('paisId');
+function initMapaSelector() {
+    const container = document.getElementById('mapSelector');
+    if (!container) return;
     
-    if (!inputBusqueda) return;
+    // Centro inicial: Sudamérica
+    const latInicial = -25.0;
+    const lngInicial = -60.0;
+    const zoomInicial = 4;
     
-    let timeoutId;
+    mapSelector = L.map('mapSelector').setView([latInicial, lngInicial], zoomInicial);
     
-    inputBusqueda.addEventListener('input', function() {
-        clearTimeout(timeoutId);
-        const query = this.value.trim();
-        const pais = inputPais ? inputPais.value : '';
-        
-        if (query.length < 3) {
-            listaSugerencias.style.display = 'none';
-            return;
-        }
-        
-        timeoutId = setTimeout(() => {
-            buscarDireccionesNominatim(query, pais, listaSugerencias);
-        }, 300);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(mapSelector);
+    
+    // Marker arrastrable
+    markerSelector = L.marker([latInicial, lngInicial], {
+        draggable: true,
+        icon: L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34]
+        })
+    }).addTo(mapSelector);
+    
+    // Evento: al soltar el marker
+    markerSelector.on('dragend', function() {
+        const pos = markerSelector.getLatLng();
+        console.log('Nueva posición:', pos.lat, pos.lng);
+        obtenerDatosUbicacion(pos.lat, pos.lng);
     });
     
-    document.addEventListener('click', function(e) {
-        if (!inputBusqueda.contains(e.target) && !listaSugerencias.contains(e.target)) {
-            listaSugerencias.style.display = 'none';
-        }
+    // Evento: click en el mapa (mover marker)
+    mapSelector.on('click', function(e) {
+        markerSelector.setLatLng(e.latlng);
+        obtenerDatosUbicacion(e.latlng.lat, e.latlng.lng);
     });
 }
 
-async function buscarDireccionesNominatim(query, pais, container) {
+async function obtenerDatosUbicacion(lat, lng) {
+    // Guardar coordenadas
+    document.getElementById('lat').value = lat;
+    document.getElementById('lng').value = lng;
+    
+    // Mostrar loading
+    const displays = document.querySelectorAll('.datos-ubicacion');
+    displays.forEach(d => {
+        d.style.display = 'block';
+        const input = d.querySelector('input[type="text"]');
+        if (input) input.value = 'Buscando...';
+    });
+    
     try {
-        let searchQuery = query;
-        if (pais) {
-            searchQuery = `${query}, ${pais}`;
-        }
-        
-        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}&limit=5&addressdetails=1`;
+        // Reverse geocodificación con Nominatim
+        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`;
         
         const response = await fetch(url);
         const data = await response.json();
         
-        if (data.length === 0) {
-            container.style.display = 'none';
-            return;
-        }
+        console.log('Reverse geocodificación:', data);
         
-        container.innerHTML = data.map(item => {
-            // Escapar comillas simples para el onclick
-            const displayNameEscapado = item.display_name.replace(/'/g, "\\'");
-            const addressObj = item.address || {};
+        if (data && data.address) {
+            const address = data.address;
             
-            // Crear string seguro para pasar al onclick
-            const addressParams = [
-                addressObj.city || '',
-                addressObj.town || '',
-                addressObj.village || '',
-                addressObj.locality || '',
-                addressObj.municipality || '',
-                addressObj.state || '',
-                addressObj.province || '',
-                addressObj.region || ''
-            ].join('|');
+            // Extraer datos
+            const pais = address.country || '';
+            const provincia = address.state || address.province || address.region || address.county || '';
+            const ciudad = address.city || address.town || address.village || address.locality || address.municipality || '';
             
-            return `
-                <div class="sugerencia-item" 
-                     onclick="seleccionarDireccionSimple('${displayNameEscapado}', ${item.lat}, ${item.lon}, '${addressParams}')">
-                    <div class="titulo">${item.name || item.display_name.split(',')[0]}</div>
-                    <div class="subtitulo">${item.display_name}</div>
-                </div>
-            `;
-        }).join('');
-        
-        container.style.display = 'block';
-        
-    } catch (error) {
-        console.error('Error buscando dirección:', error);
-    }
-}
-
-// Versión simplificada que no usa JSON.parse
-function seleccionarDireccionSimple(direccion, lat, lng, addressParams) {
-    console.log('=== seleccionarDireccionSimple ===');
-    
-    const parts = addressParams.split('|');
-    const ciudad = parts[0] || parts[1] || parts[2] || parts[3] || parts[4] || '';
-    const provincia = parts[5] || parts[6] || parts[7] || '';
-    
-    document.getElementById('direccion').value = direccion;
-    document.getElementById('lat').value = lat;
-    document.getElementById('lng').value = lng;
-    document.getElementById('ciudadId').value = ciudad;
-    document.getElementById('provinciaId').value = provincia;
-    document.getElementById('direccionBusqueda').value = direccion.split(',')[0];
-    document.getElementById('sugerenciasDireccion').style.display = 'none';
-    document.getElementById('direccionConfirmada').textContent = `📍 ${direccion}`;
-    
-    mostrarMapaPreview(lat, lng);
-}
-function seleccionarDireccion(direccion, lat, lng, addressStr) {
-    console.log('=== seleccionarDireccion ===');
-    console.log('direccion:', direccion);
-    console.log('lat:', lat);
-    console.log('lng:', lng);
-    console.log('addressStr:', addressStr);
-    
-    try {
-        // Limpiar el addressStr de posibles problemas
-        let addressStrLimpio = addressStr;
-        
-        // Si viene codificado de más, limpiarlo
-        if (addressStrLimpio.includes('&quot;')) {
-            addressStrLimpio = addressStrLimpio.replace(/&quot;/g, '"');
+            // Mostrar en pantalla
+            document.getElementById('paisDisplay').value = pais;
+            document.getElementById('provinciaDisplay').value = provincia;
+            document.getElementById('ciudadDisplay').value = ciudad;
+            
+            // Guardar en hidden
+            document.getElementById('paisId').value = pais;
+            document.getElementById('provinciaId').value = provincia;
+            document.getElementById('ciudadId').value = ciudad;
+            
+            // Si hay dirección formateada, sugerirla
+            if (data.display_name && document.getElementById('direccion').value === '') {
+                const direccionSugerida = data.display_name.split(',')[0];
+                document.getElementById('direccion').placeholder = `Ej: ${direccionSugerida}`;
+            }
         }
         
-        const address = JSON.parse(addressStrLimpio);
-        console.log('address parseado:', address);
-        
-        // Guardar en inputs hidden
-        const inputDireccion = document.getElementById('direccion');
-        const inputLat = document.getElementById('lat');
-        const inputLng = document.getElementById('lng');
-        const inputCiudad = document.getElementById('ciudadId');
-        const inputProvincia = document.getElementById('provinciaId');
-        const inputBusqueda = document.getElementById('direccionBusqueda');
-        const listaSugerencias = document.getElementById('sugerenciasDireccion');
-        const direccionConfirmada = document.getElementById('direccionConfirmada');
-        
-        if (inputDireccion) inputDireccion.value = direccion;
-        if (inputLat) inputLat.value = lat;
-        if (inputLng) inputLng.value = lng;
-        
-        // Extraer ciudad y provincia del address
-        const ciudad = address.city || address.town || address.village || address.locality || address.municipality || address.hamlet || '';
-        const provincia = address.state || address.province || address.region || address.county || '';
-        
-        console.log('ciudad extraída:', ciudad);
-        console.log('provincia extraída:', provincia);
-        
-        if (inputCiudad) inputCiudad.value = ciudad;
-        if (inputProvincia) inputProvincia.value = provincia;
-        
-        // Mostrar en el input visible (solo calle y número)
-        if (inputBusqueda) {
-            const primeraParte = direccion.split(',')[0];
-            inputBusqueda.value = primeraParte;
-        }
-        
-        // Ocultar sugerencias
-        if (listaSugerencias) listaSugerencias.style.display = 'none';
-        
-        // Mostrar confirmación
-        if (direccionConfirmada) direccionConfirmada.textContent = `📍 ${direccion}`;
-        
-        // Mostrar mapa preview
-        mostrarMapaPreview(lat, lng);
-        
-        console.log('✅ Dirección seleccionada correctamente');
-        
     } catch (error) {
-        console.error('❌ Error en seleccionarDireccion:', error);
-        console.error('addressStr que falló:', addressStr);
-        
-        // Fallback: intentar sin parsear el address
-        document.getElementById('direccion').value = direccion;
-        document.getElementById('lat').value = lat;
-        document.getElementById('lng').value = lng;
-        document.getElementById('direccionBusqueda').value = direccion.split(',')[0];
-        document.getElementById('sugerenciasDireccion').style.display = 'none';
-        
-        alert('Error al procesar la dirección. Intentá de nuevo.');
-    }
-}
-function mostrarMapaPreview(lat, lng) {
-    const container = document.getElementById('mapPreview');
-    container.style.display = 'block';
-    
-    if (!mapaPreview) {
-        mapaPreview = L.map('mapPreview').setView([lat, lng], 16);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(mapaPreview);
-    } else {
-        mapaPreview.setView([lat, lng], 16);
-    }
-    
-    if (marcadorPreview) {
-        mapaPreview.removeLayer(marcadorPreview);
-    }
-    
-    marcadorPreview = L.marker([lat, lng]).addTo(mapaPreview)
-        .bindPopup("📍 Ubicación confirmada")
-        .openPopup();
-}
-
-// Cargar países en select
-async function cargarPaisesSelect() {
-    const select = document.getElementById('paisId');
-    if (!select) return;
-    
-    try {
-        const response = await window.fetchAPI('getPaises');
-        if (response.success) {
-            select.innerHTML = '<option value="">Seleccioná un país...</option>' +
-                response.data.map(p => `
-                    <option value="${p.nombre}">${p.nombre}</option>
-                `).join('');
-        }
-    } catch (error) {
-        console.error('Error cargando países:', error);
+        console.error('Error en reverse geocodificación:', error);
+        document.getElementById('paisDisplay').value = 'Error al detectar';
+        document.getElementById('provinciaDisplay').value = 'Error al detectar';
+        document.getElementById('ciudadDisplay').value = 'Error al detectar';
     }
 }

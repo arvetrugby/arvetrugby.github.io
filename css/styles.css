@@ -275,13 +275,14 @@ h1, h2, h3 {
 .buscador-section h2 {
   text-align: center;
   font-size: 1.8rem;
-  margin-bottom: 30px;
+  margin-bottom: 0px;
   font-weight: 700;
   color: white;
 }
 .buscador-section p {
   text-align: center;
   color: white;
+   font-size: 0.8rem;
 }
 .search-box {
   display: flex;

@@ -445,7 +445,36 @@ function initRegistro() {
             setLoading(false);
             return;
         }
+    // NUEVO: Validar contraseñas coincidan
+    const password = document.getElementById('password').value;
+    const passwordConfirm = document.getElementById('passwordConfirm').value;
     
+    if (password !== passwordConfirm) {
+        showMessage('⚠️ Las contraseñas no coinciden', 'error');
+        setLoading(false);
+        return;
+    }
+    
+    if (password.length < 6) {
+        showMessage('⚠️ La contraseña debe tener al menos 6 caracteres', 'error');
+        setLoading(false);
+        return;
+    }
+
+    const data = {
+        nombre: document.getElementById('nombre').value.trim(),
+        paisId: document.getElementById('paisId').value.trim(),
+        provinciaId: document.getElementById('provinciaId').value.trim(),
+        ciudadId: document.getElementById('ciudadId').value.trim(),
+        direccion: document.getElementById('direccion').value.trim(),
+        lat: document.getElementById('lat').value,
+        lng: document.getElementById('lng').value,
+        adminNombre: document.getElementById('adminNombre').value.trim(),
+        adminApellido: document.getElementById('adminApellido').value.trim(),
+        telefono: document.getElementById('telefono').value.trim(),  // ← NUEVO
+        email: document.getElementById('email').value.trim(),
+        password: password  // ← Usamos la variable validada
+    };
         const data = {
             nombre: document.getElementById('nombre').value.trim(),
             paisId: document.getElementById('paisId').value.trim(),
@@ -472,6 +501,7 @@ function initRegistro() {
                 `&lng=${encodeURIComponent(data.lng)}` +           // ← NUEVO
                 `&adminNombre=${encodeURIComponent(data.adminNombre)}` +
                 `&adminApellido=${encodeURIComponent(data.adminApellido)}` +
+                `&telefono=${encodeURIComponent(data.telefono)}` +  // ← NUEVO
                 `&email=${encodeURIComponent(data.email)}` +
                 `&password=${encodeURIComponent(data.password)}`
             );

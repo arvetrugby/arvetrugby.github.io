@@ -410,9 +410,7 @@ function initRegistro() {
     const btn = document.getElementById("btnCrear");
     const loading = document.getElementById("loading");
     const msg = document.getElementById("msg");
-    const password = document.getElementById('password').value;
-    const passwordConfirm = document.getElementById('passwordConfirm').value;
-
+    
     if (!form) {
         console.log('Formulario de registro no encontrado');
         return;
@@ -448,7 +446,9 @@ function initRegistro() {
             return;
         }
     // NUEVO: Validar contraseñas coincidan
-    
+    const password = document.getElementById('password').value;
+    const passwordConfirm = document.getElementById('passwordConfirm').value;
+
     console.log(password, password.length);
     if (password !== passwordConfirm) {
         showMessage('⚠️ Las contraseñas no coinciden', 'error');

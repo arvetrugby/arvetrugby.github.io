@@ -410,6 +410,8 @@ function initRegistro() {
     const btn = document.getElementById("btnCrear");
     const loading = document.getElementById("loading");
     const msg = document.getElementById("msg");
+    const password = document.getElementById('password').value;
+    const passwordConfirm = document.getElementById('passwordConfirm').value;
 
     if (!form) {
         console.log('Formulario de registro no encontrado');
@@ -446,8 +448,7 @@ function initRegistro() {
             return;
         }
     // NUEVO: Validar contraseñas coincidan
-    const password = document.getElementById('password').value;
-    const passwordConfirm = document.getElementById('passwordConfirm').value;
+    
     
     if (password !== passwordConfirm) {
         showMessage('⚠️ Las contraseñas no coinciden', 'error');
@@ -475,19 +476,7 @@ function initRegistro() {
         email: document.getElementById('email').value.trim(),
         password: password  // ← Usamos la variable validada
     };
-        const data = {
-            nombre: document.getElementById('nombre').value.trim(),
-            paisId: document.getElementById('paisId').value.trim(),
-            provinciaId: document.getElementById('provinciaId').value.trim(),
-            ciudadId: document.getElementById('ciudadId').value.trim(),
-            direccion: document.getElementById('direccion').value.trim(),
-            lat: document.getElementById('lat').value,           // ← NUEVO
-            lng: document.getElementById('lng').value,           // ← NUEVO
-            adminNombre: document.getElementById('adminNombre').value.trim(),
-            adminApellido: document.getElementById('adminApellido').value.trim(), 
-            email: document.getElementById('email').value.trim(),
-            password: document.getElementById('password').value
-        };
+       
 
         try {
             const response = await fetch(

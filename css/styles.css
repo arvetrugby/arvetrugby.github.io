@@ -1868,7 +1868,7 @@ text-align:center;
 width:36px;
 height:36px;
 object-fit:contain;
-background:transparent;
+background:#333;
 border-radius:6px;
 padding:3px;
 }

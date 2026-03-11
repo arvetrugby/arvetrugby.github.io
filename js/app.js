@@ -1450,50 +1450,76 @@ function inicializarMapa() {
         console.log('❌ No existe contenedor #map');
         return;
     }
-    
-    if (mapaCreado && mapInstance) {
-        console.log('Actualizando mapa existente...');
-        if (window.equipoCoords) {
-            const lat = parseFloat(window.equipoCoords.lat);
-            const lng = parseFloat(window.equipoCoords.lng);
-            mapInstance.setView([lat, lng], 15);
-            
-            mapInstance.eachLayer(layer => {
-                if (layer instanceof L.Marker) mapInstance.removeLayer(layer);
-            });
-            
-            L.marker([lat, lng]).addTo(mapInstance)
-                .bindPopup("📍 Ubicación del equipo")
-                .openPopup();
-        }
-        return;
-    }
-    
+
     const lat = window.equipoCoords ? parseFloat(window.equipoCoords.lat) : -34.6037;
     const lng = window.equipoCoords ? parseFloat(window.equipoCoords.lng) : -58.3816;
     const zoom = window.equipoCoords ? 15 : 13;
-    
+
+    // Icono personalizado con el logo del equipo
+    const equipoIcon = L.icon({
+        iconUrl: document.getElementById("equipoLogo").src,
+        iconSize: [46,46],
+        iconAnchor: [23,46],
+        popupAnchor: [0,-40],
+        className: "mapMarker"
+    });
+
+    if (mapaCreado && mapInstance) {
+        console.log('Actualizando mapa existente...');
+
+        mapInstance.setView([lat, lng], 15);
+
+        // eliminar marcadores viejos
+        mapInstance.eachLayer(layer => {
+            if (layer instanceof L.Marker) {
+                mapInstance.removeLayer(layer);
+            }
+        });
+
+        const marker = L.marker([lat, lng], { icon: equipoIcon })
+        .addTo(mapInstance)
+        .bindPopup(`
+            <div class="popupEquipo">
+                <img src="${document.getElementById("equipoLogo").src}" class="popupLogo">
+                <strong>Ubicación del equipo</strong>
+                📍 Cancha del club
+            </div>
+        `);
+
+        marker.openPopup();
+
+        return;
+    }
+
     console.log('Creando mapa en:', lat, lng);
-    
+
     try {
+
         mapInstance = L.map('map').setView([lat, lng], zoom);
         mapaCreado = true;
-        
+
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(mapInstance);
-        
-        L.marker([lat, lng]).addTo(mapInstance)
-            .bindPopup("📍 Ubicación del equipo")
-            .openPopup();
-            
+
+        const marker = L.marker([lat, lng], { icon: equipoIcon })
+        .addTo(mapInstance)
+        .bindPopup(`
+            <div class="popupEquipo">
+                <img src="${document.getElementById("equipoLogo").src}" class="popupLogo">
+                <strong>Ubicación del equipo</strong>
+                📍 Cancha del club
+            </div>
+        `);
+
+        marker.openPopup();
+
         console.log('✅ Mapa creado correctamente');
+
     } catch (error) {
         console.error('❌ Error creando mapa:', error);
     }
 }
-
-
 // ============================================
 // ADMIN: CONFIGURACIÓN BÁSICA
 // ============================================

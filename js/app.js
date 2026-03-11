@@ -1930,7 +1930,6 @@ async function obtenerDatosUbicacion(lat, lng) {
     });
     
     try {
-        // Reverse geocodificación con Nominatim
         const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`;
         
         const response = await fetch(url);
@@ -1941,10 +1940,44 @@ async function obtenerDatosUbicacion(lat, lng) {
         if (data && data.address) {
             const address = data.address;
             
-            // Extraer datos
+            // DICCIONARIO DE CORRECCIONES
+            const correccionesProvincias = {
+                'Distrito Sauce': 'Entre Ríos',
+                'Distrito Federal': 'Buenos Aires',
+                'Ciudad Autónoma de Buenos Aires': 'Buenos Aires',
+                'CABA': 'Buenos Aires',
+                'Distrito Capital': 'Córdoba',
+                'Departamento Capital': 'Córdoba',
+                'Gran Buenos Aires': 'Buenos Aires',
+                'Partido de La Plata': 'Buenos Aires',
+                'Distrito Rosario': 'Santa Fe',
+                'Departamento Rosario': 'Santa Fe'
+            };
+            
+            // EXTRAER PROVINCIA (prioridad: state > province > region > county)
+            let provincia = address.state || 
+                           address.province || 
+                           address.region || 
+                           address.county || '';
+            
+            // Aplicar corrección si existe
+            if (correccionesProvincias[provincia]) {
+                console.log(`Corrección aplicada: "${provincia}" → "${correccionesProvincias[provincia]}"`);
+                provincia = correccionesProvincias[provincia];
+            }
+            
+            // EXTRAER CIUDAD (prioridad: city > town > village > locality > municipality)
+            const ciudad = address.city || 
+                          address.town || 
+                          address.village || 
+                          address.locality || 
+                          address.municipality || 
+                          address.hamlet || '';
+            
+            // EXTRAER PAÍS
             const pais = address.country || '';
-            const provincia = address.state || address.province || address.region || address.county || '';
-            const ciudad = address.city || address.town || address.village || address.locality || address.municipality || '';
+            
+            console.log('Datos extraídos:', { pais, provincia, ciudad });
             
             // Mostrar en pantalla
             document.getElementById('paisDisplay').value = pais;
@@ -1956,7 +1989,7 @@ async function obtenerDatosUbicacion(lat, lng) {
             document.getElementById('provinciaId').value = provincia;
             document.getElementById('ciudadId').value = ciudad;
             
-            // Si hay dirección formateada, sugerirla
+            // Sugerir dirección si está vacía
             if (data.display_name && document.getElementById('direccion').value === '') {
                 const direccionSugerida = data.display_name.split(',')[0];
                 document.getElementById('direccion').placeholder = `Ej: ${direccionSugerida}`;

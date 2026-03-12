@@ -894,7 +894,11 @@ async function cargarEquipo(slug) {
         window.currentSlug = slug;
         window.currentEquipoId = equipo.id;
         window.currentEquipo = equipo; // Guardar para la galería
-
+        
+// 🎨 aplicar color inmediatamente
+if (equipo.colorPrimario) {
+    const r = document.querySelector(':root');
+    
         // Actualizar UI - Header
         if (header) {
             header.innerHTML = `
@@ -940,9 +944,7 @@ if (equipo.galeria) {
 await Promise.all(tareas);
         }
 
-        // Aplicar color personalizado del equipo
-if (equipo.colorPrimario) {
-    const r = document.querySelector(':root');
+        
     
     // Helper: hex a rgba
     const hexToRgba = (hex, alpha) => {
@@ -1014,7 +1016,7 @@ function cargarGaleriaEquipo(galeria) {
     const rotacion = (Math.random() * 10 - 5).toFixed(2);
 
     return `
-        <div class="galeria-item" style="transform: rotate(${rotacion}deg);">
+        <div class="galeria-item">
             <img src="${url}" 
                  alt="Foto del equipo"
                  loading="lazy"

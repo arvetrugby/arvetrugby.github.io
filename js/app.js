@@ -917,7 +917,7 @@ async function cargarEquipo(slug) {
             quienesSomos.innerHTML = `
                 <p>${equipo.historia || 'Sin información disponible'}</p>
                 <p><strong>Fundación:</strong> ${equipo.fechaFundacion || 'N/A'}</p>
-                <p><strong>Colores:</strong> ${equipo.colores || 'N/A'}</p>
+                <p><strong>Instagram:</strong> ${equipo.colores || 'N/A'}</p>
             `;
         }
 

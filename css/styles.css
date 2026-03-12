@@ -992,138 +992,116 @@ h1, h2, h3 {
 
 }
 /* ============================================
-   GALERÍA - Estilo muro moderno
+   GALERÍA ESTILO INSTAGRAM
    ============================================ */
 
 #galeriaCarrusel{
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:22px;
-    padding:25px 10px;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px;
+padding:10px;
 }
 
-#galeriaCarrusel::-webkit-scrollbar{
-    display:none;
-}
+/* item */
 
 .galeria-item{
-    position:relative;
-    transition:transform .35s ease, box-shadow .35s ease;
+position:relative;
+width:100%;
+aspect-ratio:1/1;
+overflow:hidden;
+border-radius:10px;
+cursor:pointer;
 }
 
-/* FOTO */
+/* imagen */
 
 .galeria-item img{
-
-    height:240px;
-    width:auto;
-    max-width:100%;
-
-    border-radius:14px;
-
-    object-fit:cover;
-
-    box-shadow:0 10px 24px rgba(0,0,0,0.25);
-
-    cursor:pointer;
-
-    display:block;
-
-}
-
-/* tamaños levemente distintos */
-
-.galeria-item:nth-child(3n) img{
-    height:220px;
-}
-
-.galeria-item:nth-child(5n) img{
-    height:200px;
-}
-
-/* rotación leve tipo foto casual */
-
-.galeria-item:nth-child(odd){
-    transform:rotate(-1.5deg);
-}
-
-.galeria-item:nth-child(even){
-    transform:rotate(1.5deg);
+width:100%;
+height:100%;
+object-fit:cover;
+transition:transform .35s ease;
+display:block;
 }
 
 /* hover */
 
-.galeria-item:hover{
-
-    transform:scale(1.08) rotate(0deg);
-
-    z-index:10;
-
-    box-shadow:0 18px 40px rgba(0,0,0,0.35);
-
+.galeria-item:hover img{
+transform:scale(1.08);
 }
+
+/* overlay tipo redes */
+
+.galeria-item::after{
+content:"📸 Ver";
+position:absolute;
+bottom:8px;
+right:8px;
+background:rgba(0,0,0,0.55);
+color:white;
+font-size:11px;
+padding:4px 7px;
+border-radius:6px;
+opacity:0;
+transition:opacity .25s;
+}
+
+.galeria-item:hover::after{
+opacity:1;
+}
+
 
 /* ============================================
    VISOR FOTO GRANDE
    ============================================ */
 
 #visorFoto{
-
-    position:fixed;
-
-    top:0;
-    left:0;
-
-    width:100%;
-    height:100%;
-
-    background:rgba(0,0,0,0.9);
-
-    display:none;
-
-    align-items:center;
-    justify-content:center;
-
-    z-index:999;
-
-    backdrop-filter:blur(4px);
-
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.9);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:999;
 }
 
 #visorFoto img{
-
-    max-width:90%;
-    max-height:90%;
-
-    border-radius:14px;
-
-    box-shadow:0 20px 50px rgba(0,0,0,0.5);
-
+max-width:92%;
+max-height:92%;
+border-radius:12px;
+box-shadow:0 10px 40px rgba(0,0,0,0.6);
 }
+
 
 /* ============================================
    RESPONSIVE
    ============================================ */
 
-@media (max-width:1024px){
+@media (max-width:1100px){
 
-    .galeria-item img{
-        height:200px;
-    }
+#galeriaCarrusel{
+grid-template-columns:repeat(3,1fr);
+}
 
 }
 
-@media (max-width:600px){
+@media (max-width:700px){
 
-    #galeriaCarrusel{
-        gap:14px;
-        padding:10px;
-    }
+#galeriaCarrusel{
+grid-template-columns:repeat(2,1fr);
+gap:8px;
+}
 
-    .galeria-item img{
-        height:150px;
-    }
+}
+
+@media (max-width:420px){
+
+#galeriaCarrusel{
+grid-template-columns:repeat(2,1fr);
+gap:6px;
+}
 
 }
 /* ============================================

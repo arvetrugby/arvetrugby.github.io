@@ -1728,6 +1728,78 @@ btnGuardarColor.addEventListener('click', async function() {
             showMsg('❌ Error de conexión', 'error');
         }
     });
+    // ============================================
+    // QUIÉNES SOMOS - Descripción, Historia, etc.
+    // ============================================
+    
+    const descripcionInput = document.getElementById('descripcionEquipo');
+    const historiaInput = document.getElementById('historiaEquipo');
+    const fechaFundacionInput = document.getElementById('fechaFundacionEquipo');
+    const coloresInput = document.getElementById('coloresEquipo');
+    const btnGuardarQuienesSomos = document.getElementById('btnGuardarQuienesSomos');
+    
+    // Cargar datos existentes de "Quiénes Somos"
+    async function cargarQuienesSomosExistente() {
+        try {
+            const response = await fetch(`${API_URL}?action=getEquipoById&id=${currentUser.equipoId}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                const equipo = data.data;
+                
+                // Rellenar los campos si existen datos
+                if (descripcionInput && equipo.descripcion) {
+                    descripcionInput.value = equipo.descripcion;
+                }
+                if (historiaInput && equipo.historia) {
+                    historiaInput.value = equipo.historia;
+                }
+                if (fechaFundacionInput && equipo.fechaFundacion) {
+                    fechaFundacionInput.value = equipo.fechaFundacion;
+                }
+                if (coloresInput && equipo.colores) {
+                    coloresInput.value = equipo.colores;
+                }
+                
+                console.log('✅ Datos de Quiénes Somos cargados');
+            }
+        } catch (err) {
+            console.error('Error cargando Quiénes Somos:', err);
+        }
+    }
+    cargarQuienesSomosExistente();
+    
+    // Guardar Quiénes Somos
+    if (btnGuardarQuienesSomos) {
+        btnGuardarQuienesSomos.addEventListener('click', async function() {
+            showMsg('Guardando información...', 'info');
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'updateEquipo',
+                        id: currentUser.equipoId,
+                        descripcion: descripcionInput ? descripcionInput.value : '',
+                        historia: historiaInput ? historiaInput.value : '',
+                        fechaFundacion: fechaFundacionInput ? fechaFundacionInput.value : '',
+                        colores: coloresInput ? coloresInput.value : ''
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMsg('✅ Información guardada correctamente', 'success');
+                } else {
+                    showMsg('❌ Error: ' + (result.error || 'No se pudo guardar'), 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showMsg('❌ Error de conexión', 'error');
+            }
+        });
+    }
 }  // ← CIERRA initConfigEquipo
 
 // Función global para eliminar foto (FUERA de initConfigEquipo)

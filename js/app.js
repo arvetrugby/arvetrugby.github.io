@@ -965,7 +965,7 @@ function cargarGaleriaEquipo(galeria) {
     container.innerHTML = galeria.map(url => {
         const rotacion = (Math.random()*10-5).toFixed(2);
         return `
-            <div class="galeria-item" style="transform: rotate(${rotacion}deg);">
+            <div class="galeria-item">
                 <img src="${url}" loading="lazy" onclick="verFoto('${url}')">
             </div>
         `;

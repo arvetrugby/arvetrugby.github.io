@@ -1739,37 +1739,34 @@ btnGuardarColor.addEventListener('click', async function() {
     const btnGuardarQuienesSomos = document.getElementById('btnGuardarQuienesSomos');
     
     // Cargar datos existentes de "Quiénes Somos"
-    async function cargarQuienesSomosExistente() {
-        try {
-            const response = await fetch(`${API_URL}?action=getEquipoById&id=${currentUser.equipoId}`);
-            const data = await response.json();
-            
-            if (data.success) {
-                const equipo = data.data;
-                
-                // Rellenar los campos si existen datos
-                if (descripcionInput) {
-    descripcionInput.value = equipo.descripcion || '';
-}
+async function cargarQuienesSomosExistente() {
+    try {
+        const response = await fetch(`${API_URL}?action=getEquipoById&id=${currentUser.equipoId}`);
+        const data = await response.json();
 
-if (historiaInput) {
-    historiaInput.value = equipo.historia || '';
-}
+        if (data.success) {
+            const equipo = data.data;
 
-if (fechaFundacionInput) {
-    fechaFundacionInput.value = equipo.fechaFundacion || '';
-}
+            // Buscar inputs cuando ya existe la sección
+            const descripcionInput = document.getElementById('descripcionEquipo');
+            const historiaInput = document.getElementById('historiaEquipo');
+            const fechaFundacionInput = document.getElementById('fechaFundacionEquipo');
+            const coloresInput = document.getElementById('coloresEquipo');
 
-if (coloresInput) {
-    coloresInput.value = equipo.colores || '';
-}
-                
-                console.log('✅ Datos de Quiénes Somos cargados');
-            }
-        } catch (err) {
-            console.error('Error cargando Quiénes Somos:', err);
+            if (descripcionInput) descripcionInput.value = equipo.descripcion || '';
+            if (historiaInput) historiaInput.value = equipo.historia || '';
+            if (fechaFundacionInput) fechaFundacionInput.value = equipo.fechaFundacion || '';
+            if (coloresInput) coloresInput.value = equipo.colores || '';
+
+            console.log('✅ Datos de Quiénes Somos cargados', equipo);
         }
+
+    } catch (err) {
+        console.error('Error cargando Quiénes Somos:', err);
     }
+}
+
+
     cargarQuienesSomosExistente();
     
     // Guardar Quiénes Somos

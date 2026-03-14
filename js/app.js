@@ -1565,11 +1565,13 @@ const btnGuardarColor = document.getElementById('btnGuardarColor');
             showMsg('❌ Error de conexión', 'error');
         }
     });
-      // ============================================
+         // ============================================
     // COLOR PICKER SIEMPRE VISIBLE (inline)
     // ============================================
     
-    
+    const colorInput = document.getElementById('colorPrimario');
+    const colorPreview = document.getElementById('colorPreview');
+    const colorContainer = document.getElementById('color-picker');
     let pickr = null;
     
     // Inicializar Pickr en modo inline (siempre abierto)
@@ -1578,6 +1580,10 @@ const btnGuardarColor = document.getElementById('btnGuardarColor');
             console.error('No existe #color-picker');
             return;
         }
+        
+        // Asegurar que el contenedor tenga tamaño
+        colorContainer.style.minHeight = '250px';
+        colorContainer.style.position = 'relative';
         
         // Destruir instancia anterior si existe
         if (pickr) {
@@ -1588,8 +1594,8 @@ const btnGuardarColor = document.getElementById('btnGuardarColor');
             el: '#color-picker',
             theme: 'classic',
             default: defaultColor,
-            inline: true,  // ← SIEMPRE VISIBLE, no colapsado
-            showAlways: true,  // ← Nunca se cierra
+            inline: true,
+            showAlways: true,
             autoReposition: false,
             swatches: [
                 '#ef4444', '#f97316', '#f59e0b', '#84cc16', '#22c55e',
@@ -1613,6 +1619,9 @@ const btnGuardarColor = document.getElementById('btnGuardarColor');
             }
         });
         
+        // Forzar el color inicial después de crear
+        pickr.setColor(defaultColor);
+        
         // Cuando cambia el color
         pickr.on('change', (color) => {
             const hex = color.toHEXA().toString();
@@ -1631,18 +1640,25 @@ const btnGuardarColor = document.getElementById('btnGuardarColor');
             
             if (data.success && data.data.colorPrimario) {
                 colorInicial = data.data.colorPrimario;
+                console.log('✅ Color cargado de Sheets:', colorInicial);
+            } else {
+                console.log('ℹ️ Usando color default:', colorInicial);
             }
         } catch (e) {
-            console.log('No se pudo cargar color existente, usando default');
+            console.log('No se pudo cargar color existente, usando default:', colorInicial);
         }
         
-        // Inicializar con el color (existente o default)
+        // Actualizar input y preview
         colorInput.value = colorInicial;
         colorPreview.textContent = colorInicial;
-        initPickr(colorInicial);
+        
+        // Inicializar Pickr con el color (con pequeño delay para asegurar DOM)
+        setTimeout(() => {
+            initPickr(colorInicial);
+        }, 50);
     }
     
-    // Inicializar inmediatamente
+    // Inicializar
     cargarColorExistente();
 
     // Guardar color

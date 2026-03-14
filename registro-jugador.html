@@ -144,10 +144,20 @@ button:disabled {
             <div style="text-align: center; margin-bottom: 30px;">
                 <h2>Registro de Jugador</h2>
                 <p style="color: var(--gray); margin-top: 10px;">Únete a tu equipo en ARVET</p>
-                <div id="infoEquipo" style="margin-top: 15px; padding: 15px; background: #f1f5f9; border-radius: 8px;">
-    <div style="font-size: 12px; color: var(--gray); margin-bottom: 5px;">Equipo:</div>
-    <div id="nombreEquipo" style="margin-top: 15px; padding: 15px; background: #f1f5f9; border-radius: 8px; font-weight: 600; color: var(--primary);">
-    Cargando equipo...
+                <!-- HTML modificado -->
+<div id="infoEquipo" style="margin-top: 15px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    <!-- Header con color del equipo -->
+    <div id="equipoHeader" style="background: #334155; padding: 20px; text-align: center; display: flex; align-items: center; justify-content: center; min-height: 80px;">
+        <img id="navbarLogoEquipo" src="" alt="" style="max-height: 50px; max-width: 150px; filter: brightness(0) invert(1);">
+    </div>
+    
+    <!-- Body -->
+    <div style="background: #f8fafc; padding: 15px; text-align: center;">
+        <div id="nombreEquipo" style="font-size: 16px; font-weight: 700; color: #1e293b; margin-bottom: 5px;">
+            Cargando equipo...
+        </div>
+        <div id="idEquipo" style="font-size: 11px; color: #64748b; font-family: monospace;"></div>
+    </div>
 </div>
     <div id="idEquipo" style="font-size: 11px; color: #94a3b8; margin-top: 5px; font-family: monospace;"></div>
              </div>
@@ -238,7 +248,65 @@ button:disabled {
             </div>
         </div>
     </div>
+    <script>
+// Obtener equipoId de la URL
+const urlParams = new URLSearchParams(window.location.search);
+const equipoId = urlParams.get('equipo') || urlParams.get('id');
 
+// Función para cargar datos del equipo
+async function cargarDatosEquipo() {
+    if (!equipoId) {
+        mostrarError('No se especificó ningún equipo');
+        return;
+    }
+    
+    try {
+        // Consulta a Firebase (ajustá según tu estructura)
+        const equipoDoc = await db.collection('equipos').doc(equipoId).get();
+        
+        if (!equipoDoc.exists) {
+            // Si no encuentra por ID, probar por slug
+            const slugQuery = await db.collection('equipos').where('slug', '==', equipoId).get();
+            if (slugQuery.empty) {
+                mostrarError('Equipo no encontrado');
+                return;
+            }
+            var data = slugQuery.docs[0].data();
+        } else {
+            var data = equipoDoc.data();
+        }
+        
+        // Aplicar color de fondo al header
+        const header = document.getElementById('equipoHeader');
+        header.style.background = data.colorPrimario || '#334155';
+        
+        // Logo en blanco (filter invert)
+        const logo = document.getElementById('navbarLogoEquipo');
+        if (data.logoUrl) {
+            logo.src = data.logoUrl;
+            logo.style.display = 'block';
+        } else {
+            logo.style.display = 'none';
+            // Si no hay logo, mostrar nombre como texto blanco
+            header.innerHTML = `<span style="color: white; font-size: 20px; font-weight: 700;">${data.nombre}</span>`;
+        }
+        
+        // Nombre e ID
+        document.getElementById('nombreEquipo').textContent = data.nombre;
+        document.getElementById('idEquipo').textContent = data.slug || equipoId;
+        
+        // Guardar en hidden input
+        document.getElementById('equipoId').value = equipoId;
+        
+    } catch (error) {
+        console.error('Error cargando equipo:', error);
+        mostrarError('Error al cargar los datos del equipo');
+    }
+}
+
+// Llamar al cargar
+document.addEventListener('DOMContentLoaded', cargarDatosEquipo);
+    </script>
     <script src="js/app.js"></script>
 </body>
 </html>

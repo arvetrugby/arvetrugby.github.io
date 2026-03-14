@@ -1674,12 +1674,20 @@ const btnGuardarColor = document.getElementById('btnGuardarColor');
     
     // Mostrar mensaje helper
     function showMsg(text, type) {
-        if (!msgConfig) return;
-        msgConfig.textContent = text;
-        msgConfig.className = 'message ' + type;
-        msgConfig.style.display = 'block';
-        setTimeout(() => msgConfig.style.display = 'none', 5000);
-    }
+    const overlay = document.getElementById("msgOverlay");
+    const msgConfig = document.getElementById("msgConfig");
+
+    if (!msgConfig || !overlay) return;
+
+    msgConfig.textContent = text;
+    msgConfig.className = 'message ' + type;
+
+    overlay.style.display = 'flex';
+
+    setTimeout(() => {
+        overlay.style.display = 'none';
+    }, 5000);
+}
     
     // 1. Cargar logo actual (mismo patrón que panel-jugador)
     async function cargarLogoExistente() {

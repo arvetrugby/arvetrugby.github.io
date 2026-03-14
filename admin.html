@@ -196,18 +196,40 @@
         Elegí un color para tu navbar y encabezado
     </p>
     
-    <div style="text-align: center; margin: 20px 0;">
-        <input type="color" id="colorPrimario" value="#6366f1" 
-               style="width: 100px; height: 50px; border: none; border-radius: 8px; cursor: pointer;">
-        <p id="colorPreview" style="margin-top: 10px; font-size: 12px; color: #64748b;">
-            Vista previa del color
+    <!-- Paleta de colores -->
+    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin: 20px 0; padding: 0 10px;">
+        <div class="color-option" data-color="#ef4444" style="width: 100%; aspect-ratio: 1; border-radius: 50%; background: #ef4444; cursor: pointer; border: 3px solid transparent; transition: all 0.2s;"></div>
+        <div class="color-option" data-color="#f97316" style="width: 100%; aspect-ratio: 1; border-radius: 50%; background: #f97316; cursor: pointer; border: 3px solid transparent; transition: all 0.2s;"></div>
+        <div class="color-option" data-color="#f59e0b" style="width: 100%; aspect-ratio: 1; border-radius: 50%; background: #f59e0b; cursor: pointer; border: 3px solid transparent; transition: all 0.2s;"></div>
+        <div class="color-option" data-color="#84cc16" style="width: 100%; aspect-ratio: 1; border-radius: 50%; background: #84cc16; cursor: pointer; border: 3px solid transparent; transition: all 0.2s;"></div>
+        <div class="color-option" data-color="#22c55e" style="width: 100%; aspect-ratio: 1; border-radius: 50%; background: #22c55e; cursor: pointer; border: 3px solid transparent; transition: all 0.2s;"></div>
+        <div class="color-option" data-color="#14b8a6" style="width: 100%; aspect-ratio: 1; border-radius: 50%; background: #14b8a6; cursor: pointer; border: 3px solid transparent; transition: all 0.2s;"></div>
+        <div class="color-option" data-color="#06b6d4" style="width: 100%; aspect-ratio: 1; border-radius: 50%; background: #06b6d4; cursor: pointer; border: 3px solid transparent; transition: all 0.2s;"></div>
+        <div class="color-option" data-color="#3b82f6" style="width: 100%; aspect-ratio: 1; border-radius: 50%; background: #3b82f6; cursor: pointer; border: 3px solid transparent; transition: all 0.2s;"></div>
+        <div class="color-option" data-color="#6366f1" style="width: 100%; aspect-ratio: 1; border-radius: 50%; background: #6366f1; cursor: pointer; border: 3px solid transparent; transition: all 0.2s;"></div>
+        <div class="color-option" data-color="#8b5cf6" style="width: 100%; aspect-ratio: 1; border-radius: 50%; background: #8b5cf6; cursor: pointer; border: 3px solid transparent; transition: all 0.2s;"></div>
+        <div class="color-option" data-color="#a855f7" style="width: 100%; aspect-ratio: 1; border-radius: 50%; background: #a855f7; cursor: pointer; border: 3px solid transparent; transition: all 0.2s;"></div>
+        <div class="color-option" data-color="#d946ef" style="width: 100%; aspect-ratio: 1; border-radius: 50%; background: #d946ef; cursor: pointer; border: 3px solid transparent; transition: all 0.2s;"></div>
+        <div class="color-option" data-color="#ec4899" style="width: 100%; aspect-ratio: 1; border-radius: 50%; background: #ec4899; cursor: pointer; border: 3px solid transparent; transition: all 0.2s;"></div>
+        <div class="color-option" data-color="#f43f5e" style="width: 100%; aspect-ratio: 1; border-radius: 50%; background: #f43f5e; cursor: pointer; border: 3px solid transparent; transition: all 0.2s;"></div>
+        <div class="color-option" data-color="#334155" style="width: 100%; aspect-ratio: 1; border-radius: 50%; background: #334155; cursor: pointer; border: 3px solid transparent; transition: all 0.2s;"></div>
+    </div>
+    
+    <!-- Input oculto para guardar el valor -->
+    <input type="hidden" id="colorPrimario" value="#6366f1">
+    
+    <!-- Preview del color seleccionado -->
+    <div style="text-align: center; margin: 15px 0;">
+        <div id="colorPreviewBox" style="display: inline-block; width: 60px; height: 60px; border-radius: 12px; background: #6366f1; border: 3px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"></div>
+        <p id="colorPreviewText" style="margin-top: 8px; font-size: 13px; color: #64748b; font-weight: 500;">
+            #6366f1
         </p>
     </div>
     
     <div style="display: flex; gap: 10px; justify-content: center;">
         <button type="button" id="btnGuardarColor" class="btn-success">Guardar Color</button>
     </div>
-    </div>
+</div>
     <!-- Quiénes Somos / Historia del Equipo -->
 <div class="card">
     <h3>📝 Quiénes Somos</h3>

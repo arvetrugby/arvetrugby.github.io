@@ -11,21 +11,9 @@
 </head>
 
 <style>
-    .pcr-app[data-theme=classic] {
-    width: 19em;
-    max-width
+    
 
-}
-    /* Mover el preview abajo del selector de color */
-.pcr-app .pcr-selection {
-    display: flex;
-    flex-direction: column-reverse !important;
-}
 
-.pcr-app .pcr-color-preview {
-    margin-top: 15px !important;
-    margin-bottom: 0 !important;
-}
    /* Centrar el pickr */
 #color-picker .pcr-button {
     margin: 0 auto;
@@ -240,12 +228,13 @@
     <!-- Wrapper flexible y centrado -->
     <div style="display: flex; flex-direction: column; align-items: center; margin: 20px 0; width: 100%;">
         
-        <!-- El pickr se inyecta aquí, el JS le da el ancho -->
-        <div id="color-picker"></div>
+        
         
         <!-- Input oculto -->
         <input type="hidden" id="colorPrimario" value="#6366f1">
         
+        <!-- El pickr se inyecta aquí, el JS le da el ancho -->
+        <div id="color-picker"></div>
         <!-- Preview del color -->
         <p id="colorPreview" style="margin-top: 15px; font-size: 14px; color: #64748b; font-weight: 600; font-family: monospace; background: #f1f5f9; padding: 8px 16px; border-radius: 8px; min-width: 100px; text-align: center;">
             #6366f1

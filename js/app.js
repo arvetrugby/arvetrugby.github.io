@@ -2058,6 +2058,7 @@ async function cargarQuienesSomosExistente() {
     // Guardar Quiénes Somos
     if (btnGuardarQuienesSomos) {
         btnGuardarQuienesSomos.addEventListener('click', async function() {
+            mostrarLoader('Guardando información...');
             showMsg('Guardando información...', 'info');
             
             try {
@@ -2071,6 +2072,7 @@ async function cargarQuienesSomosExistente() {
                         fechaFundacion: fechaFundacionInput ? fechaFundacionInput.value : '',
                         colores: coloresInput ? coloresInput.value : ''
                     })
+                    ocultarLoader();
                 });
                 
                 const result = await response.json();

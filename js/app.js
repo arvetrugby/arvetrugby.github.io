@@ -1941,12 +1941,13 @@ window.showSection = function(sectionId) {
     
     // Actualizar título del header
     const titles = {
+        'configuracion': 'Configuración',
+            'jugadores': 'Jugadores',
         'dashboard': 'Dashboard',
         'partidos': 'Partidos',
         'cuotas': 'Cuotas',
-        'jugadores': 'Jugadores',
-        'finanzas': 'Finanzas',
-        'configuracion': 'Configuración'
+        'finanzas': 'Finanzas'
+        
     };
     const pageTitle = document.getElementById('pageTitle');
     if (pageTitle) {

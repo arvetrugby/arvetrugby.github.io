@@ -75,22 +75,27 @@ input:focus {
 button {
     width: 100%;
     padding: 15px;
-    background: linear-gradient(
-        140deg,
-        rgba(10, 35, 80, 0.95),
-        rgba(15, 60, 120, 0.85)
-    );
+    background: #1e293b; /* Fallback */
     color: white;
     border: none;
     border-radius: 12px;
     font-weight: 700;
     cursor: pointer;
     margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 button:disabled {
     opacity: .6;
     cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 .message {
@@ -276,6 +281,13 @@ async function cargarDatosEquipo() {
         // Aplicar color de fondo al header
         const header = document.getElementById('equipoHeader');
         header.style.background = data.colorPrimario || '#334155';
+
+        // ✅ APLICAR COLOR AL BOTÓN
+        const btnRegistro = document.getElementById('btnRegistro');
+        if (btnRegistro) {
+            btnRegistro.style.background = `linear-gradient(140deg, ${colorPrimario} 0%, ${colorPrimario}dd 100%)`;
+            
+        }
         
         // Logo en blanco (filter invert)
         const logo = document.getElementById('navbarLogoEquipo');

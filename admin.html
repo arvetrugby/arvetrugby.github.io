@@ -6,6 +6,8 @@
     <title>Administración - ARVET</title>
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css"/>
+
 </head>
 <body class="admin-body">
     <!-- Header móvil -->
@@ -189,7 +191,7 @@
         Máximo 8 fotos
     </p>
 </div>
-           <!-- Selector de Color -->
+       <!-- Selector de Color -->
 <div class="card" style="margin-bottom: 30px;">
     <h3>🎨 Color del Equipo</h3>
     <p style="color: #64748b; font-size: 14px; margin-bottom: 15px;">
@@ -197,22 +199,11 @@
     </p>
     
     <div style="text-align: center; margin: 20px 0;">
-        <!-- Input nativo oculto -->
-        <input type="color" id="colorPrimario" value="#6366f1" 
-               style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;">
+        <!-- Contenedor del color picker -->
+        <div id="color-picker" style="display: inline-block;"></div>
         
-        <!-- Label que simula el selector (funciona en PC y móvil) -->
-        <label for="colorPrimario" id="colorLabel" 
-               style="display: inline-block; width: 120px; height: 60px; 
-                      background: #6366f1; border-radius: 12px; cursor: pointer;
-                      box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 3px solid #e2e8f0;
-                      position: relative; transition: transform 0.2s;">
-            <span style="position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%);
-                         font-size: 11px; color: white; background: rgba(0,0,0,0.3);
-                         padding: 2px 8px; border-radius: 4px; font-weight: 600;">
-                ELEGIR
-            </span>
-        </label>
+        <!-- Input oculto para guardar el valor -->
+        <input type="hidden" id="colorPrimario" value="#6366f1">
         
         <p id="colorPreview" style="margin-top: 10px; font-size: 13px; color: #64748b; font-weight: 500;">
             #6366f1
@@ -244,7 +235,7 @@
 
         </section>
     </main>
-
+    <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
     <script src="js/app.js"></script>
     
 

@@ -2115,23 +2115,21 @@ window.eliminarFotoGaleria = async function(index) {
     // 2. Actualizar la vista
     window.renderGaleriaAdmin();
     
-    // 3. Guardar TODO el array nuevo (como ya hacías con el botón Guardar)
+    // 3. Guardar automáticamente (mismo código que tu botón Guardar)
     try {
-        console.log('Guardando galería actualizada...');
-        
         const response = await fetch(API_URL, {
             method: 'POST',
             body: JSON.stringify({
                 action: 'updateEquipo',
-                id: window.currentUser?.equipoId || localStorage.getItem('equipoId'), // o como tengas el ID
-                galeria: window.galeriaTemporal  // ← Array completo sin la foto eliminada
+                id: currentUser.equipoId,  // ← Así como lo tenés
+                galeria: window.galeriaTemporal
             })
         });
         
         const result = await response.json();
         
         if (result.success) {
-            console.log('✅ Galería actualizada (foto eliminada)');
+            console.log('✅ Foto eliminada y guardada');
         } else {
             console.error('Error:', result.error);
         }
@@ -2140,7 +2138,6 @@ window.eliminarFotoGaleria = async function(index) {
         console.error('Error de conexión:', err);
     }
 };
-
 // ============================================
 // ADMIN MOBILE - NAVEGACIÓN GLOBAL
 // ============================================

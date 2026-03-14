@@ -2109,35 +2109,37 @@ async function cargarQuienesSomosExistente() {
 window.eliminarFotoGaleria = async function(index) {
     if (!confirm('¿Eliminar esta foto?')) return;
     
+    // 1. Eliminar del array temporal
     window.galeriaTemporal.splice(index, 1);
+    
+    // 2. Actualizar la vista
     window.renderGaleriaAdmin();
     
-    // Guardar automáticamente
+    // 3. Guardar TODO el array nuevo (como ya hacías con el botón Guardar)
     try {
-        alert('Actualizando galería...'); // o console.log('Actualizando...')
+        console.log('Guardando galería actualizada...');
         
         const response = await fetch(API_URL, {
             method: 'POST',
             body: JSON.stringify({
                 action: 'updateEquipo',
-                id: currentUser.equipoId,
-                galeria: window.galeriaTemporal
+                id: window.currentUser?.equipoId || localStorage.getItem('equipoId'), // o como tengas el ID
+                galeria: window.galeriaTemporal  // ← Array completo sin la foto eliminada
             })
         });
         
         const result = await response.json();
         
         if (result.success) {
-            alert('✅ Foto eliminada');
+            console.log('✅ Galería actualizada (foto eliminada)');
         } else {
-            alert('❌ Error: ' + result.error);
+            console.error('Error:', result.error);
         }
+        
     } catch (err) {
-        alert('❌ Error de conexión');
-        console.error(err);
+        console.error('Error de conexión:', err);
     }
 };
-
 
 // ============================================
 // ADMIN MOBILE - NAVEGACIÓN GLOBAL

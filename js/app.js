@@ -1267,37 +1267,37 @@ async function cargarJugadoresAdmin() {
             <button class="btn-action ${j.rol === 'Jugador' ? 'btn-success' : 'btn-secondary'}" 
                     onclick="cambiarRolJugador('${j.id}', 'Jugador')"
                     style="font-size: 11px; padding: 8px; border-radius: 20px; border: none; cursor: pointer; font-weight: 500; ${j.rol === 'Jugador' ? 'background: #22c55e; color: white;' : 'background: #f1f5f9; color: #475569;'}">
-                👤 Jugador
+                 Jugador
             </button>
             <button class="btn-action ${j.rol === 'Capitán' ? 'btn-success' : 'btn-secondary'}" 
                     onclick="cambiarRolJugador('${j.id}', 'Capitán')"
                     style="font-size: 11px; padding: 8px; border-radius: 20px; border: none; cursor: pointer; font-weight: 500; ${j.rol === 'Capitán' ? 'background: #22c55e; color: white;' : 'background: #f1f5f9; color: #475569;'}">
-                ⭐ Capitán
+                 Capitán
             </button>
             <button class="btn-action ${j.rol === 'Sub Capitán' ? 'btn-success' : 'btn-secondary'}" 
                     onclick="cambiarRolJugador('${j.id}', 'Sub Capitán')"
                     style="font-size: 11px; padding: 8px; border-radius: 20px; border: none; cursor: pointer; font-weight: 500; ${j.rol === 'Sub Capitán' ? 'background: #22c55e; color: white;' : 'background: #f1f5f9; color: #475569;'}">
-                ☆ Sub Capitán
+                 Sub Capitán
             </button>
             <button class="btn-action ${j.rol === 'Manager' ? 'btn-success' : 'btn-secondary'}" 
                     onclick="cambiarRolJugador('${j.id}', 'Manager')"
                     style="font-size: 11px; padding: 8px; border-radius: 20px; border: none; cursor: pointer; font-weight: 500; ${j.rol === 'Manager' ? 'background: #22c55e; color: white;' : 'background: #f1f5f9; color: #475569;'}">
-                📋 Manager
+                 Manager
             </button>
             <button class="btn-action ${j.rol === 'Sub Manager' ? 'btn-success' : 'btn-secondary'}" 
                     onclick="cambiarRolJugador('${j.id}', 'Sub Manager')"
                     style="font-size: 11px; padding: 8px; border-radius: 20px; border: none; cursor: pointer; font-weight: 500; ${j.rol === 'Sub Manager' ? 'background: #22c55e; color: white;' : 'background: #f1f5f9; color: #475569;'}">
-                📄 Sub Manager
+                 Sub Manager
             </button>
             <button class="btn-action ${j.rol === 'Tesorero' ? 'btn-success' : 'btn-secondary'}" 
                     onclick="cambiarRolJugador('${j.id}', 'Tesorero')"
                     style="font-size: 11px; padding: 8px; border-radius: 20px; border: none; cursor: pointer; font-weight: 500; ${j.rol === 'Tesorero' ? 'background: #22c55e; color: white;' : 'background: #f1f5f9; color: #475569;'}">
-                💰 Tesorero
+                 Tesorero
             </button>
             <button class="btn-action ${j.rol === 'Admin' ? 'btn-success' : 'btn-secondary'}" 
                     onclick="cambiarRolJugador('${j.id}', 'Admin')"
                     style="font-size: 11px; padding: 8px; border-radius: 20px; border: none; cursor: pointer; font-weight: 500; ${j.rol === 'Admin' ? 'background: #22c55e; color: white;' : 'background: #f1f5f9; color: #475569;'}">
-                ⚙️ Admin
+                 Admin
             </button>
         </div>
     </div>

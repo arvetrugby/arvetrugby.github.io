@@ -156,23 +156,36 @@
             
             <div id="msgConfig" class="message" style="display: none; margin-bottom: 20px;"></div>
             
-            <!-- Logo del Equipo -->
-            <div class="card" style="margin-bottom: 30px;">
-                <h3>🏷️ Logo del Equipo</h3>
-                <div style="text-align: center; margin: 20px 0;">
-                    <img id="logoPreview" src="https://i.ibb.co/xxxxx/logo-default.png" 
-                         style="width: 150px; height: 150px; object-fit: contain; border-radius: 12px; 
-                                background: #f1f5f9; padding: 10px; border: 2px dashed #cbd5e0;">
-                </div>
-                <div style="display: flex; gap: 10px; justify-content: center;">
-                    <input type="file" id="inputLogo" accept="image/*" style="display: none;">
-                    <button type="button" id="btnCambiarLogo" class="btn-primary">Seleccionar Logo</button>
-                    <button type="button" id="btnGuardarLogo" class="btn-success">Guardar Logo</button>
-                </div>
-                <p style="text-align: center; color: #64748b; font-size: 12px; margin-top: 10px;">
-                    Formatos: JPG, PNG. Tamaño recomendado: 500x500px
-                </p>
-            </div>
+        <!-- Logo del Equipo -->
+<div class="card" style="margin-bottom: 30px; text-align: center;">
+    <h3>Logo del Equipo</h3>
+    
+    <!-- Preview del logo -->
+    <div style="margin: 20px auto; display: inline-block;">
+        <img id="logoPreview" src="https://i.ibb.co/Y7BMDcjt/logo-generico.png" 
+             style="width: 180px; height: 180px; object-fit: contain; border-radius: 16px; 
+                    background: #f8fafc; padding: 15px; border: 3px dashed #cbd5e0;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+    </div>
+    
+    <!-- Input oculto -->
+    <input type="file" id="inputLogo" accept="image/*" style="display: none;">
+    
+    <!-- Botones apilados -->
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 280px; margin: 0 auto;">
+        <button type="button" id="btnCambiarLogo" class="btn-primary">
+            Seleccionar Logo
+        </button>
+        <button type="button" id="btnGuardarLogo" class="btn-success" style="margin-top: 0;">
+            Guardar Logo
+        </button>
+    </div>
+    
+    <p style="color: #64748b; font-size: 12px; margin-top: 15px; line-height: 1.5;">
+        Formatos: <strong>JPG, PNG</strong><br>
+        Tamaño recomendado: <strong>500×500px</strong>
+    </p>
+</div>
             
             <!-- Galería de Fotos (máximo 8) -->
             <div class="card" style="margin-bottom: 30px;">

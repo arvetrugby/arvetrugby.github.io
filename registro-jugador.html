@@ -155,9 +155,9 @@ button:disabled {
     
     <!-- Body -->
     <div>
-        <div id="nombreEquipo" style="font-size: 16px; font-weight: 700; color: #1e293b; margin-bottom: 5px;">
-            Cargando equipo...
-        </div>
+        <div id="nombreEquipo" style="font-size: 16px; font-weight: 700; margin-bottom: 5px;">
+    Cargando equipo...
+</div>
         <div id="idEquipo" style="font-size: 11px; color: #64748b; font-family: monospace;"></div>
     </div>
 </div>
@@ -288,7 +288,11 @@ async function cargarDatosEquipo() {
             btnRegistro.style.background = `linear-gradient(140deg, ${colorPrimario} 0%, ${colorPrimario}dd 100%)`;
             
         }
-        
+        // ✅ APLICAR COLOR AL NOMBRE DEL EQUIPO
+        const nombreEquipo = document.getElementById('nombreEquipo');
+        if (nombreEquipo) {
+            nombreEquipo.style.color = colorPrimario;
+        }
         // Logo en blanco (filter invert)
         const logo = document.getElementById('navbarLogoEquipo');
         if (data.logoUrl) {

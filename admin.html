@@ -55,6 +55,9 @@
             <li onclick="showSection('configuracion')">
                 <span>⚙️</span> Sitio Público
             </li>
+             <li onclick="showSection('jugadores')">
+                <span>👥</span> ¨Plantel
+            </li>
             <li class="active" onclick="showSection('dashboard')">
                 <span>📊</span> Dashboard
             </li>
@@ -64,9 +67,7 @@
             <li onclick="showSection('cuotas')">
                 <span>💰</span> Cuotas
             </li>
-            <li onclick="showSection('jugadores')">
-                <span>👥</span> Jugadores
-            </li>
+           
             <li onclick="showSection('finanzas')">
                 <span>📈</span> Finanzas
             </li>
@@ -190,6 +191,28 @@
             </div>
             
         </section>  <!-- ← CIERRA CONFIGURACION AQUÍ -->
+        
+         <!-- Jugadores -->
+        <section id="jugadores" class="admin-section">
+            <div class="section-header">
+                <h2>Jugadores</h2>
+                <button class="btn-fab" onclick="nuevoJugador()">+</button>
+            </div>
+            <div class="list-container" id="listaJugadores">
+                <!-- Se carga dinámicamente -->
+            </div>
+        </section>
+
+        <!-- Finanzas -->
+        <section id="finanzas" class="admin-section">
+            <div class="section-header">
+                <h2>Finanzas</h2>
+            </div>
+            <div class="list-container" id="finanzasContent">
+                <!-- Se carga dinámicamente -->
+            </div>
+        </section>
+        
         <!-- Dashboard -->
         <section id="dashboard" class="admin-section">
             <div class="section-header">
@@ -250,26 +273,7 @@
             </div>
         </section>
 
-        <!-- Jugadores -->
-        <section id="jugadores" class="admin-section">
-            <div class="section-header">
-                <h2>Jugadores</h2>
-                <button class="btn-fab" onclick="nuevoJugador()">+</button>
-            </div>
-            <div class="list-container" id="listaJugadores">
-                <!-- Se carga dinámicamente -->
-            </div>
-        </section>
-
-        <!-- Finanzas -->
-        <section id="finanzas" class="admin-section">
-            <div class="section-header">
-                <h2>Finanzas</h2>
-            </div>
-            <div class="list-container" id="finanzasContent">
-                <!-- Se carga dinámicamente -->
-            </div>
-        </section>
+       
 
                 
         

@@ -1402,7 +1402,7 @@ function inicializarMapa() {
 
     const lat = window.equipoCoords ? parseFloat(window.equipoCoords.lat) : -34.6037;
     const lng = window.equipoCoords ? parseFloat(window.equipoCoords.lng) : -58.3816;
-    const zoom = window.equipoCoords ? 15 : 13;
+    const zoom = window.equipoCoords ? 13 : 12;
 
     // Icono personalizado con el logo del equipo
 const colorEquipo = getComputedStyle(document.documentElement)

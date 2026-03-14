@@ -1088,42 +1088,118 @@ window.irAGaleria = function(index){
 };
 
 // ----- JUGADORES -----
-async function cargarJugadoresEquipo(equipoId){
-    console.log('Cargando jugadores equipo:',equipoId);
+async function cargarJugadoresEquipo(equipoId) {
+    console.log('Cargando jugadores equipo:', equipoId);
+    
+    // Verificar si hay usuario logueado
+    const user = localStorage.getItem('arvet_user');
+    const isLogueado = !!user;
+    let userData = null;
+    if (isLogueado) {
+        try {
+            userData = JSON.parse(user);
+        } catch(e) {}
+    }
+    
     try {
-        const response = await window.fetchAPI('getJugadores',{equipoId});
+        const response = await window.fetchAPI('getJugadores', { equipoId });
         if (!response.success) return;
 
         const jugadores = Array.isArray(response.data)
-            ? response.data.filter(j=>j.estado && j.estado.trim()==='Activo')
+            ? response.data.filter(j => j.estado && j.estado.trim() === 'Activo')
             : [];
 
-        const comision = jugadores.filter(j=>j.rol && j.rol!=='Jugador');
-        const plantel = jugadores.filter(j=>!j.rol || j.rol==='Jugador' || (j.rol && j.rol!=='Jugador'));
+        const comision = jugadores.filter(j => j.rol && j.rol !== 'Jugador');
+        const plantel = jugadores.filter(j => !j.rol || j.rol === 'Jugador' || (j.rol && j.rol !== 'Jugador'));
 
         const comisionGrid = document.getElementById('comisionGrid');
         const plantelGrid = document.getElementById('plantelGrid');
 
-        if (comisionGrid) {
-            comisionGrid.innerHTML = comision.map(j=>`
-                <div class="card" style="text-align:center;">
-                    <img src="${j.avatarUrl||'https://i.ibb.co/4pDNDk1/avatar1.png'}" style="object-fit:cover;">
-                    <h3>${j.nombre} ${j.apellido}</h3>
-                    <p class="badge badge-success">${j.rol}</p>
+        // Función para calcular edad
+        function calcularEdad(fechaNacimiento) {
+            if (!fechaNacimiento) return null;
+            const hoy = new Date();
+            const nacimiento = new Date(fechaNacimiento);
+            let edad = hoy.getFullYear() - nacimiento.getFullYear();
+            const mes = hoy.getMonth() - nacimiento.getMonth();
+            if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
+                edad--;
+            }
+            return edad;
+        }
+
+        // Función para formatear fecha
+        function formatearFecha(fecha) {
+            if (!fecha) return null;
+            const date = new Date(fecha);
+            return date.toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+
+        // Función para generar tarjeta de jugador
+        function tarjetaJugador(j) {
+            const edad = calcularEdad(j.fechaNacimiento);
+            const fechaFormateada = formatearFecha(j.fechaNacimiento);
+            
+            // Datos privados solo para logueados
+            const datosPrivados = isLogueado ? `
+                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+                    ${fechaFormateada ? `
+                        <p style="margin: 4px 0; font-size: 12px; color: #64748b;">
+                            Nac: ${fechaFormateada} ${edad ? `(${edad} años)` : ''}
+                        </p>
+                    ` : ''}
+                    ${j.telefono ? `
+                        <a href="https://wa.me/${j.telefono.replace(/\D/g, '')}" 
+                           target="_blank"
+                           style="display: inline-flex; align-items: center; gap: 6px; 
+                                  margin-top: 6px; padding: 6px 12px; background: #22c55e; 
+                                  color: white; border-radius: 20px; font-size: 12px; 
+                                  text-decoration: none; font-weight: 500;">
+                         WhatsApp
+                        </a>
+                    ` : ''}
+                    ${j.email && isLogueado ? `
+                        <p style="margin: 4px 0; font-size: 12px; color: #64748b; word-break: break-all;">
+                             ${j.email}
+                        </p>
+                    ` : ''}
                 </div>
-            `).join('') || '<p style="text-align:center;color:#64748b;">Sin comisión registrada</p>';
+            ` : '';
+            
+            return `
+                <div class="card" style="text-align: center; position: relative;">
+                    <img src="${j.avatarUrl || 'https://i.ibb.co/4pDNDk1/avatar1.png'}" 
+                         style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; 
+                                border: 3px solid var(--equipo-color, #3b82f6); margin-bottom: 12px;">
+                    <h3 style="margin: 0 0 4px 0; font-size: 16px;">${j.nombre} ${j.apellido || ''}</h3>
+                    ${j.rol && j.rol !== 'Jugador' ? `
+                        <p class="badge badge-success" style="display: inline-block; margin: 0 0 8px 0;">
+                            ${j.rol}
+                        </p>
+                    ` : ''}
+                    ${j.posicion ? `<p style="margin: 0; font-size: 13px; color: #64748b;">${j.posicion}</p>` : ''}
+                    ${datosPrivados}
+                </div>
+            `;
+        }
+
+        if (comisionGrid) {
+            comisionGrid.innerHTML = comision.map(tarjetaJugador).join('') || 
+                '<p style="text-align:center;color:#64748b;">Sin comisión registrada</p>';
         }
 
         if (plantelGrid) {
-            plantelGrid.innerHTML = plantel.map(j=>`
-                <div class="card" style="text-align:center;">
-                    <img src="${j.avatarUrl||'https://i.ibb.co/4pDNDk1/avatar1.png'}" style="object-fit:cover;">
-                    <h3>${j.nombre} ${j.apellido}</h3>
-                    ${j.rol && j.rol!=='Jugador'?`<small style="color:var(--primary);font-weight:600;">🛡️ ${j.rol}</small>`:''}
-                </div>
-            `).join('') || '<p style="text-align:center;color:#64748b;">Sin jugadores en el plantel</p>';
+            plantelGrid.innerHTML = plantel.map(tarjetaJugador).join('') || 
+                '<p style="text-align:center;color:#64748b;">Sin jugadores en el plantel</p>';
         }
-    } catch(e){console.error('Error cargando jugadores:',e);}
+        
+    } catch (e) {
+        console.error('Error cargando jugadores:', e);
+    }
 }
 
 // ----- PARTIDOS -----

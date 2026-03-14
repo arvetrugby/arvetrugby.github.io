@@ -1563,8 +1563,7 @@ function initConfigEquipo() {
             showMsg('❌ Error de conexión', 'error');
         }
     });
-    
-               // ============================================
+        // ============================================
     // COLOR PICKER (PC y móvil igual)
     // ============================================
     
@@ -1572,8 +1571,19 @@ function initConfigEquipo() {
     const colorPreview = document.getElementById('colorPreview');
     let pickr = null;
     
-    // Inicializar Pickr
+    // Inicializar Pickr (esperar a que el DOM esté listo)
     function initPickr(defaultColor) {
+        const container = document.getElementById('color-picker');
+        if (!container) {
+            console.error('No existe #color-picker');
+            return;
+        }
+        
+        // Destruir instancia anterior si existe
+        if (pickr) {
+            pickr.destroyAndRemove();
+        }
+        
         pickr = Pickr.create({
             el: '#color-picker',
             theme: 'classic',
@@ -1608,26 +1618,29 @@ function initConfigEquipo() {
         });
     }
     
-    // Cargar color existente
+    // Cargar color existente e inicializar picker
     async function cargarColorExistente() {
+        let colorInicial = '#6366f1';
+        
         try {
             const response = await fetch(`${API_URL}?action=getEquipoById&id=${currentUser.equipoId}`);
             const data = await response.json();
             
-            let colorInicial = '#6366f1';
             if (data.success && data.data.colorPrimario) {
                 colorInicial = data.data.colorPrimario;
-                colorInput.value = colorInicial;
-                colorPreview.textContent = colorInicial;
             }
-            
-            initPickr(colorInicial);
         } catch (e) {
-            console.log('No se pudo cargar color existente');
-            initPickr('#6366f1');
+            console.log('No se pudo cargar color existente, usando default');
         }
+        
+        // Inicializar con el color (existente o default)
+        colorInput.value = colorInicial;
+        colorPreview.textContent = colorInicial;
+        initPickr(colorInicial);
     }
-    cargarColorExistente();
+    
+    // Inicializar después de un pequeño delay para asegurar que el DOM está listo
+    setTimeout(cargarColorExistente, 100);
 
     // Guardar color
     btnGuardarColor.addEventListener('click', async function() {

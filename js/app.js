@@ -2106,10 +2106,36 @@ async function cargarQuienesSomosExistente() {
 }  // ← CIERRA initConfigEquipo
 
 // Función global para eliminar foto (FUERA de initConfigEquipo)
-window.eliminarFotoGaleria = function(index) {
+window.eliminarFotoGaleria = async function(index) {
     if (!confirm('¿Eliminar esta foto?')) return;
+    
     window.galeriaTemporal.splice(index, 1);
     window.renderGaleriaAdmin();
+    
+    // ✅ GUARDAR AUTOMÁTICAMENTE AL ELIMINAR
+    try {
+        showMsg('Actualizando galería...', 'info');
+        
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: 'updateEquipo',
+                id: currentUser.equipoId,
+                galeria: window.galeriaTemporal
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showMsg('✅ Foto eliminada', 'success');
+        } else {
+            showMsg('❌ Error: ' + result.error, 'error');
+        }
+    } catch (err) {
+        showMsg('❌ Error de conexión', 'error');
+        console.error(err);
+    }
 };
 
 

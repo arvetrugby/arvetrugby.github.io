@@ -1227,7 +1227,7 @@ async function cargarJugadoresAdmin() {
                     ? `<button class="btn-action btn-warning" onclick="cambiarEstadoJugador('${j.id}', 'Pendiente')">Pasar a Pendiente</button>`
                     : `<button class="btn-action btn-success" onclick="cambiarEstadoJugador('${j.id}', 'Activo')">Aprobar</button>`;
 
-               return `
+              return `
     <div class="list-item">
         <div class="list-item-info">
             <h4>#${j.numeroCamiseta || '-'} ${j.nombre} ${j.apellido || ''}</h4>
@@ -1243,7 +1243,7 @@ async function cargarJugadoresAdmin() {
             ${btnEstado}
             <button class="btn-action btn-delete" onclick="eliminarJugador('${j.id}')">Eliminar</button>
             
-           <!-- Botones de Rol -->
+            <!-- Botones de Rol -->
             <div style="margin-top: 8px; display: flex; gap: 5px; flex-wrap: wrap;">
                 <button class="btn-action ${j.rol === 'Jugador' ? 'btn-success' : 'btn-secondary'}" 
                         onclick="cambiarRolJugador('${j.id}', 'Jugador')"
@@ -1280,7 +1280,7 @@ async function cargarJugadoresAdmin() {
                         style="font-size: 11px; padding: 4px 8px;">
                     Tesorero
                 </button>
-</div>`
+            </div>
         </div>
     </div>
 `;

@@ -1244,43 +1244,43 @@ async function cargarJugadoresAdmin() {
             <button class="btn-action btn-delete" onclick="eliminarJugador('${j.id}')">Eliminar</button>
             
             <!-- Botones de Rol -->
-            <div style="margin-top: 8px; display: flex; gap: 5px; flex-wrap: wrap;">
-                <button class="btn-action ${j.rol === 'Jugador' ? 'btn-success' : 'btn-secondary'}" 
-                        onclick="cambiarRolJugador('${j.id}', 'Jugador')"
-                        style="font-size: 11px; padding: 4px 8px;">
-                    Jugador
-                </button>
-                <button class="btn-action ${j.rol === 'Capitán' ? 'btn-success' : 'btn-secondary'}" 
-                        onclick="cambiarRolJugador('${j.id}', 'Capitán')"
-                        style="font-size: 11px; padding: 4px 8px;">
-                    Capitán
-                </button>
-                <button class="btn-action ${j.rol === 'Sub Capitán' ? 'btn-success' : 'btn-secondary'}" 
-                        onclick="cambiarRolJugador('${j.id}', 'Sub Capitán')"
-                        style="font-size: 11px; padding: 4px 8px;">
-                    Sub Capitán
-                </button>
-                <button class="btn-action ${j.rol === 'Manager' ? 'btn-success' : 'btn-secondary'}" 
-                        onclick="cambiarRolJugador('${j.id}', 'Manager')"
-                        style="font-size: 11px; padding: 4px 8px;">
-                    Manager
-                </button>
-                <button class="btn-action ${j.rol === 'Sub Manager' ? 'btn-success' : 'btn-secondary'}" 
-                        onclick="cambiarRolJugador('${j.id}', 'Sub Manager')"
-                        style="font-size: 11px; padding: 4px 8px;">
-                    Sub Manager
-                </button>
-                <button class="btn-action ${j.rol === 'Admin' ? 'btn-success' : 'btn-secondary'}" 
-                        onclick="cambiarRolJugador('${j.id}', 'Admin')"
-                        style="font-size: 11px; padding: 4px 8px;">
-                    Admin
-                </button>
-                <button class="btn-action ${j.rol === 'Tesorero' ? 'btn-success' : 'btn-secondary'}" 
-                        onclick="cambiarRolJugador('${j.id}', 'Tesorero')"
-                        style="font-size: 11px; padding: 4px 8px;">
-                    Tesorero
-                </button>
-            </div>
+            <div style="margin-top: 12px; display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-start;">
+    <button class="btn-action ${j.rol === 'Jugador' ? 'btn-success' : 'btn-secondary'}" 
+            onclick="cambiarRolJugador('${j.id}', 'Jugador')"
+            style="font-size: 10px; padding: 5px 10px; border-radius: 20px; border: none; cursor: pointer; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px;">
+        Jugador
+    </button>
+    <button class="btn-action ${j.rol === 'Capitán' ? 'btn-success' : 'btn-secondary'}" 
+            onclick="cambiarRolJugador('${j.id}', 'Capitán')"
+            style="font-size: 10px; padding: 5px 10px; border-radius: 20px; border: none; cursor: pointer; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px;">
+        Capitán
+    </button>
+    <button class="btn-action ${j.rol === 'Sub Capitán' ? 'btn-success' : 'btn-secondary'}" 
+            onclick="cambiarRolJugador('${j.id}', 'Sub Capitán')"
+            style="font-size: 10px; padding: 5px 10px; border-radius: 20px; border: none; cursor: pointer; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px;">
+        Sub Capitán
+    </button>
+    <button class="btn-action ${j.rol === 'Manager' ? 'btn-success' : 'btn-secondary'}" 
+            onclick="cambiarRolJugador('${j.id}', 'Manager')"
+            style="font-size: 10px; padding: 5px 10px; border-radius: 20px; border: none; cursor: pointer; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px;">
+        Manager
+    </button>
+    <button class="btn-action ${j.rol === 'Sub Manager' ? 'btn-success' : 'btn-secondary'}" 
+            onclick="cambiarRolJugador('${j.id}', 'Sub Manager')"
+            style="font-size: 10px; padding: 5px 10px; border-radius: 20px; border: none; cursor: pointer; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px;">
+        Sub Manager
+    </button>
+    <button class="btn-action ${j.rol === 'Admin' ? 'btn-success' : 'btn-secondary'}" 
+            onclick="cambiarRolJugador('${j.id}', 'Admin')"
+            style="font-size: 10px; padding: 5px 10px; border-radius: 20px; border: none; cursor: pointer; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px;">
+        Admin
+    </button>
+    <button class="btn-action ${j.rol === 'Tesorero' ? 'btn-success' : 'btn-secondary'}" 
+            onclick="cambiarRolJugador('${j.id}', 'Tesorero')"
+            style="font-size: 10px; padding: 5px 10px; border-radius: 20px; border: none; cursor: pointer; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px;">
+        Tesorero
+    </button>
+</div>
         </div>
     </div>
 `;

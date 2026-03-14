@@ -579,7 +579,7 @@ function initLogin() {
                 localStorage.setItem('arvet_user', JSON.stringify(data.user));
 
                 const user = data.user;
-                const rolesAdmin = ['Admin', 'Capitán', 'Manager'];
+                const rolesAdmin = ['Admin', 'Capitán', 'Manager', 'Sub Capitán', 'Sub Manager', 'Tesorero'];
 
                 if (rolesAdmin.includes(user.rol)) {
                window.location.href = 'admin.html';
@@ -613,7 +613,14 @@ function checkExistingSession() {
     if (user) {
         try {
             const userData = JSON.parse(user);
-            const rolesAdmin = ['Admin', 'Capitán', 'Manager'];
+            const rolesAdmin = [
+                'Admin', 
+                'Capitán', 
+                'Manager',
+                'Sub Capitán',
+                'Sub Manager', 
+                'Tesorero'
+            ];
             if (rolesAdmin.includes(userData.rol)) {
                 window.location.href = 'admin.html';
             }
@@ -1101,7 +1108,7 @@ function initAdmin() {
     }
 
   // 🔒 Protección de sesión - Admin, Capitán y Manager tienen acceso
-const rolesAdminPermitidos = ['Admin', 'Capitán', 'Manager'];
+const rolesAdminPermitidos = ['Admin', 'Capitán', 'Manager', 'Sub Capitán', 'Sub Manager', 'Tesorero'];
 if (!currentUser || !rolesAdminPermitidos.includes(currentUser.rol)) {
     console.log('Acceso no autorizado - Rol:', currentUser?.rol);
     localStorage.removeItem('admin_edit_jugador');
@@ -1248,13 +1255,28 @@ async function cargarJugadoresAdmin() {
                         style="font-size: 11px; padding: 4px 8px;">
                     Capitán
                 </button>
+                <button class="btn-action ${j.rol === 'Capitán' ? 'btn-success' : 'btn-secondary'}" 
+                        onclick="cambiarRolJugador('${j.id}', 'Sub Capitán')"
+                        style="font-size: 11px; padding: 4px 8px;">
+                    Capitán
+                </button>
                 <button class="btn-action ${j.rol === 'Manager' ? 'btn-success' : 'btn-secondary'}" 
                         onclick="cambiarRolJugador('${j.id}', 'Manager')"
                         style="font-size: 11px; padding: 4px 8px;">
                     Manager
                 </button>
+                <button class="btn-action ${j.rol === 'Manager' ? 'btn-success' : 'btn-secondary'}" 
+                        onclick="cambiarRolJugador('${j.id}', 'Sub Manager')"
+                        style="font-size: 11px; padding: 4px 8px;">
+                    Manager
+                </button>
                 <button class="btn-action ${j.rol === 'Admin' ? 'btn-success' : 'btn-secondary'}" 
                         onclick="cambiarRolJugador('${j.id}', 'Admin')"
+                        style="font-size: 11px; padding: 4px 8px;">
+                    Admin
+                </button>
+                 <button class="btn-action ${j.rol === 'Admin' ? 'btn-success' : 'btn-secondary'}" 
+                        onclick="cambiarRolJugador('${j.id}', 'Tesorero')"
                         style="font-size: 11px; padding: 4px 8px;">
                     Admin
                 </button>

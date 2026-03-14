@@ -221,28 +221,27 @@
             
            <!-- Selector de Color -->
 <div class="card" style="margin-bottom: 30px;">
-    <h3>Color del Equipo</h3>
+    <h3>🎨 Color del Equipo</h3>
     <p style="color: #64748b; font-size: 14px; margin-bottom: 15px;">
         Elegí un color para tu navbar y encabezado
     </p>
     
-    <!-- Wrapper centrado con ancho fijo -->
-    <div style="display: flex; flex-direction: column; align-items: center; margin: 20px 0;">
+    <!-- Wrapper flexible y centrado -->
+    <div style="display: flex; flex-direction: column; align-items: center; margin: 20px 0; width: 100%;">
         
-        <!-- Contenedor del color picker -->
-        <div style="position: relative; width: 280px; max-width: 100%;">
-            <div id="color-picker" style="width: 100%;"></div>
-        </div>
+        <!-- El pickr se inyecta aquí, el JS le da el ancho -->
+        <div id="color-picker"></div>
         
-        <!-- Input oculto para guardar el valor -->
+        <!-- Input oculto -->
         <input type="hidden" id="colorPrimario" value="#6366f1">
         
+        <!-- Preview del color -->
         <p id="colorPreview" style="margin-top: 15px; font-size: 14px; color: #64748b; font-weight: 600; font-family: monospace; background: #f1f5f9; padding: 8px 16px; border-radius: 8px; min-width: 100px; text-align: center;">
             #6366f1
         </p>
     </div>
     
-    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+    <div style="display: flex; gap: 10px; justify-content: center;">
         <button type="button" id="btnGuardarColor" class="btn-success" style="min-width: 140px;">Guardar Color</button>
     </div>
 </div>

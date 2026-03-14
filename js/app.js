@@ -1564,73 +1564,25 @@ function initConfigEquipo() {
         }
     });
     
-        // ============================================
-    // PALETA DE COLORES (mejor UX en móvil)
+           // ============================================
+    // SELECTOR DE COLOR (PC y móvil)
     // ============================================
     
-    const coloresPredefinidos = [
-        '#ef4444', '#f97316', '#f59e0b', '#84cc16', '#22c55e',
-        '#14b8a6', '#06b6d4', '#3b82f6', '#6366f1', '#8b5cf6',
-        '#a855f7', '#d946ef', '#ec4899', '#f43f5e', '#334155'
-    ];
+    const colorLabel = document.getElementById('colorLabel');
+    const colorPreview = document.getElementById('colorPreview');
     
-    let colorSeleccionado = '#6366f1'; // default
+    // Actualizar visual cuando cambia el color
+    colorInput.addEventListener('input', function() {
+        const color = this.value;
+        colorLabel.style.background = color;
+        colorPreview.textContent = color;
+    });
     
-    // Renderizar paleta
-    const paletaContainer = document.createElement('div');
-    paletaContainer.style.cssText = 'display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:20px 0;padding:0 10px;';
-    
-    paletaContainer.innerHTML = coloresPredefinidos.map(color => `
-        <div class="color-option" data-color="${color}" 
-             style="width:100%;aspect-ratio:1;border-radius:50%;background:${color};cursor:pointer;border:3px solid transparent;transition:all 0.2s;">
-        </div>
-    `).join('');
-    
-    // Insertar paleta antes del input oculto
-    colorInput.parentNode.insertBefore(paletaContainer, colorInput);
-    
-    // Crear preview del color seleccionado
-    const previewBox = document.createElement('div');
-    previewBox.id = 'colorPreviewBox';
-    previewBox.style.cssText = 'display:inline-block;width:60px;height:60px;border-radius:12px;background:#6366f1;border:3px solid #e2e8f0;box-shadow:0 4px 12px rgba(0,0,0,0.15);';
-    
-    const previewText = document.createElement('p');
-    previewText.id = 'colorPreviewText';
-    previewText.style.cssText = 'margin-top:8px;font-size:13px;color:#64748b;font-weight:500;';
-    previewText.textContent = '#6366f1';
-    
-    const previewWrapper = document.createElement('div');
-    previewWrapper.style.cssText = 'text-align:center;margin:15px 0;';
-    previewWrapper.appendChild(previewBox);
-    previewWrapper.appendChild(previewText);
-    
-    // Insertar preview después de la paleta
-    paletaContainer.parentNode.insertBefore(previewWrapper, colorInput);
-    
-    // Ocultar input nativo
-    colorInput.type = 'hidden';
-    
-    // Manejar clicks en la paleta
-    paletaContainer.querySelectorAll('.color-option').forEach(circle => {
-        circle.addEventListener('click', function() {
-            const color = this.dataset.color;
-            colorSeleccionado = color;
-            
-            // Quitar selección anterior
-            paletaContainer.querySelectorAll('.color-option').forEach(c => {
-                c.style.border = '3px solid transparent';
-                c.style.transform = 'scale(1)';
-            });
-            
-            // Marcar seleccionado
-            this.style.border = '3px solid #1e293b';
-            this.style.transform = 'scale(1.15)';
-            
-            // Actualizar preview e input
-            previewBox.style.background = color;
-            previewText.textContent = color;
-            colorInput.value = color;
-        });
+    // También al cambiar definitivamente (cuando cierra el picker)
+    colorInput.addEventListener('change', function() {
+        const color = this.value;
+        colorLabel.style.background = color;
+        colorPreview.textContent = color;
     });
     
     // Cargar color existente
@@ -1640,18 +1592,10 @@ function initConfigEquipo() {
             const data = await response.json();
             
             if (data.success && data.data.colorPrimario) {
-                const colorExistente = data.data.colorPrimario;
-                colorSeleccionado = colorExistente;
-                colorInput.value = colorExistente;
-                previewBox.style.background = colorExistente;
-                previewText.textContent = colorExistente;
-                
-                // Marcar en la paleta si existe
-                const opcion = paletaContainer.querySelector(`[data-color="${colorExistente}"]`);
-                if (opcion) {
-                    opcion.style.border = '3px solid #1e293b';
-                    opcion.style.transform = 'scale(1.15)';
-                }
+                const color = data.data.colorPrimario;
+                colorInput.value = color;
+                colorLabel.style.background = color;
+                colorPreview.textContent = color;
             }
         } catch (e) {
             console.log('No se pudo cargar color existente');
@@ -1661,7 +1605,7 @@ function initConfigEquipo() {
 
     // Guardar color
     btnGuardarColor.addEventListener('click', async function() {
-        const color = colorSeleccionado;
+        const color = colorInput.value;
         
         showMsg('Guardando color...', 'info');
         

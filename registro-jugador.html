@@ -230,8 +230,17 @@ button:disabled {
     </div>
 
     <div style="text-align:center;">
-        <input type="file" id="avatarUpload" accept="image/*">
-    </div>
+    <label for="avatarUpload" id="btnAvatarUpload" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: #e2e8f0; color: #475569; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; border: 2px dashed #cbd5e1;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        <span id="avatarUploadText">Subir foto</span>
+    </label>
+    <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+    <p id="avatarNombreArchivo" style="margin-top: 8px; font-size: 12px; color: #64748b; display: none;"></p>
+</div>
 </div>
                 <input type="hidden" id="equipoId" name="equipoId">
 
@@ -293,6 +302,13 @@ async function cargarDatosEquipo() {
         if (nombreEquipo) {
             nombreEquipo.style.color = colorPrimario;
         }
+        // Aplicar color al botón de subir avatar
+const btnAvatar = document.getElementById('btnAvatarUpload');
+if (btnAvatar) {
+    btnAvatar.style.background = colorPrimario + '15'; // 15 = 8% opacidad
+    btnAvatar.style.color = colorPrimario;
+    btnAvatar.style.borderColor = colorPrimario + '40'; // 40 = 25% opacidad
+}
         // Logo en blanco (filter invert)
         const logo = document.getElementById('navbarLogoEquipo');
         if (data.logoUrl) {

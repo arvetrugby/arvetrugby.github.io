@@ -148,7 +148,7 @@
             </div>
         </section>
 
-        <!-- 🔥 MOVIDO AQUÍ: Configuración (dentro de main, no del nav) -->
+                <!-- 🔥 MOVIDO AQUÍ: Configuración (dentro de main, no del nav) -->
         <section id="configuracion" class="admin-section">
             <div class="section-header">
                 <h2>⚙️ Configuración del Equipo</h2>
@@ -174,67 +174,69 @@
                 </p>
             </div>
             
-            <!-- Galería de Fotos (máximo 5) -->
-<div class="card" style="margin-bottom: 30px;">
-    <h3>📸 Galería (máx. 8 fotos)</h3>
-    
-    <div id="galeriaAdminContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin: 20px 0;">
-        <!-- Fotos se cargan aquí -->
-    </div>
-    
-    <div style="display: flex; gap: 10px; justify-content: center;">
-        <input type="file" id="inputGaleria" accept="image/*" multiple style="display: none;">
-        <button type="button" id="btnAgregarFoto" class="btn-primary">+ Agregar Fotos</button>
-        <button type="button" id="btnGuardarGaleria" class="btn-success">Guardar Galería</button>
-    </div>
-    <p id="galeriaMsg" style="text-align: center; color: #64748b; font-size: 12px; margin-top: 10px;">
-        Máximo 8 fotos
-    </p>
-</div>
-       <!-- Selector de Color -->
-<div class="card" style="margin-bottom: 30px;">
-    <h3>🎨 Color del Equipo</h3>
-    <p style="color: #64748b; font-size: 14px; margin-bottom: 15px;">
-        Elegí un color para tu navbar y encabezado
-    </p>
-    
-    <div style="text-align: center; margin: 20px 0;">
-        <!-- Contenedor del color picker -->
-        <div id="color-picker" style="display: inline-block;"></div>
-        
-        <!-- Input oculto para guardar el valor -->
-        <input type="hidden" id="colorPrimario" value="#6366f1">
-        
-        <p id="colorPreview" style="margin-top: 10px; font-size: 13px; color: #64748b; font-weight: 500;">
-            #6366f1
-        </p>
-    </div>
-    
-    <div style="display: flex; gap: 10px; justify-content: center;">
-        <button type="button" id="btnGuardarColor" class="btn-success">Guardar Color</button>
-    </div>
-</div>
-    <!-- Quiénes Somos / Historia del Equipo -->
-<div class="card">
-    <h3>📝 Quiénes Somos</h3>
-    
-    <label>Descripción:</label>
-    <textarea id="descripcionEquipo" placeholder="Descripción del equipo"></textarea>
-    
-    <label>Historia:</label>
-    <textarea id="historiaEquipo" placeholder="Historia del equipo"></textarea>
-    
-    <label>Fecha de fundación:</label>
-    <input type="text" id="fechaFundacionEquipo" placeholder="dd/mm/aaaa">
-    
-    <label>Instagram:</label>
-    <input type="text" id="coloresEquipo" placeholder="Instagram">
-    
-    <button type="button" id="btnGuardarQuienesSomos" class="btn-success">Guardar Información</button>
-  </div>
-
-        </section>
-    </main>
+            <!-- Galería de Fotos (máximo 8) -->
+            <div class="card" style="margin-bottom: 30px;">
+                <h3>📸 Galería (máx. 8 fotos)</h3>
+                
+                <div id="galeriaAdminContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin: 20px 0;">
+                    <!-- Fotos se cargan aquí -->
+                </div>
+                
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <input type="file" id="inputGaleria" accept="image/*" multiple style="display: none;">
+                    <button type="button" id="btnAgregarFoto" class="btn-primary">+ Agregar Fotos</button>
+                    <button type="button" id="btnGuardarGaleria" class="btn-success">Guardar Galería</button>
+                </div>
+                <p id="galeriaMsg" style="text-align: center; color: #64748b; font-size: 12px; margin-top: 10px;">
+                    Máximo 8 fotos
+                </p>
+            </div>
+            
+            <!-- Selector de Color -->
+            <div class="card" style="margin-bottom: 30px;">
+                <h3>🎨 Color del Equipo</h3>
+                <p style="color: #64748b; font-size: 14px; margin-bottom: 15px;">
+                    Elegí un color para tu navbar y encabezado
+                </p>
+                
+                <div style="text-align: center; margin: 20px 0;">
+                    <!-- Contenedor del color picker -->
+                    <div id="color-picker" style="display: inline-block;"></div>
+                    
+                    <!-- Input oculto para guardar el valor -->
+                    <input type="hidden" id="colorPrimario" value="#6366f1">
+                    
+                    <p id="colorPreview" style="margin-top: 10px; font-size: 13px; color: #64748b; font-weight: 500;">
+                        #6366f1
+                    </p>
+                </div>
+                
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button type="button" id="btnGuardarColor" class="btn-success">Guardar Color</button>
+                </div>
+            </div>
+            
+            <!-- Quiénes Somos / Historia del Equipo -->
+            <div class="card">
+                <h3>📝 Quiénes Somos</h3>
+                
+                <label>Descripción:</label>
+                <textarea id="descripcionEquipo" placeholder="Descripción del equipo"></textarea>
+                
+                <label>Historia:</label>
+                <textarea id="historiaEquipo" placeholder="Historia del equipo"></textarea>
+                
+                <label>Fecha de fundación:</label>
+                <input type="text" id="fechaFundacionEquipo" placeholder="dd/mm/aaaa">
+                
+                <label>Instagram:</label>
+                <input type="text" id="coloresEquipo" placeholder="Instagram">
+                
+                <button type="button" id="btnGuardarQuienesSomos" class="btn-success">Guardar Información</button>
+            </div>
+            
+        </section>  <!-- ← CIERRA CONFIGURACION AQUÍ -->
+    </main>  <!-- ← CIERRA MAIN AQUÍ -->
     
     <script src="js/app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>

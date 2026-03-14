@@ -1709,17 +1709,18 @@ const btnGuardarColor = document.getElementById('btnGuardarColor');
     // 2. Seleccionar nuevo logo (subir a ImgBB)
     btnCambiarLogo.addEventListener('click', () => inputLogo.click());
     
-    inputLogo.addEventListener('change', async function() {
+       inputLogo.addEventListener('change', async function() {
         const file = this.files[0];
         if (!file) return;
         
-        showMsg('Subiendo imagen...', 'info');
+        showMsg('Subiendo...', 'info');
         
         const formData = new FormData();
         formData.append("image", file);
         
         try {
-            const response = await fetch("https://api.imgbb.com/1/upload?key=2c40bfae99afcb6fd536a0e303a77b90 ", {
+            // 1. Subir a ImgBB
+            const response = await fetch("https://api.imgbb.com/1/upload?key=2c40bfae99afcb6fd536a0e303a77b90", {
                 method: "POST",
                 body: formData
             });
@@ -1730,9 +1731,25 @@ const btnGuardarColor = document.getElementById('btnGuardarColor');
                 const imageUrl = result.data.url;
                 logoPreview.src = imageUrl;
                 
-                // Guardar en variable global temporal
-                window.nuevoLogoUrl = imageUrl;
-                showMsg('✅ Imagen lista. Click en Guardar.', 'success');
+                // 2. GUARDAR AUTOMÁTICAMENTE (tu código del botón)
+                showMsg('Guardando...', 'info');
+                
+                const saveResponse = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'updateEquipo',
+                        id: currentUser.equipoId,
+                        logoUrl: imageUrl
+                    })
+                });
+                
+                const saveResult = await saveResponse.json();
+                
+                if (saveResult.success) {
+                    showMsg('✅ Logo actualizado', 'success');
+                } else {
+                    showMsg('❌ Error: ' + saveResult.error, 'error');
+                }
             } else {
                 showMsg('❌ Error al subir imagen', 'error');
             }
@@ -1742,40 +1759,6 @@ const btnGuardarColor = document.getElementById('btnGuardarColor');
         }
     });
     
-    // 3. Guardar logo en Google Sheets (mismo patrón que panel-jugador)
-    btnGuardarLogo.addEventListener('click', async function() {
-        if (!window.nuevoLogoUrl) {
-            showMsg('⚠️ Primero seleccioná una imagen', 'error');
-            return;
-        }
-        
-        showMsg('Guardando...', 'info');
-        
-        try {
-            // 🔥 MISMO PATRÓN QUE PANEL-JUGADOR (funciona!)
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify({
-                    action: 'updateEquipo',
-                    id: currentUser.equipoId,
-                    logoUrl: window.nuevoLogoUrl
-                })
-            });
-            
-            const result = await response.json();
-            console.log('Respuesta:', result);
-            
-            if (result.success) {
-                showMsg('✅ Logo guardado', 'success');
-                window.nuevoLogoUrl = null;
-            } else {
-                showMsg('❌ Error: ' + result.error, 'error');
-            }
-        } catch (err) {
-            console.error(err);
-            showMsg('❌ Error de conexión', 'error');
-        }
-    });
 // ============================================
 // COLOR PICKER SIEMPRE VISIBLE (inline)
 // ============================================

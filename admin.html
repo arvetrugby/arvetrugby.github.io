@@ -9,6 +9,22 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css"/>
 
 </head>
+
+<style>
+    /* Ajustes para Pickr en móviles */
+.pcr-app {
+    max-width: 90vw !important;
+    width: 300px !important;
+}
+
+@media (max-width: 400px) {
+    .pcr-app {
+        width: 280px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+    }
+}
+</style>
 <body class="admin-body">
     <!-- Header móvil -->
     <header class="admin-header">
@@ -148,23 +164,23 @@
             </div>
         </section>
 
-                <!-- 🔥 MOVIDO AQUÍ: Configuración (dentro de main, no del nav) -->
+                
         <section id="configuracion" class="admin-section">
             <div class="section-header">
-                <h2>⚙️ Configuración del Equipo</h2>
+                <h2>Personalizá tu Equipo</h2>
             </div>
             
             <div id="msgConfig" class="message" style="display: none; margin-bottom: 20px;"></div>
             
         <!-- Logo del Equipo -->
 <div class="card" style="margin-bottom: 30px; text-align: center;">
-    <h3>Logo del Equipo</h3>
+    <h3>Logo actual del Equipo</h3>
     
     <!-- Preview del logo -->
     <div style="margin: 20px auto; display: inline-block;">
         <img id="logoPreview" src="https://i.ibb.co/Y7BMDcjt/logo-generico.png" 
              style="width: 180px; height: 180px; object-fit: contain; border-radius: 16px; 
-                    background: #f8fafc; padding: 15px; border: 3px dashed #cbd5e0;
+                    background: #606062; padding: 15px; border: 3px dashed #cbd5e0;
                     box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
     </div>
     
@@ -189,13 +205,13 @@
             
             <!-- Galería de Fotos (máximo 8) -->
             <div class="card" style="margin-bottom: 30px;">
-                <h3>📸 Galería (máx. 8 fotos)</h3>
+                <h3>Galería (máx. 8 fotos)</h3>
                 
                 <div id="galeriaAdminContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin: 20px 0;">
                     <!-- Fotos se cargan aquí -->
                 </div>
                 
-                <div style="display: flex; gap: 10px; justify-content: center;">
+                <div style=" gap: 12px; justify-content: center;">
                     <input type="file" id="inputGaleria" accept="image/*" multiple style="display: none;">
                     <button type="button" id="btnAgregarFoto" class="btn-primary">+ Agregar Fotos</button>
                     <button type="button" id="btnGuardarGaleria" class="btn-success">Guardar Galería</button>
@@ -206,29 +222,28 @@
             </div>
             
             <!-- Selector de Color -->
-            <div class="card" style="margin-bottom: 30px;">
-                <h3>🎨 Color del Equipo</h3>
-                <p style="color: #64748b; font-size: 14px; margin-bottom: 15px;">
-                    Elegí un color para tu navbar y encabezado
-                </p>
-                
-                <div style="text-align: center; margin: 20px 0;">
-                    <!-- Contenedor del color picker -->
-                    <div id="color-picker" style="display: inline-block;"></div>
-                    
-                    <!-- Input oculto para guardar el valor -->
-                    <input type="hidden" id="colorPrimario" value="#6366f1">
-                    
-                    <p id="colorPreview" style="margin-top: 10px; font-size: 13px; color: #64748b; font-weight: 500;">
-                        #6366f1
-                    </p>
-                </div>
-                
-                <div style="display: flex; gap: 10px; justify-content: center;">
-                    <button type="button" id="btnGuardarColor" class="btn-success">Guardar Color</button>
-                </div>
-            </div>
-            
+<div class="card" style="margin-bottom: 30px;">
+    <h3>🎨 Color del Equipo</h3>
+    <p style="color: #64748b; font-size: 14px; margin-bottom: 15px;">
+        Elegí un color para tu navbar y encabezado
+    </p>
+    
+    <div style="text-align: center; margin: 20px 0; max-width: 100%; overflow: hidden;">
+        <!-- Contenedor del color picker con ancho controlado -->
+        <div id="color-picker" style="display: inline-block; max-width: 100%;"></div>
+        
+        <!-- Input oculto para guardar el valor -->
+        <input type="hidden" id="colorPrimario" value="#6366f1">
+        
+        <p id="colorPreview" style="margin-top: 15px; font-size: 14px; color: #64748b; font-weight: 600; font-family: monospace; background: #f1f5f9; padding: 8px 16px; border-radius: 8px; display: inline-block; min-width: 100px;">
+            #6366f1
+        </p>
+    </div>
+    
+    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+        <button type="button" id="btnGuardarColor" class="btn-success" style="min-width: 140px;">Guardar Color</button>
+    </div>
+</div>
             <!-- Quiénes Somos / Historia del Equipo -->
             <div class="card">
                 <h3>📝 Quiénes Somos</h3>

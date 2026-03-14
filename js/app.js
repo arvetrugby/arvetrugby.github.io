@@ -840,7 +840,7 @@ function mostrarMensaje(texto, tipo) {
 function initEquipo() {
     console.log('=== INICIO EQUIPO ===');
     
-    / 🔥 VERIFICAR SESIÓN Y ACTUALIZAR NAV
+   // 🔥 VERIFICAR SESIÓN Y ACTUALIZAR NAV
     actualizarNavUsuario();
     
     const urlParams = new URLSearchParams(window.location.search);

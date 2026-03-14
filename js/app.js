@@ -1144,31 +1144,30 @@ async function cargarJugadoresEquipo(equipoId) {
             const edad = calcularEdad(j.fechaNacimiento);
             const fechaFormateada = formatearFecha(j.fechaNacimiento);
             
-            // Datos privados solo para logueados
             const datosPrivados = isLogueado ? `
-                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
-                    ${fechaFormateada ? `
-                        <p style="margin: 4px 0; font-size: 12px; color: #64748b;">
-                            Nac: ${fechaFormateada} ${edad ? `(${edad} años)` : ''}
-                        </p>
-                    ` : ''}
-                    ${j.telefono ? `
-                        <a href="https://wa.me/${j.telefono.replace(/\D/g, '')}" 
-                           target="_blank"
-                           style="display: inline-flex; align-items: center; gap: 6px; 
-                                  margin-top: 6px; padding: 6px 12px; background: #22c55e; 
-                                  color: white; border-radius: 20px; font-size: 12px; 
-                                  text-decoration: none; font-weight: 500;">
-                         WhatsApp
-                        </a>
-                    ` : ''}
-                    ${j.email && isLogueado ? `
-                        <p style="margin: 4px 0; font-size: 12px; color: #64748b; word-break: break-all;">
-                             ${j.email}
-                        </p>
-                    ` : ''}
-                </div>
-            ` : '';
+    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+        ${fechaFormateada ? `
+            <p style="margin: 4px 0; font-size: 12px; color: #64748b;">
+                Nac: ${fechaFormateada} ${edad ? `(${edad} años)` : ''}
+            </p>
+        ` : ''}
+        ${j.telefono ? `
+            <a href="https://wa.me/${String(j.telefono).replace(/\D/g, '')}" 
+               target="_blank"
+               style="display: inline-flex; align-items: center; gap: 6px; 
+                      margin-top: 6px; padding: 6px 12px; background: #22c55e; 
+                      color: white; border-radius: 20px; font-size: 12px; 
+                      text-decoration: none; font-weight: 500;">
+                WhatsApp
+            </a>
+        ` : ''}
+        ${j.email ? `
+            <p style="margin: 4px 0; font-size: 12px; color: #64748b; word-break: break-all;">
+                ${j.email}
+            </p>
+        ` : ''}
+    </div>
+` : '';
             
             return `
                 <div class="card" style="text-align: center; position: relative;">

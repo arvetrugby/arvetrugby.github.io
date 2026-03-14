@@ -1115,29 +1115,56 @@ async function cargarJugadoresEquipo(equipoId) {
         const comisionGrid = document.getElementById('comisionGrid');
         const plantelGrid = document.getElementById('plantelGrid');
 
-        // Función para calcular edad
-        function calcularEdad(fechaNacimiento) {
-            if (!fechaNacimiento) return null;
-            const hoy = new Date();
-            const nacimiento = new Date(fechaNacimiento);
-            let edad = hoy.getFullYear() - nacimiento.getFullYear();
-            const mes = hoy.getMonth() - nacimiento.getMonth();
-            if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
-                edad--;
-            }
-            return edad;
-        }
-
-        // Función para formatear fecha
         function formatearFecha(fecha) {
-            if (!fecha) return null;
-            const date = new Date(fecha);
-            return date.toLocaleDateString('es-ES', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            });
-        }
+    if (!fecha) return null;
+    
+    const str = String(fecha).trim();
+    
+    // Si viene como 2020-05-15
+    if (str.includes('-')) {
+        const [año, mes, dia] = str.split('-');
+        return `${dia}/${mes}/${año}`;
+    }
+    
+    // Fallback por si acaso
+    const date = new Date(str);
+    if (isNaN(date.getTime())) return null;
+    
+    return date.toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+}
+
+function calcularEdad(fechaNacimiento) {
+    if (!fechaNacimiento) return null;
+    
+    const str = String(fechaNacimiento).trim();
+    let año, mes, dia;
+    
+    if (str.includes('-')) {
+        [año, mes, dia] = str.split('-');
+    } else {
+        const date = new Date(str);
+        if (isNaN(date.getTime())) return null;
+        año = date.getFullYear();
+        mes = date.getMonth() + 1;
+        dia = date.getDate();
+    }
+    
+    const hoy = new Date();
+    let edad = hoy.getFullYear() - parseInt(año);
+    
+    const mesActual = hoy.getMonth() + 1;
+    const diaActual = hoy.getDate();
+    
+    if (mesActual < parseInt(mes) || (mesActual === parseInt(mes) && diaActual < parseInt(dia))) {
+        edad--;
+    }
+    
+    return edad > 0 ? edad : null;
+}
 
         // Función para generar tarjeta de jugador
         function tarjetaJugador(j) {

@@ -52,6 +52,9 @@
         </div>
         
         <ul class="nav-menu">
+            <li onclick="showSection('configuracion')">
+                <span>⚙️</span> Sitio Público
+            </li>
             <li class="active" onclick="showSection('dashboard')">
                 <span>📊</span> Dashboard
             </li>
@@ -67,10 +70,7 @@
             <li onclick="showSection('finanzas')">
                 <span>📈</span> Finanzas
             </li>
-            <!-- 🔥 FALTABA ESTE ÍTEM -->
-            <li onclick="showSection('configuracion')">
-                <span>⚙️</span> Configuración
-            </li>
+            
         </ul>
         
         <div class="nav-footer">
@@ -88,6 +88,106 @@
 
     <!-- Contenido principal -->
     <main class="admin-main">
+        <section id="configuracion" class="admin-section">
+            <div class="section-header">
+                <h2>Personalizá tu Equipo</h2>
+            </div>
+            
+            <div id="msgConfig" class="message" style="display: none; margin-bottom: 20px;"></div>
+            
+        <!-- Logo del Equipo -->
+<div class="card" style="margin-bottom: 30px; text-align: center;">
+    <h3>Logo actual del Equipo</h3>
+    
+    <!-- Preview del logo -->
+    <div style="margin: 20px auto; display: inline-block;">
+        <img id="logoPreview" src="https://i.ibb.co/Y7BMDcjt/logo-generico.png" 
+             style="width: 180px; height: 180px; object-fit: contain; border-radius: 16px; 
+                    background: #606062; padding: 15px; border: 3px dashed #cbd5e0;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+    </div>
+    
+    <!-- Input oculto -->
+    <input type="file" id="inputLogo" accept="image/*" style="display: none;">
+    
+    <!-- Botones apilados -->
+    <div>
+        <button type="button" id="btnCambiarLogo" class="btn-primary">
+            Seleccionar Logo
+        </button>
+        <button type="button" id="btnGuardarLogo" class="btn-success">
+            Guardar Logo
+        </button>
+    </div>
+    
+    <p style="color: #64748b; font-size: 12px; margin-top: 15px; line-height: 1.5;">
+        Formatos: <strong>JPG, PNG</strong><br>
+        Tamaño recomendado: <strong>500×500px</strong>
+    </p>
+</div>
+            
+            <!-- Galería de Fotos (máximo 8) -->
+            <div class="card" style="margin-bottom: 30px;">
+                <h3>Galería (máx. 8 fotos)</h3>
+                
+                <div id="galeriaAdminContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin: 20px 0;">
+                    <!-- Fotos se cargan aquí -->
+                </div>
+                
+                <div style=" gap: 12px; justify-content: center;">
+                    <input type="file" id="inputGaleria" accept="image/*" multiple style="display: none;">
+                    <button type="button" id="btnAgregarFoto" class="btn-primary">+ Agregar Fotos</button>
+                    <button type="button" id="btnGuardarGaleria" class="btn-success">Guardar Galería</button>
+                </div>
+                <p id="galeriaMsg" style="text-align: center; color: #64748b; font-size: 12px; margin-top: 10px;">
+                    Máximo 8 fotos
+                </p>
+            </div>
+            
+           <!-- Selector de Color -->
+<div class="card" style="margin-bottom: 30px;">
+    <h3>🎨 Color del Equipo</h3>
+    <p style="color: #64748b; font-size: 14px; margin-bottom: 15px;">
+        Elegí un color para tu navbar y encabezado
+    </p>
+    
+    <!-- Wrapper flexible y centrado -->
+    <div style="display: flex; flex-direction: column; align-items: center; margin: 20px 0; width: 100%;">
+        
+        
+        
+        <!-- Input oculto -->
+        <input type="hidden" id="colorPrimario" value="#6366f1">
+        
+        <!-- El pickr se inyecta aquí, el JS le da el ancho -->
+        <div id="color-picker"></div>
+        
+    </div>
+    
+    <div style="display: flex; gap: 10px; justify-content: center;">
+        <button type="button" id="btnGuardarColor" class="btn-success" style="min-width: 140px;">Guardar Color</button>
+    </div>
+</div>
+            <!-- Quiénes Somos / Historia del Equipo -->
+            <div class="card">
+                <h3>📝 Quiénes Somos</h3>
+                
+                <label>Descripción:</label>
+                <textarea id="descripcionEquipo" placeholder="Descripción del equipo"></textarea>
+                
+                <label>Historia:</label>
+                <textarea id="historiaEquipo" placeholder="Historia del equipo"></textarea>
+                
+                <label>Fecha de fundación:</label>
+                <input type="text" id="fechaFundacionEquipo" placeholder="dd/mm/aaaa">
+                
+                <label>Instagram:</label>
+                <input type="text" id="coloresEquipo" placeholder="Instagram">
+                
+                <button type="button" id="btnGuardarQuienesSomos" class="btn-success">Guardar Información</button>
+            </div>
+            
+        </section>  <!-- ← CIERRA CONFIGURACION AQUÍ -->
         <!-- Dashboard -->
         <section id="dashboard" class="admin-section active">
             <div class="section-header">
@@ -170,109 +270,7 @@
         </section>
 
                 
-        <section id="configuracion" class="admin-section">
-            <div class="section-header">
-                <h2>Personalizá tu Equipo</h2>
-            </div>
-            
-            <div id="msgConfig" class="message" style="display: none; margin-bottom: 20px;"></div>
-            
-        <!-- Logo del Equipo -->
-<div class="card" style="margin-bottom: 30px; text-align: center;">
-    <h3>Logo actual del Equipo</h3>
-    
-    <!-- Preview del logo -->
-    <div style="margin: 20px auto; display: inline-block;">
-        <img id="logoPreview" src="https://i.ibb.co/Y7BMDcjt/logo-generico.png" 
-             style="width: 180px; height: 180px; object-fit: contain; border-radius: 16px; 
-                    background: #606062; padding: 15px; border: 3px dashed #cbd5e0;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
-    </div>
-    
-    <!-- Input oculto -->
-    <input type="file" id="inputLogo" accept="image/*" style="display: none;">
-    
-    <!-- Botones apilados -->
-    <div style="gap: 12px; justify-content: center;">
-        <button type="button" id="btnCambiarLogo" class="btn-primary">
-            Seleccionar Logo
-        </button>
-        <button type="button" id="btnGuardarLogo" class="btn-success">
-            Guardar Logo
-        </button>
-    </div>
-    
-    <p style="color: #64748b; font-size: 12px; margin-top: 15px; line-height: 1.5;">
-        Formatos: <strong>JPG, PNG</strong><br>
-        Tamaño recomendado: <strong>500×500px</strong>
-    </p>
-</div>
-            
-            <!-- Galería de Fotos (máximo 8) -->
-            <div class="card" style="margin-bottom: 30px;">
-                <h3>Galería (máx. 8 fotos)</h3>
-                
-                <div id="galeriaAdminContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin: 20px 0;">
-                    <!-- Fotos se cargan aquí -->
-                </div>
-                
-                <div style=" gap: 12px; justify-content: center;">
-                    <input type="file" id="inputGaleria" accept="image/*" multiple style="display: none;">
-                    <button type="button" id="btnAgregarFoto" class="btn-primary">+ Agregar Fotos</button>
-                    <button type="button" id="btnGuardarGaleria" class="btn-success">Guardar Galería</button>
-                </div>
-                <p id="galeriaMsg" style="text-align: center; color: #64748b; font-size: 12px; margin-top: 10px;">
-                    Máximo 8 fotos
-                </p>
-            </div>
-            
-           <!-- Selector de Color -->
-<div class="card" style="margin-bottom: 30px;">
-    <h3>🎨 Color del Equipo</h3>
-    <p style="color: #64748b; font-size: 14px; margin-bottom: 15px;">
-        Elegí un color para tu navbar y encabezado
-    </p>
-    
-    <!-- Wrapper flexible y centrado -->
-    <div style="display: flex; flex-direction: column; align-items: center; margin: 20px 0; width: 100%;">
         
-        
-        
-        <!-- Input oculto -->
-        <input type="hidden" id="colorPrimario" value="#6366f1">
-        
-        <!-- El pickr se inyecta aquí, el JS le da el ancho -->
-        <div id="color-picker"></div>
-        <!-- Preview del color -->
-        <p id="colorPreview" style="margin-top: 15px; font-size: 14px; color: #64748b; font-weight: 600; font-family: monospace; background: #f1f5f9; padding: 8px 16px; border-radius: 8px; min-width: 100px; text-align: center;">
-            #6366f1
-        </p>
-    </div>
-    
-    <div style="display: flex; gap: 10px; justify-content: center;">
-        <button type="button" id="btnGuardarColor" class="btn-success" style="min-width: 140px;">Guardar Color</button>
-    </div>
-</div>
-            <!-- Quiénes Somos / Historia del Equipo -->
-            <div class="card">
-                <h3>📝 Quiénes Somos</h3>
-                
-                <label>Descripción:</label>
-                <textarea id="descripcionEquipo" placeholder="Descripción del equipo"></textarea>
-                
-                <label>Historia:</label>
-                <textarea id="historiaEquipo" placeholder="Historia del equipo"></textarea>
-                
-                <label>Fecha de fundación:</label>
-                <input type="text" id="fechaFundacionEquipo" placeholder="dd/mm/aaaa">
-                
-                <label>Instagram:</label>
-                <input type="text" id="coloresEquipo" placeholder="Instagram">
-                
-                <button type="button" id="btnGuardarQuienesSomos" class="btn-success">Guardar Información</button>
-            </div>
-            
-        </section>  <!-- ← CIERRA CONFIGURACION AQUÍ -->
     </main>  <!-- ← CIERRA MAIN AQUÍ -->
     
     <script src="js/app.js"></script>

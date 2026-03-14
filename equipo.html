@@ -393,7 +393,24 @@ box-shadow:0 8px 24px rgba(0,0,0,0.08);
                 <img id="navbarLogoArvet" src="images/ARVET.png" alt="ARVET">
                 <img id="navbarLogoEquipo" src="">
             </a>
-
+<div style="text-align: center; margin: 24px 0; padding: 16px;">
+    <button onclick="compartirEquipoActual()" 
+            style="padding: 14px 28px; background: linear-gradient(135deg, #22c55e, #16a34a); 
+                   color: white; border: none; border-radius: 50px; font-size: 16px; 
+                   font-weight: 600; cursor: pointer; display: inline-flex; 
+                   align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+                   transition: transform 0.2s, box-shadow 0.2s;"
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(34, 197, 94, 0.5)'"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(34, 197, 94, 0.4)'">
+        <span style="font-size: 20px;">📤</span>
+        <span>Compartir equipo</span>
+    </button>
+    <p id="urlCompartir" 
+       style="margin: 10px 0 0 0; font-size: 13px; color: #64748b; 
+              font-family: monospace; word-break: break-all;">
+        arvetrugby.github.io/Arvet/...
+    </p>
+</div>
            <button id="menuToggle" class="menu-toggle">☰</button>
 <div class="nav-links">
     <a href="#portada">Inicio</a>

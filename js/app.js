@@ -1550,6 +1550,7 @@ window.cambiarEstadoJugador = async function(id, nuevoEstado) {
     showMsg('Actualizando...', 'info');
 
     try {
+        // Llamada a Apps Script para actualizar estado
         const response = await window.fetchAPI('updateEstadoJugador', {
             id,
             estado: nuevoEstado
@@ -1558,15 +1559,32 @@ window.cambiarEstadoJugador = async function(id, nuevoEstado) {
         if (response.success) {
             showMsg('Estado actualizado', 'success');
 
-            // Recargar lista
+            // Refrescar la lista de jugadores
             await cargarJugadoresAdmin();
 
-            // Botón WhatsApp
-            agregarBotonWhatsApp(id, nuevoEstado);
+            // Agregar botón de WhatsApp solo si fue aprobado
+            if (nuevoEstado === 'Activo') {
+                const mensaje = `Hola ${response.nombre}, tu registro fue aprobado.\nUsuario: ${response.email}\nContraseña: ${response.password}\nIngresa aquí: https://tusitio.com/login.html`;
+
+                // Crear botón dinámicamente
+                const btnWhatsApp = document.createElement('button');
+                btnWhatsApp.textContent = 'Avisar por WhatsApp';
+                btnWhatsApp.className = 'btn-action btn-success';
+                btnWhatsApp.style.marginBottom = '10px';
+                btnWhatsApp.onclick = () => {
+                    // Abrir WhatsApp Web / App
+                    window.open(`https://api.whatsapp.com/send?phone=&text=${encodeURIComponent(mensaje)}`, '_blank');
+                };
+
+                // Insertar el botón arriba de la lista
+                const container = document.getElementById('listaJugadores');
+                if (container) container.prepend(btnWhatsApp);
+            }
 
         } else {
             showMsg('Error: ' + (response.error || 'No se pudo actualizar'), 'error');
         }
+
     } catch (err) {
         console.error(err);
         showMsg('Error de conexión', 'error');

@@ -1619,59 +1619,62 @@ window.cambiarEstadoJugador = async function(id, nuevoEstado) {
     showMsg('Actualizando...', 'info');
 
     try {
+        // Llamada al Apps Script / API
         const response = await window.fetchAPI('updateEstadoJugador', {
             id,
             estado: nuevoEstado
         });
 
-        if (response.success) {
-            // Datos del jugador devueltos por Apps Script
-            const jugador = {
-                id: id,
-                nombre: response.nombre,
-                email: response.email,
-                password: response.password,
-                telefono: response.telefono // si Apps Script lo devuelve
-            };
-
-            // Crear botón latente de WhatsApp si no existe ya
-            if (!document.getElementById(`btnWS-${id}`)) {
-                const botonWS = document.createElement('a');
-                botonWS.id = `btnWS-${id}`;
-                botonWS.href = `https://wa.me/${String(jugador.telefono).replace(/\D/g, '')}?text=${encodeURIComponent(
-                    nuevoEstado === 'Activo'
-                        ? `Hola ${jugador.nombre}, tu registro fue aprobado.\nUsuario: ${jugador.email}\nContraseña: ${jugador.password}\nIngresa aquí: https://tusitio.com/login.html`
-                        : `Hola ${jugador.nombre}, tu estado cambió a ${nuevoEstado}.`
-                )}`;
-                botonWS.target = '_blank';
-                botonWS.textContent = 'Enviar WhatsApp';
-                botonWS.style.position = 'fixed';
-                botonWS.style.top = '50%';
-                botonWS.style.left = '50%';
-                botonWS.style.transform = 'translate(-50%, -50%)';
-                botonWS.style.background = '#22c55e';
-                botonWS.style.color = 'white';
-                botonWS.style.padding = '12px 24px';
-                botonWS.style.borderRadius = '24px';
-                botonWS.style.fontWeight = '600';
-                botonWS.style.fontSize = '14px';
-                botonWS.style.zIndex = '9999';
-                botonWS.style.cursor = 'pointer';
-                document.body.appendChild(botonWS);
-            }
-
-            showMsg('Estado actualizado', 'success');
-            setTimeout(() => cargarJugadoresAdmin(), 200);
-
-        } else {
+        if (!response.success) {
             showMsg('Error: ' + (response.error || 'No se pudo actualizar'), 'error');
+            return;
         }
 
+        showMsg('Estado actualizado', 'success');
+
+        // Recargar lista de jugadores
+        await cargarJugadoresAdmin();
+
+        // Generar botón WhatsApp centrado
+        const { nombre, email, password, telefono } = response;
+
+        if (!telefono) return; // si no hay teléfono, no hacemos nada
+
+        // Si ya existe el botón, lo eliminamos
+        const botonExistente = document.getElementById('btnWhatsAppAviso');
+        if (botonExistente) botonExistente.remove();
+
+        const btn = document.createElement('a');
+        btn.id = 'btnWhatsAppAviso';
+        btn.href = `https://wa.me/${String(telefono).replace(/\D/g, '')}?text=${encodeURIComponent(
+            `Hola ${nombre}, tu estado de registro en ARVET ahora es ${nuevoEstado.toLowerCase()}.\nUsuario: ${email}\nContraseña: ${password}\nIngresa aquí: https://tusitio.com/login.html`
+        )}`;
+        btn.target = '_blank';
+        btn.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #25D366;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            text-align: center;
+            z-index: 9999;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            text-decoration: none;
+        `;
+        btn.textContent = `Avisar a ${nombre} por WhatsApp`;
+
+        document.body.appendChild(btn);
     } catch (err) {
         console.error(err);
         showMsg('Error de conexión', 'error');
     }
 };
+
 window.eliminarJugador = async function(id) {
 
 if (!confirm('¿Seguro que querés eliminar este jugador?')) return;

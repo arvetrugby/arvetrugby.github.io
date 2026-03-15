@@ -2125,7 +2125,7 @@ window.eliminarFotoGaleria = async function(index) {
 
   // 4. Guardar automáticamente
   try {
-    console.log('Guardando galería sin foto eliminada...');
+    showMsg('✅ Guardando', 'success', 1500);  
 
     const response = await fetch(API_URL, {
       method: 'POST',
@@ -2140,6 +2140,7 @@ window.eliminarFotoGaleria = async function(index) {
 
     if (result.success) {
       console.log('✅ Foto eliminada y guardada');
+        showMsg('✅ Foto eliminada', 'success', 1500);   
     } else {
       console.error('Error del servidor:', result.error);
     }

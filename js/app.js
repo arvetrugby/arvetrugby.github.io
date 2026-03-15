@@ -765,7 +765,7 @@ function initRegistroJugador() {
             if (result.success) {
                 mostrarMensaje('✅ ' + result.message + ' Redirigiendo...', 'success');
                 setTimeout(() => {
-                    window.location.href = 'login.html';
+                    window.location.href = esAdmin ? 'admin.html' : 'login.html';
                 }, 3000);
             } else {
                 mostrarMensaje('❌ ' + (result.error || 'Error al registrar'), 'error');
@@ -1523,7 +1523,7 @@ window.logout = function() {
     localStorage.removeItem('arvet_user');
 }
         localStorage.removeItem('arvet_login_time');
-        window.location.href = 'login.html';
+        window.location.href = esAdmin ? 'admin.html' : 'login.html';
     }
 }
 

@@ -1533,32 +1533,48 @@ window.logout = function() {
 }
 
 window.cambiarEstadoJugador = async function(id, nuevoEstado) {
-    const response = await window.fetchAPI('updateEstadoJugador', {
-        id: id,
-        estado: nuevoEstado
-    });
 
-    if (response.success) {
-        showMsg('Actualizado...', 'info');
-        cargarJugadoresAdmin();
-    } else {
-        alert('Error: ' + response.error);
-    }
+showMsg('Actualizando...', 'info');
+
+const response = await window.fetchAPI('updateEstadoJugador', {
+id,
+estado: nuevoEstado
+});
+
+if (response.success) {
+
+showMsg('Estado actualizado', 'success');
+
+setTimeout(() => {
+cargarJugadoresAdmin();
+}, 300);
+
+} else {
+showMsg('Error: ' + response.error, 'error');
+}
+
 }
 
 window.eliminarJugador = async function(id) {
-    if (!confirm('¿Seguro que querés eliminar este jugador?')) return;
 
-    const response = await window.fetchAPI('deleteJugador', {
-        id: id
-    });
+if (!confirm('¿Seguro que querés eliminar este jugador?')) return;
 
-    if (response.success) {
-        showMsg('Eliminado...', 'info');
-        cargarJugadoresAdmin();
-    } else {
-        alert('Error: ' + response.error);
-    }
+showMsg('Eliminando jugador...', 'info');
+
+const response = await window.fetchAPI('deleteJugador', { id });
+
+if (response.success) {
+
+showMsg('Jugador eliminado', 'success');
+
+setTimeout(() => {
+cargarJugadoresAdmin();
+}, 300);
+
+} else {
+showMsg('Error: ' + response.error, 'error');
+}
+
 }
 
 // ============================================

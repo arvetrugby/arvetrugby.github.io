@@ -1696,50 +1696,54 @@ const equipoIcon = L.divIcon({
 // ==========================
 // WHATSAPP ADMIN
 // ==========================
-function mostrarWhatsAppModal(mensaje, telefono) {
-    // Eliminar modal previo si existe
-    const existente = document.getElementById('waModal');
-    if (existente) existente.remove();
+function agregarBotonWhatsApp(jugadorId, estado) {
+    // Buscar el contenedor del jugador en el DOM
+    const jugadorDiv = document.querySelector(`div.list-item[data-id="${jugadorId}"]`);
+    if (!jugadorDiv) return;
 
-    // Crear overlay
-    const overlay = document.createElement('div');
-    overlay.id = 'waModal';
-    overlay.style = `
-        position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.5);
-        display: flex; align-items: center; justify-content: center;
-        z-index: 9999;
-    `;
+    // Buscar o crear contenedor de acciones extra
+    let accionesExtra = jugadorDiv.querySelector('.acciones-extra');
+    if (!accionesExtra) {
+        accionesExtra = document.createElement('div');
+        accionesExtra.className = 'acciones-extra';
+        accionesExtra.style.marginTop = '8px';
+        jugadorDiv.appendChild(accionesExtra);
+    } else {
+        accionesExtra.innerHTML = ''; // Limpiar botones previos
+    }
 
-    // Contenedor del modal
-    const modal = document.createElement('div');
-    modal.style = `
-        background: #fff;
-        padding: 24px;
-        border-radius: 16px;
-        text-align: center;
-        max-width: 300px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-    `;
-    modal.innerHTML = `
-        <p style="margin-bottom:16px; font-size:14px;">Enviar mensaje por WhatsApp:</p>
-        <button id="btnEnviarWA" style="
-            background:#25D366; color:white; border:none; padding:12px 24px;
-            border-radius:12px; font-weight:600; cursor:pointer;
-        ">Abrir WhatsApp</button>
-    `;
+    // Obtener info del jugador del cache local
+    const jugadores = JSON.parse(localStorage.getItem('jugadores_cache') || '[]');
+    const jugador = jugadores.find(j => j.id === jugadorId);
+    if (!jugador) return;
 
-    overlay.appendChild(modal);
-    document.body.appendChild(overlay);
+    // Generar mensaje según estado
+    let mensaje = '';
+    if (estado === 'Activo') {
+        mensaje = `Hola ${jugador.nombre}, tu registro fue aprobado.\nTu usuario: ${jugador.email}\nTu contraseña: ${jugador.password}\nIngresa aquí: https://tusitio.com/login.html`;
+    } else if (estado === 'Pendiente') {
+        mensaje = `Hola ${jugador.nombre}, tu estado pasó a pendiente.`;
+    } else {
+        mensaje = `Hola ${jugador.nombre}, tu estado fue actualizado a: ${estado}`;
+    }
 
-    // Abrir WhatsApp
-    document.getElementById('btnEnviarWA').onclick = () => {
-        window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
-        overlay.remove();
-    };
+    // Botón WhatsApp
+    const telefono = jugador.telefono || ''; // usar número si existe
+    const boton = document.createElement('a');
+    boton.href = `https://api.whatsapp.com/send?phone=${telefono}&text=${encodeURIComponent(mensaje)}`;
+    boton.target = '_blank';
+    boton.textContent = 'Avisar por WhatsApp';
+    boton.style.display = 'inline-block';
+    boton.style.padding = '6px 12px';
+    boton.style.marginTop = '4px';
+    boton.style.background = '#25D366';
+    boton.style.color = 'white';
+    boton.style.borderRadius = '6px';
+    boton.style.fontSize = '12px';
+    boton.style.textDecoration = 'none';
+
+    accionesExtra.appendChild(boton);
 }
-
 // ============================================
 // ADMIN: CONFIGURACIÓN BÁSICA
 // ============================================

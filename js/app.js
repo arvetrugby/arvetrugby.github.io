@@ -50,9 +50,7 @@ window.formatCurrency = function(amount) {
         currency: 'ARS'
     }).format(amount);
 };
-
 window.cambiarRolJugador = async function(jugadorId, nuevoRol) {
-
     const currentUser = JSON.parse(localStorage.getItem('arvet_user') || '{}');
 
     showMsg('Actualizando rol...', 'info');
@@ -73,46 +71,42 @@ window.cambiarRolJugador = async function(jugadorId, nuevoRol) {
         if (result.success) {
             showMsg('Rol actualizado', 'success');
 
-            // Recargar la lista de jugadores
+            // Recargar lista de jugadores
             setTimeout(() => {
                 cargarJugadoresAdmin();
             }, 200);
 
-            // ---- BOTÓN WHATSAPP ----
-            const j = result.data; // j.nombre, j.telefono, j.email, j.password si querés
+            // Agregar botón/modal de WhatsApp con mensaje personalizado
+            const j = result.data;
             if (j && j.telefono) {
-                const existente = document.getElementById('botonWhatsAppRol');
+                const existente = document.getElementById('whatsappRol');
                 if (existente) existente.remove();
 
-                const boton = document.createElement('a');
-                boton.id = 'botonWhatsAppRol';
-                boton.href = `https://wa.me/${String(j.telefono).replace(/\D/g, '')}?text=${encodeURIComponent(
-                    `Hola ${j.nombre}, tu rol fue actualizado a: ${nuevoRol}`
-                )}`;
-                boton.target = '_blank';
-                boton.style.cssText = `
+                const mensaje = `Hola ${j.nombre} ${j.apellido}, tu rol en el equipo ha cambiado a: ${j.rol}. Usuario: ${j.email}. Contraseña: ${j.password}. Ingresa aquí: https://tusitio.com/login.html`;
+                
+                const btn = document.createElement('a');
+                btn.id = 'whatsappRol';
+                btn.href = `https://wa.me/${String(j.telefono).replace(/\D/g, '')}?text=${encodeURIComponent(mensaje)}`;
+                btn.target = '_blank';
+                btn.style.cssText = `
                     position: fixed;
                     top: 50%;
                     left: 50%;
                     transform: translate(-50%, -50%);
-                    background: #25D366;
+                    z-index: 9999;
+                    padding: 12px 20px;
+                    background: #25d366;
                     color: white;
-                    padding: 14px 24px;
-                    font-size: 14px;
+                    font-weight: 600;
                     border-radius: 12px;
                     text-decoration: none;
-                    z-index: 9999;
-                    font-weight: 600;
+                    font-size: 14px;
+                    text-align: center;
                 `;
-                boton.textContent = 'Avisar por WhatsApp';
-                document.body.appendChild(boton);
-
-                // Desaparece después de 15 segundos
-                setTimeout(() => {
-                    if (boton.parentNode) boton.remove();
-                }, 15000);
+                btn.textContent = 'Avisar por WhatsApp';
+                
+                document.body.appendChild(btn);
             }
-            // ------------------------
 
         } else {
             showMsg('Error: ' + (result.error || 'No se pudo cambiar el rol'), 'error');
@@ -123,7 +117,6 @@ window.cambiarRolJugador = async function(jugadorId, nuevoRol) {
         showMsg('Error de conexión', 'error');
     }
 };
-
 
 
 // ============================================

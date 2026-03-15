@@ -350,7 +350,6 @@ if (document.readyState === 'loading') {
 <script src="js/app.js"></script>
 
 <script>
-
 flatpickr("#fechaNacimiento", {
 
     locale: "es",
@@ -366,12 +365,7 @@ flatpickr("#fechaNacimiento", {
 
     monthSelectorType: "dropdown",
 
-    allowInput: false,
-
-    onReady: function(selectedDates, dateStr, instance) {
-        instance.currentYearElement.click();
-    }
-
+    allowInput: false
 });
 </script>
 </body>

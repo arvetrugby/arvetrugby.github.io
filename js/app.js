@@ -652,7 +652,7 @@ function initRegistroJugador() {
         localStorage.removeItem('arvet_user');
     }
     // 🔥 AVATAR DEFAULT
-    let avatarUrl = "https://i.ibb.co/4pDNDk1/avatar1.png";
+    let avatarUrl = "https://i.ibb.co/hb0x9zc/avatar1.png";
 
     const avatarPreview = document.getElementById('avatarPreview');
     const avatarOptions = document.querySelectorAll('.avatar-option');
@@ -1213,7 +1213,7 @@ function formatearFecha(fecha) {
             
             return `
                 <div class="card" style="text-align: center; position: relative;">
-                    <img src="${j.avatarUrl || 'https://i.ibb.co/4pDNDk1/avatar1.png'}" 
+                    <img src="${j.avatarUrl || 'https://i.ibb.co/hb0x9zc/avatar1.png'}" 
                          style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; 
                                 border: 3px solid var(--equipo-color, #3b82f6); margin-bottom: 12px; margin-top: 12px;">
                     <h3 style="margin: 0 0 4px 0; font-size: 16px;">${j.nombre} ${j.apellido || ''}</h3>
@@ -1419,7 +1419,7 @@ async function cargarJugadoresAdmin() {
         <!-- Fila superior: Avatar + Info -->
         <div style="display: flex; align-items: center; gap: 12px;">
             <!-- Imagen de perfil -->
-            <img src="${j.avatarUrl || 'https://i.ibb.co/4pDNDk1/avatar1.png'}" 
+            <img src="${j.avatarUrl || 'https://i.ibb.co/hb0x9zc/avatar1.png'}" 
                  alt="${j.nombre}" 
                  style="width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary, #3b82f6); flex-shrink: 0;">
             

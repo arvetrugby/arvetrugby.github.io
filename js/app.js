@@ -1528,6 +1528,7 @@ window.cambiarEstadoJugador = async function(id, nuevoEstado) {
     });
 
     if (response.success) {
+        showMsg('Estado actualizado', 'success');
         cargarJugadoresAdmin();
     } else {
         alert('Error: ' + response.error);
@@ -1542,6 +1543,7 @@ window.eliminarJugador = async function(id) {
     });
 
     if (response.success) {
+        showMsg('Jugador eliminado', 'success');
         cargarJugadoresAdmin();
     } else {
         alert('Error: ' + response.error);
@@ -2140,7 +2142,7 @@ window.eliminarFotoGaleria = async function(index) {
 
     if (result.success) {
       console.log('✅ Foto eliminada y guardada');
-        showMsg('✅ Foto eliminada', 'success', 1500);   
+       
     } else {
       console.error('Error del servidor:', result.error);
     }

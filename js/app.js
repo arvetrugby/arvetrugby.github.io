@@ -688,6 +688,7 @@ function initRegistroJugador() {
     // Obtener equipoId de la URL
     const urlParams = new URLSearchParams(window.location.search);
     const equipoId = urlParams.get('equipo');
+    const esAdmin = urlParams.get('admin') === '1';
     
     console.log('Equipo ID:', equipoId);
     
@@ -754,7 +755,8 @@ function initRegistroJugador() {
                 `&cuitCuil=${encodeURIComponent(data.cuitCuil)}` +
                 `&password=${encodeURIComponent(data.password)}` +
                 `&avatarUrl=${encodeURIComponent(avatarUrl)}` +
-                `&equipoId=${encodeURIComponent(data.equipoId)}`
+                `&equipoId=${encodeURIComponent(data.equipoId)}` +
+                `&estado=${esAdmin ? 'Activo' : 'Pendiente'}`
             );
             
             const result = await response.json();
@@ -1504,7 +1506,12 @@ function editarJugador(id) {
 // ============================================
 
 window.nuevoJugador = function() {
-    alert('Función para crear nuevo jugador');
+
+    const currentUser = JSON.parse(localStorage.getItem('arvet_user') || '{}');
+
+    window.location.href =
+        `registro-jugador.html?equipo=${currentUser.equipoId}&admin=1`;
+
 }
 
 window.editarJugador = function(id) {

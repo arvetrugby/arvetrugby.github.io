@@ -1578,7 +1578,7 @@ window.cambiarEstadoJugador = async function(id, nuevoEstado) {
         const btn = document.createElement('a');
         btn.id = 'btnWhatsAppAviso';
         btn.href = `https://wa.me/${String(telefono).replace(/\D/g, '')}?text=${encodeURIComponent(
-            `Hola ${nombre}, tu registro fue ${nuevoEstado.toLowerCase()}.\nUsuario: ${email}\nContraseña: ${password}\nIngresa aquí: https://tusitio.com/login.html`
+            `Hola ${nombre}, tu estado de registro en ARVET ahora es ${nuevoEstado.toLowerCase()}.\nUsuario: ${email}\nContraseña: ${password}\nIngresa aquí: https://tusitio.com/login.html`
         )}`;
         btn.target = '_blank';
         btn.style.cssText = `

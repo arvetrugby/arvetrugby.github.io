@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
 </head>
     <style>
     * {
@@ -345,12 +345,15 @@ if (document.readyState === 'loading') {
 }
         
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
 <script src="js/app.js"></script>
 
 <script>
 
 flatpickr("#fechaNacimiento", {
+
+    locale: "es",
 
     dateFormat: "Y-m-d",
     altInput: true,
@@ -362,11 +365,14 @@ flatpickr("#fechaNacimiento", {
     defaultDate: "1980-01-01",
 
     monthSelectorType: "dropdown",
-    yearSelectorType: "dropdown",
 
-    allowInput: false
+    allowInput: false,
+
+    onReady: function(selectedDates, dateStr, instance) {
+        instance.currentYearElement.click();
+    }
+
 });
-
 </script>
 </body>
 </html>

@@ -1550,59 +1550,64 @@ window.cambiarEstadoJugador = async function(id, nuevoEstado) {
     showMsg('Actualizando...', 'info');
 
     try {
+        // Llamada al Apps Script / API
         const response = await window.fetchAPI('updateEstadoJugador', {
             id,
             estado: nuevoEstado
         });
 
-        if (response.success) {
-            showMsg('Estado actualizado', 'success');
-
-            // Recargar lista
-            await cargarJugadoresAdmin();
-
-            // Construir botón WhatsApp usando datos que vienen de la respuesta
-            const telefono = response.telefono || '';
-            const nombre = response.nombre || '';
-            const email = response.email || '';
-            const password = response.password || 'Sin clave';
-
-            if (telefono) {
-                const mensaje = `Hola ${nombre}, tu registro fue aprobado.\nUsuario: ${email}\nContraseña: ${password}\nIngresa aquí: https://tusitio.com/login.html`;
-                const waLink = `https://wa.me/${String(telefono).replace(/\D/g, '')}?text=${encodeURIComponent(mensaje)}`;
-
-                // Crear botón dinámico
-                let boton = document.createElement('a');
-                boton.href = waLink;
-                boton.target = '_blank';
-                boton.textContent = 'Avisar por WhatsApp';
-                boton.style = `
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 6px;
-                    margin: 12px auto;
-                    padding: 8px 16px;
-                    background: #22c55e;
-                    color: white;
-                    border-radius: 12px;
-                    font-size: 14px;
-                    font-weight: 600;
-                    text-decoration: none;
-                    cursor: pointer;
-                `;
-                // Insertar en medio de la pantalla
-                boton.id = 'botonWhatsApp';
-                document.body.appendChild(boton);
-            }
-
-        } else {
+        if (!response.success) {
             showMsg('Error: ' + (response.error || 'No se pudo actualizar'), 'error');
+            return;
         }
+
+        showMsg('Estado actualizado', 'success');
+
+        // Recargar lista de jugadores
+        await cargarJugadoresAdmin();
+
+        // Generar botón WhatsApp centrado
+        const { nombre, email, password, telefono } = response;
+
+        if (!telefono) return; // si no hay teléfono, no hacemos nada
+
+        // Si ya existe el botón, lo eliminamos
+        const botonExistente = document.getElementById('btnWhatsAppAviso');
+        if (botonExistente) botonExistente.remove();
+
+        const btn = document.createElement('a');
+        btn.id = 'btnWhatsAppAviso';
+        btn.href = `https://wa.me/${String(telefono).replace(/\D/g, '')}?text=${encodeURIComponent(
+            `Hola ${nombre}, tu registro fue ${nuevoEstado.toLowerCase()}.\nUsuario: ${email}\nContraseña: ${password}\nIngresa aquí: https://tusitio.com/login.html`
+        )}`;
+        btn.target = '_blank';
+        btn.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #25D366;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            text-align: center;
+            z-index: 9999;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            text-decoration: none;
+        `;
+        btn.textContent = `Avisar a ${nombre} por WhatsApp`;
+
+        document.body.appendChild(btn);
     } catch (err) {
         console.error(err);
         showMsg('Error de conexión', 'error');
     }
 };
+
+
+
 window.eliminarJugador = async function(id) {
 
 if (!confirm('¿Seguro que querés eliminar este jugador?')) return;

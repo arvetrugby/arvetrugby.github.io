@@ -1547,27 +1547,30 @@ window.logout = function() {
 }
 
 window.cambiarEstadoJugador = async function(id, nuevoEstado) {
+    showMsg('Actualizando...', 'info');
 
-showMsg('Actualizando...', 'info');
+    try {
+        const response = await window.fetchAPI('updateEstadoJugador', {
+            id,
+            estado: nuevoEstado
+        });
 
-const response = await window.fetchAPI('updateEstadoJugador', {
-id,
-estado: nuevoEstado
-});
+        if (response.success) {
+            showMsg('Estado actualizado', 'success');
 
-if (response.success) {
+            // Recargar lista de jugadores
+            await cargarJugadoresAdmin();
 
-showMsg('Estado actualizado', 'success');
-
-setTimeout(() => {
-cargarJugadoresAdmin();
-}, 300);
-
-} else {
-showMsg('Error: ' + response.error, 'error');
-}
-
-}
+            // Agregar botón WhatsApp
+            agregarBotonWhatsApp(id, nuevoEstado); // llama a la función que definimos antes
+        } else {
+            showMsg('Error: ' + (response.error || 'No se pudo actualizar'), 'error');
+        }
+    } catch (err) {
+        console.error(err);
+        showMsg('Error de conexión', 'error');
+    }
+};
 
 window.eliminarJugador = async function(id) {
 
@@ -2475,3 +2478,52 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+function agregarBotonWhatsApp(jugadorId, motivo) {
+    // Buscar el contenedor del jugador
+    const jugadorDiv = document.querySelector(`.list-item[data-id="${jugadorId}"]`);
+    if (!jugadorDiv) return;
+
+    // Evitar duplicar botón
+    if (jugadorDiv.querySelector('.btn-whatsapp')) return;
+
+    // Obtener datos del jugador desde el cache
+    const jugadoresCache = JSON.parse(localStorage.getItem('jugadores_cache') || '[]');
+    const jugador = jugadoresCache.find(j => j.id === jugadorId);
+    if (!jugador || !jugador.telefono) return;
+
+    const telefono = jugador.telefono.replace(/\D/g, ''); // quitar espacios, guiones, etc.
+
+    // Mensaje según motivo
+    let mensajeText = '';
+    if (motivo === 'Aprobado') {
+        mensajeText = `Hola ${jugador.nombre}, tu cuenta ha sido aprobada ✅\n` +
+                      `Usuario: ${jugador.email}\n` +
+                      `Contraseña: ${jugador.password || '(la que registraste)'}\n` +
+                      `Ingresa aquí: https://tu-sitio.com/login.html`;
+    } else {
+        mensajeText = `Hola ${jugador.nombre}, tu cuenta fue actualizada: ${motivo}`;
+    }
+
+    const mensaje = encodeURIComponent(mensajeText);
+
+    const btn = document.createElement('button');
+    btn.className = 'btn-whatsapp';
+    btn.textContent = '📲 Avisar por WhatsApp';
+    btn.style.marginTop = '6px';
+    btn.style.fontSize = '12px';
+    btn.style.padding = '6px 10px';
+    btn.style.border = 'none';
+    btn.style.borderRadius = '8px';
+    btn.style.background = '#25D366';
+    btn.style.color = 'white';
+    btn.style.cursor = 'pointer';
+
+    btn.onclick = () => {
+        window.open(`https://wa.me/${telefono}?text=${mensaje}`, '_blank');
+    };
+
+    // Agregar al final del contenedor de botones
+    const botonesContainer = jugadorDiv.querySelector('div'); // el primer div de botones
+    if (botonesContainer) botonesContainer.appendChild(btn);
+}

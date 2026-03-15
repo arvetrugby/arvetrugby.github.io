@@ -2125,7 +2125,7 @@ window.eliminarFotoGaleria = async function(index) {
 
   // 4. Guardar automáticamente
   try {
-    showMsg('✅ Guardando', 'success', 1500);  
+    
 
     const response = await fetch(API_URL, {
       method: 'POST',

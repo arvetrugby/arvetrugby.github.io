@@ -638,9 +638,19 @@ function checkExistingSession() {
 
 function initRegistroJugador() {
     console.log('=== INICIO REGISTRO JUGADOR ===');
-    // 🔥 Cerrar cualquier sesión activa
-    localStorage.removeItem('arvet_user');
- 
+
+    // Obtener parámetros de la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const equipoId = urlParams.get('equipo');
+    const esAdmin = urlParams.get('admin') === '1';
+
+    console.log('Equipo ID:', equipoId);
+    console.log('¿Viene del admin?', esAdmin);
+
+    // 🔥 Cerrar sesión SOLO si NO viene del admin
+    if (!esAdmin) {
+        localStorage.removeItem('arvet_user');
+    }
     // 🔥 AVATAR DEFAULT
     let avatarUrl = "https://i.ibb.co/4pDNDk1/avatar1.png";
 

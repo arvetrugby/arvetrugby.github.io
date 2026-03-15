@@ -140,22 +140,63 @@ button:disabled {
         grid-template-columns: 1fr;
     }
 }
-        .flatpickr-calendar {
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        /* Input de fecha */
+.flatpickr-input {
+    font-size: 16px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.15);
+    background: rgba(255,255,255,0.9);
+    color: #111;
 }
 
-.flatpickr-day.selected {
-    background: #334155;
-    border-color: #334155;
+/* Calendario */
+.flatpickr-calendar {
+    border-radius: 14px;
+    border: 1px solid rgba(0,0,0,0.08);
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+    font-family: inherit;
 }
 
-.flatpickr-day:hover {
-    background: #e2e8f0;
-}
-
+/* Header mes / año */
 .flatpickr-months {
+    background: transparent;
+}
+
+.flatpickr-current-month {
     font-weight: 600;
+    color: #111;
+}
+
+/* Días */
+.flatpickr-day {
+    border-radius: 8px;
+    color: #222;
+}
+
+/* Hover elegante */
+.flatpickr-day:hover {
+    background: rgba(0,0,0,0.08);
+}
+
+/* Día seleccionado */
+.flatpickr-day.selected {
+    background: #111;
+    border-color: #111;
+    color: #fff;
+}
+
+/* Hoy */
+.flatpickr-day.today {
+    border: 1px solid rgba(0,0,0,0.35);
+}
+
+/* Dropdown año/mes */
+.flatpickr-monthDropdown-months,
+.numInputWrapper input {
+    color: #111;
 }
     </style>
 <body>

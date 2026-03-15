@@ -1526,11 +1526,9 @@ window.editarJugador = function(id) {
 
 window.logout = function() {
     if (confirm('¿Cerrar sesión?')) {
-        if (!esAdmin) {
-    localStorage.removeItem('arvet_user');
-}
+        localStorage.removeItem('arvet_user');
         localStorage.removeItem('arvet_login_time');
-        window.location.href = esAdmin ? 'admin.html' : 'login.html';
+        window.location.href = 'login.html';
     }
 }
 

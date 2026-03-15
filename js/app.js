@@ -1614,6 +1614,7 @@ window.logout = function() {
         window.location.href = 'login.html';
     }
 }
+
 window.cambiarEstadoJugador = async function(id, nuevoEstado) {
     showMsg('Actualizando...', 'info');
 
@@ -1627,33 +1628,37 @@ window.cambiarEstadoJugador = async function(id, nuevoEstado) {
             showMsg('Estado actualizado', 'success');
 
             // Recargar lista
-            const jugadores = await cargarJugadoresAdmin();
+            cargarJugadoresAdmin();
 
-            // Preparar mensaje según estado
-            const jugador = jugadores.find(j => j.id === id);
-            if (jugador) {
-                let mensaje = '';
-                if (nuevoEstado === 'Activo') {
-                    mensaje = `Hola ${jugador.nombre}, tu registro fue aprobado.\nUsuario: ${jugador.email}\nContraseña: ${jugador.password}\nIngresa aquí: https://tusitio.com/login.html`;
-                } else if (nuevoEstado === 'Pendiente') {
-                    mensaje = `Hola ${jugador.nombre}, tu estado cambió a Pendiente.`;
-                } else if (nuevoEstado === 'Eliminado') {
-                    mensaje = `Hola ${jugador.nombre}, tu registro fue eliminado.`;
-                }
+            // Usar los datos que devuelve el backend
+            const jugador = {
+                id: id,
+                nombre: response.nombre,
+                email: response.email,
+                password: response.password,
+                telefono: response.telefono // si Apps Script lo devuelve
+            };
 
-                agregarBotonWhatsApp(jugador, mensaje);
+            let mensaje = '';
+            if (nuevoEstado === 'Activo') {
+                mensaje = `Hola ${jugador.nombre}, tu registro fue aprobado.\nUsuario: ${jugador.email}\nContraseña: ${jugador.password}\nIngresa aquí: https://tusitio.com/login.html`;
+            } else if (nuevoEstado === 'Pendiente') {
+                mensaje = `Hola ${jugador.nombre}, tu estado cambió a Pendiente.`;
+            } else if (nuevoEstado === 'Eliminado') {
+                mensaje = `Hola ${jugador.nombre}, tu registro fue eliminado.`;
             }
+
+            agregarBotonWhatsApp(jugador, mensaje);
 
         } else {
             showMsg('Error: ' + (response.error || 'No se pudo actualizar'), 'error');
         }
+
     } catch (err) {
         console.error(err);
         showMsg('Error de conexión', 'error');
     }
 };
-
-
 
 window.eliminarJugador = async function(id) {
 

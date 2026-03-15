@@ -51,52 +51,32 @@ window.formatCurrency = function(amount) {
     }).format(amount);
 };
 
-window.cambiarRolJugador = async function(jugadorId, nuevoRol, boton) {
+window.cambiarRolJugador = async function(jugadorId, nuevoRol) {
     try {
-        // Llamada a la API para cambiar el rol
+        // Llamada al backend
         const response = await fetch(API_URL, {
             method: 'POST',
             body: JSON.stringify({
                 action: 'asignarRolComision',
-                jugadorId,
+                jugadorId: jugadorId,
                 rol: nuevoRol
             })
         });
+
         const result = await response.json();
 
         if (result.success) {
             showMsg('Rol actualizado a ' + nuevoRol, 'success');
 
-            // Obtener datos completos del jugador
-            const jugadorData = await window.fetchAPI('getJugadorById', { id: jugadorId });
-            if (jugadorData.success) {
-                const { email, password, nombre, telefono } = jugadorData.data;
+            // Recargar lista de jugadores
+            await cargarJugadoresAdmin();
 
-                // Crear mensaje para WhatsApp según el rol
-                const mensaje = `Hola ${nombre}, tu rol fue actualizado a "${nuevoRol}".\nUsuario: ${email}\nContraseña: ${password}\nIngresa aquí: https://tusitio.com/login.html`;
-                const waLink = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+            // Roles que notificamos con usuario/clave
+            const rolesImportantes = ['Admin', 'Capitán', 'Sub Capitán', 'Manager', 'Sub Manager', 'Tesorero'];
 
-                // Crear botón "Avisar por WhatsApp" al lado del botón clickeado
-                let container = boton.parentElement;
-                let waBtn = container.querySelector('.btn-whatsapp');
-                if (!waBtn) {
-                    waBtn = document.createElement('button');
-                    waBtn.className = 'btn-whatsapp';
-                    waBtn.style = 'flex:1; min-width:80px; font-size:12px; padding:8px 12px; border-radius:6px; border:none; cursor:pointer; background:#25D366; color:white;';
-                    waBtn.textContent = 'Avisar por WhatsApp';
-                    container.appendChild(waBtn);
-                }
-                waBtn.onclick = () => window.open(waLink, '_blank');
+            if (rolesImportantes.includes(nuevoRol)) {
+                agregarBotonWhatsAppRol(jugadorId, nuevoRol);
             }
-
-            // Actualizar visual de botones
-            const botones = boton.parentElement.querySelectorAll('button');
-            botones.forEach(b => {
-                b.style.background = '#f1f5f9';
-                b.style.color = '#475569';
-            });
-            boton.style.background = '#22c55e';
-            boton.style.color = 'white';
 
         } else {
             showMsg('Error: ' + (result.error || 'No se pudo cambiar el rol'), 'error');
@@ -107,6 +87,50 @@ window.cambiarRolJugador = async function(jugadorId, nuevoRol, boton) {
         showMsg('Error de conexión', 'error');
     }
 };
+
+// Función para generar botón WhatsApp al cambiar rol
+async function agregarBotonWhatsAppRol(jugadorId, nuevoRol) {
+    try {
+        const datosJugador = await window.fetchAPI('getJugadorById', { id: jugadorId });
+
+        if (!datosJugador.success) return;
+
+        const { nombre, email, password, telefono } = datosJugador.data;
+
+        const mensaje = `Hola ${nombre}, tu rol fue actualizado a "${nuevoRol}".\nUsuario: ${email}\nContraseña: ${password}\nIngresa aquí: https://tusitio.com/login.html`;
+
+        // Crear botón temporal para enviar WhatsApp
+        const container = document.createElement('div');
+        container.style.marginTop = '8px';
+
+        const btn = document.createElement('button');
+        btn.textContent = '📲 Avisar por WhatsApp';
+        btn.style.padding = '6px 12px';
+        btn.style.borderRadius = '8px';
+        btn.style.border = 'none';
+        btn.style.background = '#25D366';
+        btn.style.color = 'white';
+        btn.style.cursor = 'pointer';
+        btn.onclick = () => {
+            const waLink = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+            window.open(waLink, '_blank');
+            container.remove(); // quitar botón después de click
+        };
+
+        container.appendChild(btn);
+
+        // Insertar en el DOM: al final de la lista del jugador
+        const jugadorDiv = document.querySelector(`.list-item[data-id="${jugadorId}"]`);
+        if (jugadorDiv) {
+            jugadorDiv.appendChild(container);
+        } else {
+            document.body.appendChild(container); // fallback
+        }
+
+    } catch (err) {
+        console.error('Error creando botón WhatsApp:', err);
+    }
+}
 // ============================================
 // DETECTOR DE PÁGINA ACTUAL (VERSIÓN NUEVA)
 // ============================================
@@ -1485,31 +1509,31 @@ async function cargarJugadoresAdmin() {
         
         <!-- Botones de Rol - TODOS MISMO TAMAÑO -->
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
-           <button onclick="cambiarRolJugador('${j.id}', 'Jugador', this')" 
-    style="font-size: 11px; padding: 10px 6px; border-radius: 20px; border: none; cursor: pointer; font-weight: 600; min-height: 36px; width: 100%; ${j.rol === 'Jugador' ? 'background: #22c55e; color: white;' : 'background: #f1f5f9; color: #475569;'}">
-    Jugador
-</button>
-            <button onclick="cambiarRolJugador('${j.id}', 'Capitán', this')" 
+            <button onclick="cambiarRolJugador('${j.id}', 'Jugador')"
+                    style="font-size: 11px; padding: 10px 6px; border-radius: 20px; border: none; cursor: pointer; font-weight: 600; min-height: 36px; width: 100%; ${j.rol === 'Jugador' ? 'background: #22c55e; color: white;' : 'background: #f1f5f9; color: #475569;'}">
+                 Jugador
+            </button>
+            <button onclick="cambiarRolJugador('${j.id}', 'Capitán')"
                     style="font-size: 11px; padding: 10px 6px; border-radius: 20px; border: none; cursor: pointer; font-weight: 600; min-height: 36px; width: 100%; ${j.rol === 'Capitán' ? 'background: #22c55e; color: white;' : 'background: #f1f5f9; color: #475569;'}">
                  Capitán
             </button>
-            <button onclick="cambiarRolJugador('${j.id}', 'Sub Capitán', this')" 
+            <button onclick="cambiarRolJugador('${j.id}', 'Sub Capitán')"
                     style="font-size: 11px; padding: 10px 6px; border-radius: 20px; border: none; cursor: pointer; font-weight: 600; min-height: 36px; width: 100%; ${j.rol === 'Sub Capitán' ? 'background: #22c55e; color: white;' : 'background: #f1f5f9; color: #475569;'}">
                  Sub Capitán
             </button>
-            <button onclick="cambiarRolJugador('${j.id}', 'Manager', this')" 
+            <button onclick="cambiarRolJugador('${j.id}', 'Manager')"
                     style="font-size: 11px; padding: 10px 6px; border-radius: 20px; border: none; cursor: pointer; font-weight: 600; min-height: 36px; width: 100%; ${j.rol === 'Manager' ? 'background: #22c55e; color: white;' : 'background: #f1f5f9; color: #475569;'}">
                  Manager
             </button>
-            <button onclick="cambiarRolJugador('${j.id}', 'Sub Manager', this')" 
+            <button onclick="cambiarRolJugador('${j.id}', 'Sub Manager')"
                     style="font-size: 11px; padding: 10px 6px; border-radius: 20px; border: none; cursor: pointer; font-weight: 600; min-height: 36px; width: 100%; ${j.rol === 'Sub Manager' ? 'background: #22c55e; color: white;' : 'background: #f1f5f9; color: #475569;'}">
                  Sub Manager
             </button>
-            <button onclick="cambiarRolJugador('${j.id}', 'Tesorero', this')" 
+            <button onclick="cambiarRolJugador('${j.id}', 'Tesorero')"
                     style="font-size: 11px; padding: 10px 6px; border-radius: 20px; border: none; cursor: pointer; font-weight: 600; min-height: 36px; width: 100%; ${j.rol === 'Tesorero' ? 'background: #22c55e; color: white;' : 'background: #f1f5f9; color: #475569;'}">
                  Tesorero
             </button>
-            <button onclick="cambiarRolJugador('${j.id}', 'Admin', this')" 
+            <button onclick="cambiarRolJugador('${j.id}', 'Admin')"
                     style="font-size: 11px; padding: 10px 6px; border-radius: 20px; border: none; cursor: pointer; font-weight: 600; min-height: 36px; width: 100%; ${j.rol === 'Admin' ? 'background: #22c55e; color: white;' : 'background: #f1f5f9; color: #475569;'}">
                  Admin
             </button>

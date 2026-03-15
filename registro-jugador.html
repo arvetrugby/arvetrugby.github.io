@@ -373,7 +373,7 @@ flatpickr("#fechaNacimiento", {
 
     dateFormat: "Y-m-d",
     altInput: true,
-    altFormat: "d/m/Y",
+    altFormat: "d / m / Y",
 
     minDate: "1940-01-01",
     maxDate: new Date().fp_incr(-365 * 35),
@@ -381,6 +381,8 @@ flatpickr("#fechaNacimiento", {
     defaultDate: "1980-01-01",
 
     monthSelectorType: "dropdown",
+
+    disableMobile: true,
 
     allowInput: false
 });

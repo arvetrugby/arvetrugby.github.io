@@ -1550,7 +1550,6 @@ window.cambiarEstadoJugador = async function(id, nuevoEstado) {
     showMsg('Actualizando...', 'info');
 
     try {
-        // Llamada al server / App Script
         const response = await window.fetchAPI('updateEstadoJugador', {
             id,
             estado: nuevoEstado
@@ -1559,58 +1558,41 @@ window.cambiarEstadoJugador = async function(id, nuevoEstado) {
         if (response.success) {
             showMsg('Estado actualizado', 'success');
 
-            // Recargar lista de jugadores
+            // Recargar lista
             await cargarJugadoresAdmin();
 
-            // Preparar WhatsApp solo si hay teléfono
-            const jugador = response.data; // Asegurate que la API devuelva nombre, email, password y telefono
-            if (jugador.telefono) {
-                const nombre = jugador.nombre || '';
-                const usuario = jugador.email || '';
-                const password = jugador.password || '';
-                const linkLogin = 'https://tusitio.com/login.html';
+            // Construir botón WhatsApp usando datos que vienen de la respuesta
+            const telefono = response.telefono || '';
+            const nombre = response.nombre || '';
+            const email = response.email || '';
+            const password = response.password || 'Sin clave';
 
-                // Mensaje personalizado según el nuevo estado
-                let mensaje = '';
-                if (nuevoEstado === 'Activo') {
-                    mensaje = `Hola ${nombre}, tu registro fue aprobado.\nUsuario: ${usuario}\nContraseña: ${password}\nIngresa aquí: ${linkLogin}`;
-                } else if (nuevoEstado === 'Pendiente') {
-                    mensaje = `Hola ${nombre}, tu estado pasó a PENDIENTE.`;
-                } else {
-                    mensaje = `Hola ${nombre}, tu estado fue actualizado a: ${nuevoEstado}`;
-                }
+            if (telefono) {
+                const mensaje = `Hola ${nombre}, tu registro fue aprobado.\nUsuario: ${email}\nContraseña: ${password}\nIngresa aquí: https://tusitio.com/login.html`;
+                const waLink = `https://wa.me/${String(telefono).replace(/\D/g, '')}?text=${encodeURIComponent(mensaje)}`;
 
-                // Crear botón WhatsApp
-                const btnWhatsApp = document.createElement('a');
-                btnWhatsApp.href = `https://wa.me/${String(jugador.telefono).replace(/\D/g, '')}?text=${encodeURIComponent(mensaje)}`;
-                btnWhatsApp.target = '_blank';
-                btnWhatsApp.textContent = 'Avisar por WhatsApp';
-                btnWhatsApp.style.cssText = `
+                // Crear botón dinámico
+                let boton = document.createElement('a');
+                boton.href = waLink;
+                boton.target = '_blank';
+                boton.textContent = 'Avisar por WhatsApp';
+                boton.style = `
                     display: inline-flex;
                     align-items: center;
                     gap: 6px;
-                    position: fixed;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    padding: 12px 20px;
-                    background: #25d366;
+                    margin: 12px auto;
+                    padding: 8px 16px;
+                    background: #22c55e;
                     color: white;
-                    border-radius: 24px;
+                    border-radius: 12px;
                     font-size: 14px;
                     font-weight: 600;
                     text-decoration: none;
-                    z-index: 9999;
-                    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+                    cursor: pointer;
                 `;
-
-                // Remover cualquier botón previo
-                const previo = document.getElementById('btnWhatsAppTemp');
-                if (previo) previo.remove();
-                btnWhatsApp.id = 'btnWhatsAppTemp';
-
-                // Añadir al body
-                document.body.appendChild(btnWhatsApp);
+                // Insertar en medio de la pantalla
+                boton.id = 'botonWhatsApp';
+                document.body.appendChild(boton);
             }
 
         } else {
@@ -1621,8 +1603,6 @@ window.cambiarEstadoJugador = async function(id, nuevoEstado) {
         showMsg('Error de conexión', 'error');
     }
 };
-
-
 window.eliminarJugador = async function(id) {
 
 if (!confirm('¿Seguro que querés eliminar este jugador?')) return;

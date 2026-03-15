@@ -524,6 +524,54 @@
 .jugadores-badge {
     animation: fadeIn 0.3s ease;
 }
+
+    /* Botón sticky al hacer scroll */
+#btnCrearEquipoSticky {
+    position: fixed;
+    top: 70px; /* Ajustá según la altura de tu navbar */
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 0;
+    justify-content: center;
+    z-index: 100;
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
+}
+
+/* Cuando tiene la clase visible (se agrega con JS) */
+#btnCrearEquipoSticky.visible {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* El texto centrado y angosto */
+#btnCrearEquipoSticky span:first-child {
+    max-width: 200px;
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* En el hero normal (sin scroll) */
+.hero-cta #btnCrearEquipoSticky {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    width: auto;
+    border-radius: 12px;
+    transform: none;
+    opacity: 1;
+    box-shadow: 0 10px 30px rgba(56, 189, 248, 0.3);
+}
+
+/* Ocultar el botón del hero cuando el sticky está visible */
+#btnCrearEquipoSticky.visible-en-hero {
+    display: none;
+}
 </style>
 </head>
 <body>
@@ -556,9 +604,10 @@
                     Creá tu landing page oficial, gestioná jugadores, cobrá cuotas y organizá encuentros con otros equipos. Todo en un solo lugar, sin costo.
                 </p>
                 <div class="hero-cta">
-                    <a href="registro.html" class="btn-primary-large">
-                        Crear mi equipo gratis →
-                    </a>
+                    <a href="registro.html" class="btn-primary-large" id="btnCrearEquipoSticky">
+    <span>Crear mi equipo gratis</span>
+    <span>→</span>
+</a>
                     <a href="#como-funciona" class="btn-secondary-large">
                         Ver cómo funciona
                     </a>
@@ -789,6 +838,36 @@
             btn.textContent = isOpen ? 'Ver menos' : 'Ver más';
         });
     }
+});
+    </script>
+    <script>
+// Sticky button al hacer scroll
+document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.getElementById('btnCrearEquipoSticky');
+    const hero = document.querySelector('.hero');
+    
+    if (!btn || !hero) return;
+    
+    // Clonar el botón para ponerlo en el body (fuera del hero)
+    const btnSticky = btn.cloneNode(true);
+    btnSticky.id = 'btnCrearEquipoSticky';
+    btnSticky.classList.remove('visible-en-hero');
+    document.body.appendChild(btnSticky);
+    
+    // Ocultar el original del hero cuando scrolleamos
+    btn.classList.add('visible-en-hero');
+    
+    window.addEventListener('scroll', function() {
+        const heroBottom = hero.getBoundingClientRect().bottom;
+        
+        if (heroBottom < 100) {
+            // Hero ya no se ve, mostrar sticky
+            btnSticky.classList.add('visible');
+        } else {
+            // Hero visible, ocultar sticky
+            btnSticky.classList.remove('visible');
+        }
+    });
 });
     </script>
     <script src="js/app.js"></script>

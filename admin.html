@@ -63,7 +63,18 @@ color:white;
 background:#dc2626;
 color:white;
 }
+.list-container{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
 
+/* Tablet / PC / PARA JUGADORES */
+@media (min-width: 768px){
+    .list-container{
+        grid-template-columns: 1fr 1fr;
+    }
+}
 </style>
 <body class="admin-body">
 <div id="msgOverlay" class="overlay" style="display:none;">

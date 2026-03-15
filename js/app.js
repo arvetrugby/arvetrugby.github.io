@@ -1529,7 +1529,7 @@ window.cambiarEstadoJugador = async function(id, nuevoEstado) {
     });
 
     if (response.success) {
-        window.showMsg('Estado actualizado', 'success');
+        showMsg('Actualizado...', 'info');
         cargarJugadoresAdmin();
     } else {
         alert('Error: ' + response.error);
@@ -1544,7 +1544,7 @@ window.eliminarJugador = async function(id) {
     });
 
     if (response.success) {
-        window.showMsg('Eliminado', 'success');
+        showMsg('Eliminado...', 'info');
         cargarJugadoresAdmin();
     } else {
         alert('Error: ' + response.error);

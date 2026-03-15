@@ -50,6 +50,29 @@ body {
 /* ============================================
    TIPOGRAFÍA TITULOS
    ============================================ */
+.btn-whatsapp.latido-activo {
+    animation: latido-infinito 1.5s ease-in-out infinite;
+}
+
+@keyframes latido-infinito {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 4px 16px rgba(34, 197, 94, 0.5);
+    }
+}
+
+.btn-whatsapp:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+} 
+
+
+
+
 
 .hero h1,
 .hero h2,

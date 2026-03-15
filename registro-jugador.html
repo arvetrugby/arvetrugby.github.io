@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
     <style>
     * {
@@ -139,6 +139,23 @@ button:disabled {
     .nombre-apellido-row {
         grid-template-columns: 1fr;
     }
+}
+        .flatpickr-calendar {
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.flatpickr-day.selected {
+    background: #334155;
+    border-color: #334155;
+}
+
+.flatpickr-day:hover {
+    background: #e2e8f0;
+}
+
+.flatpickr-months {
+    font-weight: 600;
 }
     </style>
 <body>

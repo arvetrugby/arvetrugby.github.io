@@ -681,21 +681,24 @@ const iti = window.intlTelInput(inputTelefono, {
 
         try {
             const response = await fetch(
-                `${API_URL}?action=crearEquipo` +
-                `&nombre=${encodeURIComponent(data.nombre)}` +
-                `&paisId=${encodeURIComponent(data.paisId)}` +
-                `&provinciaId=${encodeURIComponent(data.provinciaId)}` +
-                `&ciudadId=${encodeURIComponent(data.ciudadId)}` +
-                `&direccion=${encodeURIComponent(data.direccion)}` +
-                `&lat=${encodeURIComponent(data.lat)}` +           
-                `&lng=${encodeURIComponent(data.lng)}` +          
-                `&adminNombre=${encodeURIComponent(data.adminNombre)}` +
-                `&adminApellido=${encodeURIComponent(data.adminApellido)}` +
-                `&telefono=${encodeURIComponent(data.telefono)}` +  
-                `&fechaNacimiento=${encodeURIComponent(data.fechaNacimiento)}` + 
-                `&email=${encodeURIComponent(data.email)}` +
-                `&password=${encodeURIComponent(data.password)}`
-            );
+    `${API_URL}?action=crearEquipo` +
+    `&nombre=${encodeURIComponent(data.nombre)}` +
+    `&paisId=${encodeURIComponent(data.paisId)}` +
+    `&provinciaId=${encodeURIComponent(data.provinciaId)}` +
+    `&ciudadId=${encodeURIComponent(data.ciudadId)}` +
+    `&direccion=${encodeURIComponent(data.direccion)}` +
+    `&lat=${encodeURIComponent(data.lat)}` +           
+    `&lng=${encodeURIComponent(data.lng)}` +          
+    `&adminNombre=${encodeURIComponent(data.adminNombre)}` +
+    `&adminApellido=${encodeURIComponent(data.adminApellido)}` +
+    `&telefono=${encodeURIComponent(data.telefono)}` +  
+    `&fechaNacimiento=${encodeURIComponent(data.fechaNacimiento)}` +
+    `&dni=${encodeURIComponent(data.dni)}` +              // ← AGREGAR
+    `&cuitCuil=${encodeURIComponent(data.cuitCuil)}` +  // ← AGREGAR
+    `&avatarUrl=${encodeURIComponent(data.avatarUrl)}` +  // ← AGREGAR
+    `&email=${encodeURIComponent(data.email)}` +
+    `&password=${encodeURIComponent(data.password)}`
+);
 
             const result = await response.json();
 

@@ -1,125 +1,140 @@
-
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Panel del Jugador - ARVET</title>
+
+<title>Mi Perfil - ARVET</title>
 
 <link rel="stylesheet" href="css/styles.css">
 
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
 
-.admin-body{
-    font-family: 'Montserrat', sans-serif;
-    background:#f1f5f9;
+body{
+font-family:Montserrat;
+background:#f1f5f9;
+margin:0;
 }
 
-/* HEADER */
+/* HEADER EQUIPO */
 
-.admin-header{
-    background:#0f172a;
-    color:white;
-    padding:15px 20px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+.player-header{
+padding:35px 20px;
+color:white;
+text-align:center;
+background:var(--equipo-color,#6366f1);
 }
 
-.admin-header h1{
-    font-size:20px;
+.player-header img{
+width:90px;
+height:90px;
+object-fit:contain;
+margin-bottom:10px;
+}
+
+.player-header h1{
+margin:0;
+font-size:20px;
+}
+
+.player-header p{
+margin:5px 0 0 0;
+opacity:.9;
 }
 
 /* MAIN */
 
-.admin-main{
-    padding:30px;
+.main{
+max-width:800px;
+margin:auto;
+padding:20px;
 }
 
 /* CARDS */
 
 .card{
-    background:white;
-    padding:25px;
-    border-radius:12px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.06);
-    margin-bottom:25px;
+background:white;
+padding:25px;
+border-radius:12px;
+margin-bottom:20px;
+box-shadow:0 6px 18px rgba(0,0,0,0.06);
+}
+
+/* PERFIL */
+
+.avatar{
+width:120px;
+height:120px;
+border-radius:50%;
+object-fit:cover;
+border:4px solid #e2e8f0;
 }
 
 /* BOTONES */
 
-.btn-primary{
-    background:#6366f1;
-    color:white;
-    border:none;
-    padding:10px 18px;
-    border-radius:8px;
-    cursor:pointer;
+button{
+padding:10px 18px;
+border-radius:8px;
+border:none;
+cursor:pointer;
+font-weight:600;
 }
 
-.btn-primary:hover{
-    opacity:.9;
+.btn-primary{
+background:var(--equipo-color,#6366f1);
+color:white;
 }
 
 .btn-secondary{
-    background:#e2e8f0;
-    border:none;
-    padding:10px 18px;
-    border-radius:8px;
-    cursor:pointer;
+background:#e2e8f0;
 }
 
 /* INPUTS */
 
 input{
-    width:100%;
-    padding:10px;
-    border-radius:8px;
-    border:1px solid #cbd5e1;
-    margin-bottom:12px;
-}
-
-label{
-    font-size:14px;
-    font-weight:600;
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #cbd5e1;
+margin-bottom:12px;
 }
 
 /* ESTADO */
 
 .estado-box{
-    background:#f1f5f9;
-    padding:12px;
-    border-radius:8px;
-    font-weight:600;
-    margin-bottom:15px;
-    text-align:center;
-}
-
-#mensajePerfil{
-    padding:12px;
-    border-radius:8px;
-    margin-bottom:20px;
+padding:12px;
+border-radius:8px;
+background:#f1f5f9;
+font-weight:600;
+text-align:center;
+margin-bottom:15px;
 }
 
 </style>
 
 </head>
 
-<body class="admin-body">
+<body>
 
-<header class="admin-header">
-<h1>Mi Perfil</h1>
+<!-- HEADER DINÁMICO DEL EQUIPO -->
 
-<div>
-<button id="btnVolverAdmin" class="btn-secondary" style="display:none;">← Admin</button>
-<button id="btnLogout" class="btn-secondary">Cerrar sesión</button>
+<div class="player-header">
+
+<img id="equipoLogo" src="">
+
+<h1 id="nombreEquipo">Equipo</h1>
+
+<p>Panel del jugador</p>
+
 </div>
 
-</header>
+<div class="main">
 
-<main class="admin-main">
+<button id="btnVolverAdmin" class="btn-secondary" style="display:none;">← Volver al Admin</button>
+<button id="btnLogout" class="btn-secondary">Cerrar sesión</button>
 
 <div id="mensajePerfil" style="display:none;"></div>
 
@@ -129,13 +144,11 @@ Estado: <span id="estadoJugador">Cargando...</span>
 
 <!-- FOTO PERFIL -->
 
-<div class="card" style="text-align:center;">
+<div class="card" style="text-align:center">
 
-<h3>Foto de Perfil</h3>
+<h3>Mi foto</h3>
 
-<img id="avatarPreview"
-src=""
-style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid #ddd;">
+<img id="avatarPreview" class="avatar" src="">
 
 <br><br>
 
@@ -147,35 +160,25 @@ Cambiar foto
 
 </div>
 
-<!-- DOCUMENTACION -->
+<!-- DOCUMENTOS -->
 
 <div class="card">
 
 <h3>Documentación obligatoria</h3>
 
-<div style="margin-bottom:15px;">
-
-<label>Apto Médico (PDF o imagen)</label>
+<label>Apto Médico</label>
 <input type="file" id="aptoMedico" accept=".pdf,image/*">
 <div id="aptoLink"></div>
 
-</div>
-
-<div style="margin-bottom:15px;">
-
-<label>Estudios realizados (PDF o imagen)</label>
+<label>Estudios realizados</label>
 <input type="file" id="estudios" accept=".pdf,image/*">
 <div id="estudiosLink"></div>
 
-</div>
-
-<div style="margin-bottom:15px;">
-
-<label>Deslinde de responsabilidad (PDF o imagen)</label>
+<label>Deslinde de responsabilidad</label>
 <input type="file" id="deslinde" accept=".pdf,image/*">
 <div id="deslindeLink"></div>
 
-</div>
+<br>
 
 <button type="button" id="btnSubirDocumentos" class="btn-primary">
 Subir documentación
@@ -192,17 +195,11 @@ Subir documentación
 <form id="formPerfil">
 
 <input type="text" id="nombre" placeholder="Nombre">
-
 <input type="text" id="apellido" placeholder="Apellido">
-
 <input type="email" id="email" placeholder="Email">
-
 <input type="text" id="telefono" placeholder="Teléfono">
-
 <input type="date" id="fechaNacimiento">
-
 <input type="text" id="dni" placeholder="DNI">
-
 <input type="text" id="cuitCuil" placeholder="CUIT/CUIL">
 
 <button type="submit" class="btn-primary">
@@ -227,10 +224,11 @@ Actualizar contraseña
 
 </div>
 
-</main>
+</div>
 
 <script src="js/app.js"></script>
 <script src="js/panel-jugador.js"></script>
 
 </body>
 </html>
+```

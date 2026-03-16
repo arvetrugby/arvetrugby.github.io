@@ -101,20 +101,7 @@ try {
     avatarImg.src = jugador.avatarUrl;
   }
 
-  /*************** ESTADO ***************/
-
-  const estadoEl = document.getElementById("estadoJugador");
-
-  estadoEl.textContent = jugador.estado || "FALTA DOCUMENTACIÓN";
-
-  estadoEl.classList.remove("habilitado", "faltante");
-
-  if (jugador.estado === "HABILITADO") {
-    estadoEl.classList.add("habilitado");
-  } else {
-    estadoEl.classList.add("faltante");
-  }
-
+ 
   /*********************************
   HEADER (EQUIPO)
   *********************************/

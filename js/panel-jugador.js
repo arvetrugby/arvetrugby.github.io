@@ -434,7 +434,7 @@ if (btnSubirDocs) {
   HEADER
   *********************************/
 
-  const user = JSON.parse(localStorage.getItem("arvet_user") || "{}");
+  const userData = JSON.parse(localStorage.getItem("arvet_user") || "{}");
 
 if(user){
     

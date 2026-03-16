@@ -185,8 +185,8 @@ button:disabled{opacity:.6;cursor:not-allowed}
 <input type="hidden" id="lng" name="lng">
 <!-- NUEVO: Nombre y Apellido separados -->
 <div class="form-group nombre-apellido-row">
-    <input type="text" id="adminNombre" placeholder="Nombre" required>
-    <input type="text" id="adminApellido" placeholder="Apellido" required>
+    <input type="text" id="adminNombre" name="given-name" autocomplete="given-name" placeholder="Nombre" required>
+<input type="text" id="adminApellido" name="family-name" autocomplete="family-name" placeholder="Apellido" required>
 </div>
 
 <div class="form-group">
@@ -194,7 +194,7 @@ button:disabled{opacity:.6;cursor:not-allowed}
 </div>
 
 <div class="form-group">
-<input type="tel" id="telefono" placeholder="WhatsApp (ej:11 412345678)" required>
+<input type="tel" id="telefono" placeholder="(WhatsApp (ej: 11 2345 6789)" required>
 </div>
 
     <div class="form-group">

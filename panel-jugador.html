@@ -74,6 +74,9 @@ button{
   font-size:14px;
   margin-right:10px;
   margin-bottom:10px;
+  width:100%; 
+  box-sizing:border-box; 
+  display:block;
 }
 
 button[type="submit"],
@@ -111,6 +114,7 @@ input[type="password"]{
   margin-bottom:12px;
   font-family:'Montserrat',sans-serif;
   font-size:14px;
+  box-sizing:border-box;
 }
 
 input:focus{
@@ -134,7 +138,7 @@ input:focus{
 
 .faltante{
   color:#ffffff;
-  background:##f98600 !important;
+  background:#f98600 !important;
 }
 
 #avatarPreview{
@@ -167,6 +171,8 @@ label{
   font-size:14px;
   display:block;
   margin-bottom:5px;
+  text-align:left; 
+  width:100%;
 }
   @keyframes spin { to { transform:rotate(360deg); } }
 </style>

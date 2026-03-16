@@ -242,11 +242,11 @@ button:disabled {
 
                 <div class="form-group">
                     <label for="telefono">Teléfono</label>
-                    <input type="tel" id="telefono" name="telefono" required placeholder="(Tu WhatsApp)">
+                    <input type="tel" id="telefono *" name="telefono" required placeholder="(ej: 54 9 1141234567)">
                 </div>
 
                 <div class="form-group">
-                    <label for="fechaNacimiento">Fecha de Nacimiento</label>
+                    <label for="fechaNacimiento">Fecha de Nacimiento *</label>
                     <input type="date" id="fechaNacimiento" name="fechaNacimiento" required placeholder="(Tu Fecha)">
                 </div>
 
@@ -256,8 +256,8 @@ button:disabled {
                 </div>
 
                 <div class="form-group">
-                    <label for="cuitCuil">CUIT/CUIL</label>
-                    <input type="text" id="cuitCuil" name="cuitCuil" required placeholder="(CUIT/CUIL) 20-12345678-9">
+                    <label for="cuitCuil">CUIT/CUIL *</label>
+                    <input type="text" id="cuitCuil" name="cuitCuil" required placeholder="(CUIT/CUIL) 20123456789">
                 </div>
 
                 <div class="form-group">
@@ -274,7 +274,7 @@ button:disabled {
 <!-- ========================= -->
 
 <div class="form-group">
-    <label>Subí una Foto de Perfil o elegí un Avatar Aparece en la sección Plantel</label>
+    <label>Subí una Foto de Perfil o elegí un Avatar | Aparece pública en el plantel de tu equipo.</label>
 
     <div style="text-align:center; margin-bottom:15px;">
         <img id="avatarPreview"
@@ -311,11 +311,21 @@ button:disabled {
                 </button>
             </form>
 
-            <div style="text-align: center; margin-top: 25px; padding-top: 25px; border-top: 1px solid #e2e8f0;">
-                <p style="color: var(--gray); font-size: 14px;">
-                    ¿Ya tenés cuenta? <a href="login.html" style="color: var(--primary); font-weight: 600;">Iniciar sesión</a>
-                </p>
-            </div>
+            <div style="text-align: center; margin-top: 25px; padding: 20px; border-top: none;">
+    <p style="
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        padding: 12px 24px;
+        border-radius: 50px;
+        color: #1e293b;
+        font-size: 14px;
+        margin: 0;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    ">
+        ¿Ya tenés cuenta? <a href="login.html" style="color: var(--primary); font-weight: 600; text-decoration: none;">Iniciar sesión</a>
+    </p>
+</div>
         </div>
     </div>
     <script>

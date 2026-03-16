@@ -188,21 +188,21 @@ function agregarBotonWhatsAppAdmin(telefonoAdmin, datosJugador) {
     `;
     
     btn.style.cssText = `
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        margin-top: 15px;
-        padding: 12px 20px;
-        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-        color: white;
-        border-radius: 50px;
-        font-weight: 600;
-        font-size: 14px;
-        text-decoration: none;
-        box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
-        animation: latido-infinito 1.5s ease-in-out infinite;
-        transition: all 0.3s ease;
-    `;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;  /* <-- Cambiado de 15px a 30px */
+    padding: 14px 24px;  /* <-- Un poco más grande para que sea más visible */
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: white;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 15px;  /* <-- Un poco más grande */
+    text-decoration: none;
+    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.5);  /* <-- Sombra más pronunciada */
+    animation: latido-infinito 1.5s ease-in-out infinite;
+    transition: all 0.3s ease;
+`;
     
     btn.onclick = function() {
         setTimeout(() => {

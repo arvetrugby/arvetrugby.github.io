@@ -2581,9 +2581,13 @@ async function obtenerDatosUbicacion(lat, lng) {
             
             // Sugerir dirección si está vacía (usando display_name de Nominatim)
             if (data.display_name && document.getElementById('direccion').value === '') {
-                const direccionSugerida = data.display_name.split(',')[0];
-                document.getElementById('direccion').placeholder = `Ej: ${direccionSugerida}`;
-            }
+    const direccionSugerida = data.address?.road 
+        ? `${data.address.road} ${data.address.house_number || ''}`.trim()
+        : data.display_name.split(',')[0];
+    document.getElementById('direccion').placeholder = `Ej: ${direccionSugerida}`;
+}
+            
+            
         }
         
     } catch (error) {

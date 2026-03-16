@@ -671,7 +671,8 @@ const iti = window.intlTelInput(inputTelefono, {
         telefono: iti.getNumber(), 
         fechaNacimiento: document.getElementById('fechaNacimiento').value, 
         email: document.getElementById('email').value.trim(),
-        password: password  // ← Usamos la variable validada
+        password: password,
+        avatarUrl: document.getElementById('avatarUrl').value
     };
        
 

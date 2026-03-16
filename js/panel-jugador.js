@@ -217,39 +217,113 @@ document.addEventListener('DOMContentLoaded', async function() {
   });
   
   document.getElementById('inputAvatar').addEventListener('change', async function() {
-    const file = this.files[0];
+    let file = this.files[0];
     if (!file) return;
     
-    if (file.size > 2 * 1024 * 1024) {
-      mostrarMensaje('Imagen muy grande (máx 2MB)', 'error');
+    console.log('📁 Archivo seleccionado:', file.name, '- Tamaño:', (file.size / 1024 / 1024).toFixed(2), 'MB');
+    
+    // Validar tipo
+    if (!file.type.startsWith('image/')) {
+      mostrarMensaje('❌ El archivo debe ser una imagen', 'error');
       return;
     }
     
-    mostrarMensaje('⏳ Subiendo...');
+    // Redimensionar si es necesario
+    let archivoSubir = file;
+    const maxSizeMB = 5;
+    
+    if (file.size > maxSizeMB * 1024 * 1024) {
+      mostrarMensaje('⏳ Comprimiendo imagen...', 'ok');
+      try {
+        archivoSubir = await redimensionarImagen(file, 1200, 1200, 0.7);
+        if (archivoSubir.size > maxSizeMB * 1024 * 1024) {
+          archivoSubir = await redimensionarImagen(file, 800, 800, 0.6);
+        }
+      } catch (err) {
+        mostrarMensaje('Error al procesar imagen', 'error');
+        return;
+      }
+    }
+    
+    mostrarMensaje('⏳ Subiendo foto...');
+    
+    const formData = new FormData();
+    formData.append('image', archivoSubir);
     
     try {
-      const formData = new FormData();
-      formData.append('image', file);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
       
       const response = await fetch('https://api.imgbb.com/1/upload?key=2c40bfae99afcb6fd536a0e303a77b90', {
         method: 'POST',
-        body: formData
+        body: formData,
+        signal: controller.signal
       });
+      
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       
       const result = await response.json();
       
       if (result.success) {
-        avatarUrlActual = result.data.url || result.data.display_url;
-        document.getElementById('avatarPreview').src = avatarUrlActual;
-        mostrarMensaje('✅ Foto cargada. Guardá el perfil.');
+        const url = result.data.url || result.data.display_url || result.data.medium?.url;
+        
+        if (!url) throw new Error('No se obtuvo URL');
+        
+        avatarUrlActual = url;
+        
+        // Mostrar preview
+        const testImg = new Image();
+        testImg.onload = async function() {
+          document.getElementById('avatarPreview').src = avatarUrlActual;
+          
+          // 🔥 SUBIR AUTOMÁTICAMENTE AL SERVIDOR
+          mostrarMensaje('⏳ Guardando en perfil...');
+          
+          try {
+            await fetch(API_URL, {
+              method: 'POST',
+              mode: 'no-cors',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                action: 'updateJugador',
+                id: jugadorId,
+                avatarUrl: avatarUrlActual
+              })
+            });
+            
+            mostrarMensaje('✅ Foto actualizada');
+            
+            // Actualizar localStorage si es el usuario logueado
+            if (!esAdminEditando && user) {
+              const updatedUser = { ...user, avatarUrl: avatarUrlActual };
+              localStorage.setItem('arvet_user', JSON.stringify(updatedUser));
+            }
+            
+          } catch (err) {
+            console.error('Error guardando avatar:', err);
+            mostrarMensaje('⚠️ Foto subida pero error al guardar', 'error');
+          }
+        };
+        
+        testImg.onerror = function() {
+          mostrarMensaje('⚠️ Error al mostrar imagen', 'error');
+        };
+        testImg.src = avatarUrlActual;
+        
       } else {
-        mostrarMensaje('Error al subir foto', 'error');
+        mostrarMensaje('Error: ' + (result.error?.message || 'Error de ImgBB'), 'error');
       }
+      
     } catch (err) {
-      mostrarMensaje('Error de conexión', 'error');
+      if (err.name === 'AbortError') {
+        mostrarMensaje('⏱️ Timeout - intentá con imagen más chica', 'error');
+      } else {
+        mostrarMensaje('❌ Error: ' + err.message, 'error');
+      }
     }
   });
-  
   // ==========================================
   // CAMBIAR CONTRASEÑA
   // ==========================================

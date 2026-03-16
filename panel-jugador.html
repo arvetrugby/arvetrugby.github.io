@@ -1,350 +1,236 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mi Perfil - ARVET</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Panel del Jugador - ARVET</title>
+
+<link rel="stylesheet" href="css/styles.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+
 <style>
-* { box-sizing: border-box; }
 
-body{
-  font-family:'Montserrat',sans-serif;
-  background:#f1f5f9;
-  margin:0;
+.admin-body{
+    font-family: 'Montserrat', sans-serif;
+    background:#f1f5f9;
 }
 
-.player-header{
-  padding:35px 20px;
-  color:white;
-  text-align:center;
-  background:var(--equipo-color,#6366f1);
+/* HEADER */
+
+.admin-header{
+    background:#0f172a;
+    color:white;
+    padding:15px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
 }
 
-.player-header img{
-  width:90px;
-  height:90px;
-  object-fit:contain;
-  margin-bottom:10px;
-  background:white;
-  border-radius:50%;
-  padding:5px;
+.admin-header h1{
+    font-size:20px;
 }
 
-.player-header h1{
-  margin:0;
-  font-size:20px;
+/* MAIN */
+
+.admin-main{
+    padding:30px;
 }
 
-.player-header p{
-  margin:5px 0 0 0;
-  opacity:.9;
-}
-
-.main{
-  max-width:800px;
-  margin:auto;
-  padding:20px;
-}
+/* CARDS */
 
 .card{
-  background:white;
-  padding:25px;
-  border-radius:12px;
-  margin-bottom:20px;
-  box-shadow:0 6px 18px rgba(0,0,0,0.06);
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.06);
+    margin-bottom:25px;
 }
 
-.avatar{
-  width:120px;
-  height:120px;
-  border-radius:50%;
-  object-fit:cover;
-  border:4px solid #e2e8f0;
-  background:#f8fafc;
-}
-
-button{
-  padding:10px 18px;
-  border-radius:8px;
-  border:none;
-  cursor:pointer;
-  font-weight:600;
-  font-family:'Montserrat',sans-serif;
-  font-size:14px;
-}
+/* BOTONES */
 
 .btn-primary{
-  background:var(--equipo-color,#6366f1);
-  color:white;
+    background:#6366f1;
+    color:white;
+    border:none;
+    padding:10px 18px;
+    border-radius:8px;
+    cursor:pointer;
 }
 
 .btn-primary:hover{
-  opacity:0.9;
-  transform:translateY(-1px);
+    opacity:.9;
 }
 
 .btn-secondary{
-  background:#e2e8f0;
-  color:#334155;
+    background:#e2e8f0;
+    border:none;
+    padding:10px 18px;
+    border-radius:8px;
+    cursor:pointer;
 }
 
-.btn-secondary:hover{
-  background:#cbd5e1;
-}
+/* INPUTS */
 
-.btn-danger{
-  background:#ef4444;
-  color:white;
-  padding:6px 12px;
-  font-size:12px;
-  margin-left:10px;
-}
-
-.btn-danger:hover{
-  background:#dc2626;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="date"],
-input[type="password"]{
-  width:100%;
-  padding:12px;
-  border-radius:8px;
-  border:1px solid #cbd5e1;
-  margin-bottom:12px;
-  font-family:'Montserrat',sans-serif;
-  font-size:14px;
-}
-
-input:focus{
-  outline:none;
-  border-color:var(--equipo-color,#6366f1);
-  box-shadow:0 0 0 3px rgba(99,102,241,0.1);
-}
-
-.estado-box{
-  padding:15px;
-  border-radius:8px;
-  background:#f1f5f9;
-  font-weight:600;
-  text-align:center;
-  margin-bottom:20px;
-  font-size:16px;
-}
-
-.habilitado{
-  color:#059669;
-  background:#d1fae5 !important;
-}
-
-.faltante{
-  color:#dc2626;
-  background:#fee2e2 !important;
-}
-
-.doc-link{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin-top:5px;
-  margin-bottom:20px;
-  flex-wrap:wrap;
-}
-
-.doc-link a{
-  color:var(--equipo-color,#6366f1);
-  text-decoration:none;
-  font-weight:600;
-  display:inline-flex;
-  align-items:center;
-  gap:5px;
-}
-
-.doc-link a:hover{
-  text-decoration:underline;
-}
-
-.no-doc{
-  color:#94a3b8;
-  font-size:14px;
-  margin-top:5px;
-  margin-bottom:20px;
-  display:block;
-  font-style:italic;
+input{
+    width:100%;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #cbd5e1;
+    margin-bottom:12px;
 }
 
 label{
-  display:block;
-  margin-bottom:6px;
-  font-weight:600;
-  color:#475569;
-  font-size:14px;
+    font-size:14px;
+    font-weight:600;
 }
 
-h3{
-  margin-top:0;
-  color:#1e293b;
-  margin-bottom:20px;
-  font-size:18px;
+/* ESTADO */
+
+.estado-box{
+    background:#f1f5f9;
+    padding:12px;
+    border-radius:8px;
+    font-weight:600;
+    margin-bottom:15px;
+    text-align:center;
 }
 
 #mensajePerfil{
-  padding:15px;
-  border-radius:8px;
-  margin-bottom:20px;
-  text-align:center;
-  font-weight:600;
-  display:none;
+    padding:12px;
+    border-radius:8px;
+    margin-bottom:20px;
 }
 
-.header-actions{
-  display:flex;
-  gap:10px;
-  margin-bottom:20px;
-  flex-wrap:wrap;
-}
-
-.nombre-jugador-header{
-  font-size:22px;
-  font-weight:700;
-  margin:10px 0 5px 0;
-}
-
-.cargando{
-  opacity:0.6;
-  pointer-events:none;
-}
-
-.error-input{
-  border-color:#ef4444 !important;
-}
-
-input[type="file"]{
-  margin-bottom:10px;
-  font-size:14px;
-}
-
-.spinner{
-  display:inline-block;
-  width:16px;
-  height:16px;
-  border:2px solid rgba(255,255,255,0.3);
-  border-radius:50%;
-  border-top-color:white;
-  animation:spin 1s linear infinite;
-  margin-left:8px;
-}
-
-@keyframes spin{
-  to { transform:rotate(360deg); }
-}
 </style>
+
 </head>
 
-<body>
+<body class="admin-body">
 
-<div class="player-header">
-  <img id="equipoLogo" src="" alt="Logo equipo">
-  <h1 id="nombreEquipo">Cargando equipo...</h1>
-  <p class="nombre-jugador-header" id="nombreJugadorHeader">Cargando...</p>
-  <p>Panel del jugador</p>
+<header class="admin-header">
+<h1>Mi Perfil</h1>
+
+<div>
+<button id="btnVolverAdmin" class="btn-secondary" style="display:none;">← Admin</button>
+<button id="btnLogout" class="btn-secondary">Cerrar sesión</button>
 </div>
 
-<div class="main">
+</header>
 
-  <div class="header-actions">
-    <button id="btnVolverAdmin" class="btn-secondary" style="display:none;">← Volver al Admin</button>
-    <button id="btnLogout" class="btn-secondary">Cerrar sesión</button>
-  </div>
+<main class="admin-main">
 
-  <div id="mensajePerfil"></div>
+<div id="mensajePerfil" style="display:none;"></div>
 
-  <div class="estado-box" id="estadoBox">
-    <span id="estadoJugador">⏳ Cargando datos...</span>
-  </div>
+<div class="estado-box">
+Estado: <span id="estadoJugador">Cargando...</span>
+</div>
 
-  <!-- FOTO PERFIL -->
-  <div class="card" style="text-align:center">
-    <h3>Mi foto</h3>
-    <img id="avatarPreview" class="avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect width='120' height='120' fill='%23e2e8f0'/%3E%3Ctext x='60' y='60' text-anchor='middle' fill='%2394a3b8' font-family='sans-serif' font-size='14'%3ESin foto%3C/text%3E%3C/svg%3E" alt="Avatar">
-    <br><br>
-    <input type="file" id="inputAvatar" accept="image/*" style="display:none;">
-    <button type="button" id="btnCambiarAvatar" class="btn-primary">📷 Cambiar foto</button>
-  </div>
+<!-- FOTO PERFIL -->
 
-  <!-- DOCUMENTOS -->
-  <div class="card">
-    <h3>📋 Documentación obligatoria</h3>
-    
-    <label>Apto Médico (PDF o imagen)</label>
-    <input type="file" id="aptoMedico" accept=".pdf,image/*">
-    <div id="aptoLink" class="no-doc">⏳ Cargando...</div>
+<div class="card" style="text-align:center;">
 
-    <label>Estudios realizados (PDF o imagen)</label>
-    <input type="file" id="estudios" accept=".pdf,image/*">
-    <div id="estudiosLink" class="no-doc">⏳ Cargando...</div>
+<h3>Foto de Perfil</h3>
 
-    <label>Deslinde de responsabilidad (PDF o imagen)</label>
-    <input type="file" id="deslinde" accept=".pdf,image/*">
-    <div id="deslindeLink" class="no-doc">⏳ Cargando...</div>
+<img id="avatarPreview"
+src=""
+style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid #ddd;">
 
-    <button type="button" id="btnSubirDocumentos" class="btn-primary" style="margin-top:15px; width:100%;">
-      📤 Subir documentación seleccionada
-    </button>
-  </div>
+<br><br>
 
-  <!-- DATOS PERSONALES -->
-  <div class="card">
-    <h3>👤 Datos personales</h3>
-    <form id="formPerfil">
-      <label>Nombre</label>
-      <input type="text" id="nombre" placeholder="Nombre" required>
-      
-      <label>Apellido</label>
-      <input type="text" id="apellido" placeholder="Apellido" required>
-      
-      <label>Email</label>
-      <input type="email" id="email" placeholder="email@ejemplo.com" required>
-      
-      <label>Teléfono</label>
-      <input type="text" id="telefono" placeholder="Teléfono">
-      
-      <label>Fecha de nacimiento</label>
-      <input type="date" id="fechaNacimiento">
-      
-      <label>DNI</label>
-      <input type="text" id="dni" placeholder="DNI">
-      
-      <label>CUIT/CUIL</label>
-      <input type="text" id="cuitCuil" placeholder="CUIT/CUIL">
+<input type="file" id="inputAvatar" accept="image/*" style="display:none;">
 
-      <button type="submit" class="btn-primary" style="width:100%; margin-top:10px;">
-        💾 Guardar cambios
-      </button>
-    </form>
-  </div>
-
-  <!-- CONTRASEÑA -->
-  <div class="card">
-    <h3>🔒 Cambiar contraseña</h3>
-    <label>Nueva contraseña (mínimo 6 caracteres)</label>
-    <input type="password" id="nuevaPassword" placeholder="••••••••">
-    <button type="button" id="btnCambiarPass" class="btn-primary" style="width:100%;">
-      🔑 Actualizar contraseña
-    </button>
-  </div>
+<button type="button" id="btnCambiarAvatar" class="btn-primary">
+Cambiar foto
+</button>
 
 </div>
 
-<!-- CONFIGURACIÓN GLOBAL -->
-<script>
-  // ⚠️ CONFIGURÁ ESTO CON TU URL REAL DE GOOGLE APPS SCRIPT
-  const API_URL = 'https://script.google.com/macros/s/AKfycbxE-UiI85pCcUYq5LqJjN7UU7aOtXsVV_7Hyag-hYgOT4LcjGhVQaDt6js9PEQQ6E9Z/exec';
-</script>
+<!-- DOCUMENTACION -->
 
-<script src="panel-jugador.js"></script>
+<div class="card">
+
+<h3>Documentación obligatoria</h3>
+
+<div style="margin-bottom:15px;">
+
+<label>Apto Médico (PDF o imagen)</label>
+<input type="file" id="aptoMedico" accept=".pdf,image/*">
+<div id="aptoLink"></div>
+
+</div>
+
+<div style="margin-bottom:15px;">
+
+<label>Estudios realizados (PDF o imagen)</label>
+<input type="file" id="estudios" accept=".pdf,image/*">
+<div id="estudiosLink"></div>
+
+</div>
+
+<div style="margin-bottom:15px;">
+
+<label>Deslinde de responsabilidad (PDF o imagen)</label>
+<input type="file" id="deslinde" accept=".pdf,image/*">
+<div id="deslindeLink"></div>
+
+</div>
+
+<button type="button" id="btnSubirDocumentos" class="btn-primary">
+Subir documentación
+</button>
+
+</div>
+
+<!-- DATOS PERSONALES -->
+
+<div class="card">
+
+<h3>Datos personales</h3>
+
+<form id="formPerfil">
+
+<input type="text" id="nombre" placeholder="Nombre">
+
+<input type="text" id="apellido" placeholder="Apellido">
+
+<input type="email" id="email" placeholder="Email">
+
+<input type="text" id="telefono" placeholder="Teléfono">
+
+<input type="date" id="fechaNacimiento">
+
+<input type="text" id="dni" placeholder="DNI">
+
+<input type="text" id="cuitCuil" placeholder="CUIT/CUIL">
+
+<button type="submit" class="btn-primary">
+Guardar cambios
+</button>
+
+</form>
+
+</div>
+
+<!-- CONTRASEÑA -->
+
+<div class="card">
+
+<h3>Cambiar contraseña</h3>
+
+<input type="password" id="nuevaPassword" placeholder="Nueva contraseña">
+
+<button type="button" id="btnCambiarPass" class="btn-primary">
+Actualizar contraseña
+</button>
+
+</div>
+
+</main>
+
+<script src="js/app.js"></script>
+<script src="js/panel-jugador.js"></script>
 
 </body>
 </html>

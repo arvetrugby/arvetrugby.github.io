@@ -175,7 +175,7 @@ label{
 <!-- LOADER -->
   <div id="loader" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--equipo-color,#38bdf8); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; font-family:'Montserrat',sans-serif;">
     <div style="width:60px; height:60px; border:4px solid rgba(255,255,255,0.3); border-top-color:white; border-radius:50%; animation:spin 1s linear infinite; margin-bottom:20px;"></div>
-    <p style="font-size:18px; font-weight:600; margin:0;">Cargando perfil...</p>
+    <p style="font-size:18px; font-weight:600; margin:0;">Cargando Jugador...</p>
   </div>
   
 <div class="player-header">
@@ -204,7 +204,7 @@ label{
     <button type="button" id="btnCambiarAvatar">Elegí nueva foto</button>
   </div>
   
-  <h3>👤 Datos personales</h3>
+  <h3>Datos personales</h3>
   
   <form id="formPerfil">
     <label>Nombre</label>
@@ -228,15 +228,22 @@ label{
     <label>CUIT/CUIL</label>
     <input type="text" id="cuitCuil" placeholder="CUIT/CUIL">
     
-    <button type="submit">💾 Guardar cambios</button>
+    <button type="submit">Guardar cambios</button>
   </form>
+  
+ <hr>
+  
+  <h3>Cambiar usuario (email)</h3>
+  <label>Email actual: <span id="emailActual" style="font-weight:normal; color:#64748b;"></span></label>
+  <input type="email" id="nuevoEmail" placeholder="Nuevo email">
+  <button type="button" id="btnCambiarEmail">Actualizar email</button>
   
   <hr>
   
-  <h3>🔒 Cambiar contraseña</h3>
+  <h3>Cambiar contraseña</h3>
   <label>Nueva contraseña (mín. 6 caracteres)</label>
   <input type="password" id="nuevaPassword" placeholder="••••••••">
-  <button type="button" id="btnCambiarPass">🔑 Actualizar contraseña</button>
+  <button type="button" id="btnCambiarPass">Actualizar contraseña</button>
 
 </div>
 

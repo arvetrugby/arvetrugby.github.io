@@ -912,6 +912,21 @@ function initRegistroJugador() {
     const btnText = document.getElementById('btnText');
     const loading = document.getElementById('loading');
     const msg = document.getElementById('msg');
+
+    // Inicializar selector internacional de teléfono
+const inputTelefono = document.querySelector("#telefono");
+
+const iti = window.intlTelInput(inputTelefono, {
+    initialCountry: "auto",
+    nationalMode: false,
+    geoIpLookup: function(callback) {
+        fetch("https://ipapi.co/json")
+            .then(res => res.json())
+            .then(data => callback(data.country_code))
+            .catch(() => callback("ar"));
+    },
+    utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/utils.js"
+});
     
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -935,7 +950,7 @@ function initRegistroJugador() {
             nombre: document.getElementById('nombre').value.trim(),
             apellido: document.getElementById('apellido').value.trim(),
             email: document.getElementById('email').value.trim(),
-            telefono: document.getElementById('telefono').value.trim(),
+            telefono: iti.getNumber(),
             fechaNacimiento: document.getElementById('fechaNacimiento').value,
             dni: document.getElementById('dni').value.trim(),
             cuitCuil: document.getElementById('cuitCuil').value.trim(),

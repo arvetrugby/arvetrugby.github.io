@@ -257,7 +257,7 @@ form.addEventListener('submit', async function (e) {
 });
 
 /*********************************
-CAMBIAR AVATAR
+CAMBIAR AVATAR AUTOMÁTICO
 *********************************/
 
 const btnCambiarAvatar = document.getElementById('btnCambiarAvatar');
@@ -271,27 +271,77 @@ inputAvatar?.addEventListener('change', async function () {
   const file = this.files[0];
   if (!file) return;
 
+  mostrarMensaje("Subiendo imagen...");
+
   const formData = new FormData();
   formData.append("image", file);
 
-  const response = await fetch(
-    "https://api.imgbb.com/1/upload?key=2c40bfae99afcb6fd536a0e303a77b90",
-    { method: "POST", body: formData }
-  );
+  try {
 
-  const result = await response.json();
+    // 1️⃣ subir a imgbb
+    const response = await fetch(
+      "https://api.imgbb.com/1/upload?key=2c40bfae99afcb6fd536a0e303a77b90",
+      {
+        method: "POST",
+        body: formData
+      }
+    );
 
-  if (result.success) {
+    const result = await response.json();
 
-    avatarUrlActual = result.data.medium.url;
-    avatarPreview.src = avatarUrlActual;
+    if (!result.success) {
+      mostrarMensaje("Error subiendo imagen", "error");
+      return;
+    }
 
-    mostrarMensaje("Imagen cargada");
+    const nuevaUrl = result.data.medium.url;
+
+    avatarPreview.src = nuevaUrl;
+
+    // 2️⃣ guardar automáticamente en backend
+    const save = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "updateJugador",
+        id: jugadorId,
+        avatarUrl: nuevaUrl
+      })
+    });
+
+    const saveResult = await save.json();
+
+    if (saveResult.success) {
+
+      avatarUrlActual = nuevaUrl;
+
+      mostrarMensaje("Foto actualizada correctamente");
+
+      // actualizar también localStorage si es el propio jugador
+      if (!esAdminEditando) {
+
+        const updatedUser = {
+          ...user,
+          avatarUrl: nuevaUrl
+        };
+
+        localStorage.setItem("arvet_user", JSON.stringify(updatedUser));
+
+      }
+
+    } else {
+
+      mostrarMensaje("Error guardando avatar", "error");
+
+    }
+
+  } catch (err) {
+
+    console.error(err);
+    mostrarMensaje("Error subiendo imagen", "error");
 
   }
 
 });
-
 /*********************************
 LOGOUT
 *********************************/

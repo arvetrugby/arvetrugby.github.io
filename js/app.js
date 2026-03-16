@@ -714,6 +714,169 @@ const iti = window.intlTelInput(inputTelefono, {
         }
     });
 }
+    // ==========================================
+// AVATAR - SELECCIONAR PREDEFINIDO
+// ==========================================
+
+function seleccionarAvatar(imgElement) {
+    // Quitar borde de todas las opciones
+    document.querySelectorAll('.avatar-option').forEach(img => {
+        img.style.border = '2px solid transparent';
+        img.style.transform = 'scale(1)';
+    });
+    
+    // Resaltar la seleccionada
+    imgElement.style.border = '2px solid #6366f1';
+    imgElement.style.transform = 'scale(1.1)';
+    imgElement.style.transition = 'all 0.2s ease';
+    
+    // Actualizar preview
+    const nuevaUrl = imgElement.src;
+    document.getElementById('avatarPreview').src = nuevaUrl;
+    
+    // Guardar en hidden input
+    document.getElementById('avatarUrl').value = nuevaUrl;
+    
+    // Limpiar input de archivo si había uno
+    document.getElementById('avatarUpload').value = '';
+    document.getElementById('avatarNombreArchivo').style.display = 'none';
+    
+    console.log('Avatar seleccionado:', nuevaUrl);
+}
+
+// ==========================================
+// AVATAR - SUBIR FOTO PROPIA
+// ==========================================
+
+async function subirAvatar(input) {
+    const file = input.files[0];
+    if (!file) return;
+    
+    // Validar tipo
+    if (!file.type.startsWith('image/')) {
+        mostrarMensaje('El archivo debe ser una imagen', 'error');
+        return;
+    }
+    
+    // Mostrar nombre
+    document.getElementById('avatarNombreArchivo').textContent = file.name;
+    document.getElementById('avatarNombreArchivo').style.display = 'block';
+    
+    // Redimensionar si es necesario
+    let archivoSubir = file;
+    if (file.size > 2 * 1024 * 1024) {
+        archivoSubir = await redimensionarImagen(file, 800, 800, 0.7);
+    }
+    
+    // Subir a ImgBB
+    const formData = new FormData();
+    formData.append('image', archivoSubir);
+    
+    try {
+        const response = await fetch('https://api.imgbb.com/1/upload?key=2c40bfae99afcb6fd536a0e303a77b90', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            const url = result.data.url || result.data.display_url;
+            
+            // Actualizar preview
+            document.getElementById('avatarPreview').src = url;
+            
+            // Guardar en hidden input
+            document.getElementById('avatarUrl').value = url;
+            
+            // Quitar selección de avatares predefinidos
+            document.querySelectorAll('.avatar-option').forEach(img => {
+                img.style.border = '2px solid transparent';
+                img.style.transform = 'scale(1)';
+            });
+            
+            console.log('Avatar subido:', url);
+        } else {
+            mostrarMensaje('Error al subir imagen', 'error');
+        }
+    } catch (err) {
+        console.error('Error:', err);
+        mostrarMensaje('Error de conexión al subir imagen', 'error');
+    }
+}
+
+// ==========================================
+// REDIMENSIONAR IMAGEN
+// ==========================================
+
+async function redimensionarImagen(file, maxWidth = 800, maxHeight = 800, quality = 0.7) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                let width = img.width;
+                let height = img.height;
+                
+                if (width > maxWidth || height > maxHeight) {
+                    const ratio = Math.min(maxWidth / width, maxHeight / height);
+                    width = Math.round(width * ratio);
+                    height = Math.round(height * ratio);
+                }
+                
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, width, height);
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                canvas.toBlob((blob) => {
+                    if (blob) {
+                        const nuevoArchivo = new File([blob], file.name, {
+                            type: 'image/jpeg',
+                            lastModified: Date.now()
+                        });
+                        resolve(nuevoArchivo);
+                    } else {
+                        reject(new Error('Error al procesar imagen'));
+                    }
+                }, 'image/jpeg', quality);
+            };
+            img.onerror = () => reject(new Error('Error cargando imagen'));
+            img.src = e.target.result;
+        };
+        reader.onerror = () => reject(new Error('Error leyendo archivo'));
+        reader.readAsDataURL(file);
+    });
+}
+
+// ==========================================
+// MOSTRAR MENSAJE (si no existe)
+// ==========================================
+
+function mostrarMensaje(texto, tipo = 'ok') {
+    const msg = document.getElementById('msg');
+    if (!msg) return;
+    
+    msg.textContent = texto;
+    msg.style.display = 'block';
+    msg.className = 'message ' + (tipo === 'error' ? 'error' : 'success');
+    
+    setTimeout(() => {
+        msg.style.display = 'none';
+    }, 4000);
+}
+
+// Marcar primer avatar como seleccionado por defecto
+document.addEventListener('DOMContentLoaded', function() {
+    const primerAvatar = document.querySelector('.avatar-option');
+    if (primerAvatar) {
+        seleccionarAvatar(primerAvatar);
+    }
+});
 // ============================================
 // PÁGINA: LOGIN
 // ============================================

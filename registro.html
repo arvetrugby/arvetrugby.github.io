@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/css/intlTelInput.css">
 <!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -194,9 +194,13 @@ button:disabled{opacity:.6;cursor:not-allowed}
 </div>
 
 <div class="form-group">
-<input type="tel" id="telefono" placeholder="WhatsApp (ej: 5491123456789)" required>
+<input type="tel" id="telefono" placeholder="WhatsApp (ej:11 412345678)" required>
 </div>
 
+    <div class="form-group">
+<input type="text" id="fechaNacimiento" placeholder="Fecha de nacimiento" required>
+</div>
+    
 <div class="form-group">
 <input type="password" id="password" placeholder="Contraseña" required minlength="6">
 </div>
@@ -216,6 +220,26 @@ button:disabled{opacity:.6;cursor:not-allowed}
 <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/utils.js"></script>
 
 <script src="js/app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
 
+<script>
+flatpickr("#fechaNacimiento", {
+
+    locale: "es",
+
+    dateFormat: "Y-m-d",
+    altInput: true,
+    altFormat: "d / m / Y",
+
+    minDate: "1940-01-01",
+    maxDate: new Date().fp_incr(-365 * 18),
+
+    monthSelectorType: "dropdown",
+
+    disableMobile: true,
+    allowInput: false
+});
+</script>
 </body>
 </html>

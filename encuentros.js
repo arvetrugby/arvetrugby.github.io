@@ -1,5 +1,26 @@
-console.log('encuentros.js cargado correctamente');
-window.testCarga = true;
+// Función de mensajes propia para encuentros.js
+function mostrarMensaje(texto, tipo = 'info') {
+    // Crear overlay si no existe
+    let overlay = document.getElementById('msgOverlayEncuentros');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'msgOverlayEncuentros';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:99999;';
+        overlay.innerHTML = '<div id="msgEncuentros" style="background:white;padding:25px 40px;border-radius:10px;font-size:18px;text-align:center;font-weight:bold;"></div>';
+        document.body.appendChild(overlay);
+    }
+    
+    const msg = document.getElementById('msgEncuentros');
+    msg.textContent = texto;
+    msg.style.background = tipo === 'success' ? '#16a34a' : tipo === 'error' ? '#dc2626' : '#1e293b';
+    msg.style.color = 'white';
+    
+    overlay.style.display = 'flex';
+    
+    setTimeout(() => {
+        overlay.style.display = 'none';
+    }, 3000);
+}
 // ============================================
 // ARVET - SISTEMA DE ENCUENTROS/PARTIDOS
 // ============================================

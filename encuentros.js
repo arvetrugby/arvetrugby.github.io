@@ -59,34 +59,337 @@ function showEncuentrosTab(tab) {
 }
 
 // ============================================
-// MODAL VACÍO (para extender después)
+// MODAL CREAR ENCUENTRO
 // ============================================
 
 function nuevoEncuentro() {
     const modal = document.createElement('div');
     modal.className = 'modal-overlay active';
     modal.id = 'modalEncuentro';
-
+    
     modal.innerHTML = `
-        <div class="modal-content">
+        <div class="modal-content" style="max-width: 800px;">
             <div class="modal-header">
                 <h2>Crear Nuevo Encuentro</h2>
                 <button class="btn-cerrar" onclick="cerrarModalEncuentro()">×</button>
             </div>
-            <div class="modal-body" style="padding: 40px; text-align: center; color: #64748b;">
-                <p>Modal vacío - listo para implementar</p>
-            </div>
+            
+            <form id="formEncuentro" onsubmit="guardarEncuentro(event)">
+                
+                <!-- FLYER -->
+                <div class="form-group">
+                    <label>Flyer del encuentro</label>
+                    <div id="flyerPreview" style="width: 100%; height: 200px; background: #f1f5f9; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; overflow: hidden;">
+                        <span style="color: #94a3b8;">Vista previa del flyer</span>
+                    </div>
+                    <input type="file" id="inputFlyer" accept="image/*" style="display: none;">
+                    <input type="hidden" id="flyerUrl" value="">
+                    <button type="button" onclick="document.getElementById('inputFlyer').click()" class="btn-secondary" style="width: 100%;">
+                        📤 Subir flyer
+                    </button>
+                    <p style="color: #64748b; font-size: 12px; margin-top: 5px;">Formato recomendado: JPG/PNG, 800x600px</p>
+                </div>
+
+                <!-- NOMBRE -->
+                <div class="form-group">
+                    <label>Nombre del encuentro *</label>
+                    <input type="text" id="encNombre" required placeholder="Ej: Encuentro de Veteranos 2024">
+                </div>
+
+                <!-- TIPO DE RUGBY -->
+                <div class="form-group">
+                    <label>Tipo de encuentro *</label>
+                    <select id="encTipo" required onchange="toggleOtroTipo(this.value)">
+                        <option value="">Seleccionar...</option>
+                        <option value="Veteranos +35">Veteranos +35</option>
+                        <option value="Veteranos +50">Veteranos +50</option>
+                        <option value="otro">Otro (especificar)</option>
+                    </select>
+                    <input type="text" id="encTipoOtro" style="display: none; margin-top: 10px;" placeholder="Especificar tipo de encuentro">
+                </div>
+
+                <!-- LUGAR -->
+                <div class="form-group">
+                    <label>Lugar / Cancha *</label>
+                    <input type="text" id="encLugar" required placeholder="Nombre y dirección de la cancha">
+                </div>
+
+                <!-- CUPO -->
+                <div class="form-group">
+                    <label>Cupo máximo de equipos *</label>
+                    <input type="number" id="encCupo" min="2" max="50" value="8" required>
+                </div>
+
+                <!-- FECHAS DINÁMICAS -->
+                <div class="form-group">
+                    <label>Fechas y horarios *</label>
+                    <div id="containerFechas" style="display: flex; flex-direction: column; gap: 15px;">
+                        <!-- Las fechas se agregan dinámicamente -->
+                    </div>
+                    <button type="button" onclick="agregarDia()" class="btn-secondary" style="margin-top: 15px; width: 100%;">
+                        + Agregar día
+                    </button>
+                </div>
+
+                <!-- VALORES DINÁMICOS -->
+                <div class="form-group">
+                    <label>Valores / Opciones de inscripción *</label>
+                    <div id="containerValores" style="display: flex; flex-direction: column; gap: 10px;">
+                        <!-- Los valores se agregan dinámicamente -->
+                    </div>
+                    <button type="button" onclick="agregarValor()" class="btn-secondary" style="margin-top: 15px; width: 100%;">
+                        + Agregar opción de valor
+                    </button>
+                </div>
+
+                <!-- DESCRIPCIÓN GENERAL -->
+                <div class="form-group">
+                    <label>Descripción general</label>
+                    <textarea id="encDescripcion" rows="3" placeholder="Información adicional, reglas especiales, premios..."></textarea>
+                </div>
+
+                <!-- BOTONES -->
+                <div style="display: flex; gap: 15px; margin-top: 25px;">
+                    <button type="button" onclick="cerrarModalEncuentro()" class="btn-secondary" style="flex: 1;">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn-primary" style="flex: 2;" id="btnGuardarEncuentro">
+                        Crear encuentro
+                    </button>
+                </div>
+            </form>
         </div>
     `;
-
+    
     document.body.appendChild(modal);
+    
+    // Inicializar con un día y un valor por defecto
+    agregarDia();
+    agregarValor();
+    
+    // Event listener para subir flyer
+    document.getElementById('inputFlyer').addEventListener('change', subirFlyer);
 }
 
-function cerrarModalEncuentro() {
-    const modal = document.getElementById('modalEncuentro');
-    if (modal) modal.remove();
+function toggleOtroTipo(valor) {
+    const inputOtro = document.getElementById('encTipoOtro');
+    inputOtro.style.display = valor === 'otro' ? 'block' : 'none';
+    if (valor !== 'otro') inputOtro.value = '';
 }
 
+// ============================================
+// FECHAS DINÁMICAS
+// ============================================
+
+function agregarDia() {
+    const container = document.getElementById('containerFechas');
+    const index = container.children.length;
+    
+    const diaDiv = document.createElement('div');
+    diaDiv.className = 'dia-item';
+    diaDiv.style.cssText = 'background: #f8fafc; padding: 15px; border-radius: 12px; border: 2px solid #e2e8f0;';
+    diaDiv.innerHTML = `
+        <div style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
+            <input type="date" class="dia-fecha" required style="flex: 1;">
+            <button type="button" onclick="this.closest('.dia-item').remove()" class="btn-rechazar" style="padding: 8px 12px; font-size: 12px;">
+                ✕
+            </button>
+        </div>
+        <div class="horarios-container" style="display: flex; flex-direction: column; gap: 8px; margin-left: 10px; padding-left: 15px; border-left: 3px solid #cbd5e1;">
+            <!-- Horarios se agregan aquí -->
+        </div>
+        <button type="button" onclick="agregarHorario(this)" class="btn-secondary" style="margin-top: 10px; margin-left: 10px; font-size: 12px; padding: 6px 12px;">
+            + Agregar horario
+        </button>
+    `;
+    
+    container.appendChild(diaDiv);
+    
+    // Agregar un horario por defecto
+    agregarHorario(diaDiv.querySelector('button[onclick="agregarHorario(this)"]'));
+}
+
+function agregarHorario(btn) {
+    const horariosContainer = btn.previousElementSibling;
+    
+    const horarioDiv = document.createElement('div');
+    horarioDiv.style.cssText = 'display: flex; gap: 8px; align-items: center;';
+    horarioDiv.innerHTML = `
+        <input type="time" class="horario-hora" required style="width: 100px;">
+        <input type="text" class="horario-desc" placeholder="Descripción (ej: Acreditación)" required style="flex: 1;">
+        <button type="button" onclick="this.parentElement.remove()" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 16px;">
+            ✕
+        </button>
+    `;
+    
+    horariosContainer.appendChild(horarioDiv);
+}
+
+// ============================================
+// VALORES DINÁMICOS
+// ============================================
+
+function agregarValor() {
+    const container = document.getElementById('containerValores');
+    
+    const valorDiv = document.createElement('div');
+    valorDiv.style.cssText = 'display: flex; gap: 10px; align-items: center; background: #f8fafc; padding: 12px; border-radius: 10px; border: 2px solid #e2e8f0;';
+    valorDiv.innerHTML = `
+        <input type="text" class="valor-titulo" placeholder="Título (ej: Completo)" required style="flex: 1;">
+        <input type="number" class="valor-precio" placeholder="$" min="0" required style="width: 100px;">
+        <input type="text" class="valor-desc" placeholder="Descripción opcional" style="flex: 2;">
+        <button type="button" onclick="this.parentElement.remove()" class="btn-rechazar" style="padding: 6px 10px; font-size: 12px;">
+            ✕
+        </button>
+    `;
+    
+    container.appendChild(valorDiv);
+}
+
+// ============================================
+// SUBIR FLYER A IMGBB
+// ============================================
+
+async function subirFlyer() {
+    const input = document.getElementById('inputFlyer');
+    const file = input.files[0];
+    if (!file) return;
+    
+    // Validar
+    if (!file.type.startsWith('image/')) {
+        mostrarMensaje('El archivo debe ser una imagen', 'error');
+        return;
+    }
+    
+    // Mostrar preview local mientras sube
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        document.getElementById('flyerPreview').innerHTML = `<img src="${e.target.result}" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
+    };
+    reader.readAsDataURL(file);
+    
+    // Subir a imgbb (misma API key que usás en panel-jugador)
+    const formData = new FormData();
+    formData.append('image', file);
+    
+    try {
+        const btnGuardar = document.getElementById('btnGuardarEncuentro');
+        btnGuardar.disabled = true;
+        btnGuardar.textContent = 'Subiendo flyer...';
+        
+        const response = await fetch('https://api.imgbb.com/1/upload?key=2c40bfae99afcb6fd536a0e303a77b90', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            const url = result.data.url || result.data.display_url;
+            document.getElementById('flyerUrl').value = url;
+            document.getElementById('flyerPreview').innerHTML = `<img src="${url}" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
+            mostrarMensaje('Flyer subido correctamente', 'success');
+        } else {
+            mostrarMensaje('Error al subir flyer', 'error');
+        }
+    } catch (err) {
+        mostrarMensaje('Error de conexión', 'error');
+    } finally {
+        const btnGuardar = document.getElementById('btnGuardarEncuentro');
+        if (btnGuardar) {
+            btnGuardar.disabled = false;
+            btnGuardar.textContent = 'Crear encuentro';
+        }
+    }
+}
+
+function guardarEncuentro(e) {
+    e.preventDefault();
+    
+    // Obtener tipo
+    let tipo = document.getElementById('encTipo').value;
+    if (tipo === 'otro') {
+        tipo = document.getElementById('encTipoOtro').value || 'Otro';
+    }
+    
+    // Recolectar fechas
+    const fechas = [];
+    document.querySelectorAll('.dia-item').forEach(dia => {
+        const fechaInput = dia.querySelector('.dia-fecha');
+        if (!fechaInput.value) return;
+        
+        const horarios = [];
+        dia.querySelectorAll('.horarios-container > div').forEach(h => {
+            const hora = h.querySelector('.horario-hora').value;
+            const desc = h.querySelector('.horario-desc').value;
+            if (hora && desc) {
+                horarios.push({ hora, desc });
+            }
+        });
+        
+        fechas.push({
+            dia: fechaInput.value,
+            horarios: horarios
+        });
+    });
+    
+    if (fechas.length === 0) {
+        mostrarMensaje('Debes agregar al menos una fecha', 'error');
+        return;
+    }
+    
+    // Recolectar valores
+    const valores = [];
+    document.querySelectorAll('#containerValores > div').forEach(v => {
+        const titulo = v.querySelector('.valor-titulo').value;
+        const precio = v.querySelector('.valor-precio').value;
+        const desc = v.querySelector('.valor-desc').value;
+        if (titulo && precio) {
+            valores.push({
+                titulo,
+                precio: parseFloat(precio),
+                desc: desc || ''
+            });
+        }
+    });
+    
+    if (valores.length === 0) {
+        mostrarMensaje('Debes agregar al menos una opción de valor', 'error');
+        return;
+    }
+    
+    // Crear objeto encuentro
+    const usuario = obtenerUsuarioActual();
+    const encuentro = {
+        id: 'enc_' + Date.now(),
+        equipoCreadorId: usuario.equipoId,
+        creadorNombre: usuario.equipoNombre,
+        nombre: document.getElementById('encNombre').value,
+        flyerUrl: document.getElementById('flyerUrl').value || '',
+        fechasJSON: JSON.stringify(fechas),
+        valoresJSON: JSON.stringify(valores),
+        cupoMaximo: parseInt(document.getElementById('encCupo').value),
+        lugar: document.getElementById('encLugar').value,
+        tipo: tipo,
+        descripcion: document.getElementById('encDescripcion').value,
+        estado: 'publicado',
+        equipos: [],
+        invitacionesPendientes: [],
+        fechaCreacion: new Date().toISOString()
+    };
+    
+    // Guardar en localStorage (simulando hasta que conectes con Apps Script)
+    let encuentros = JSON.parse(localStorage.getItem('arvet_encuentros') || '[]');
+    encuentros.push(encuentro);
+    localStorage.setItem('arvet_encuentros', JSON.stringify(encuentros));
+    
+    // TODO: Aquí irá la llamada a Apps Script para guardar en la hoja
+    // guardarEncuentroEnHoja(encuentro);
+    
+    cerrarModalEncuentro();
+    mostrarMensaje('Encuentro creado correctamente', 'success');
+    renderizarMisEncuentros();
+}
 // ============================================
 // RENDERIZAR MIS ENCUENTROS
 // ============================================

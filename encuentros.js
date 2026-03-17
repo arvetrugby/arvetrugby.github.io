@@ -794,3 +794,41 @@ function cargarEncuentros() {
 function cargarInvitaciones() {
     renderizarInvitaciones();
 }
+
+// ============================================
+// FUNCIONES AUXILIARES
+// ============================================
+
+function obtenerUsuarioActual() {
+    const usuarioDefault = {
+        "id": "usr_123",
+        "nombre": "Admin",
+        "equipoId": "eq_tigres",
+        "equipoNombre": "Tigres RC",
+        "rol": "admin"
+    };
+    
+    const stored = localStorage.getItem('arvet_usuario');
+    return stored ? JSON.parse(stored) : usuarioDefault;
+}
+
+// ... (resto de funciones auxiliares)
+
+function cargarEncuentros() {
+    renderizarMisEncuentros();
+}
+
+function cargarInvitaciones() {
+    renderizarInvitaciones();
+}
+
+// ============================================
+// CERRAR MODAL (al final de todo)
+// ============================================
+
+function cerrarModalEncuentro() {
+    const modal = document.getElementById('modalEncuentro');
+    if (modal) {
+        modal.remove();
+    }
+}

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Georama:wdth,wght@75..100,400;75..100,600;75..100,700;75..100,800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     
-    <!-- LOADING SCREEN CON ALMA -->
+    <!-- LOADING SCREEN -->
     <div id="loadingScreen" style="
         position:fixed;
         top:0;
@@ -67,7 +66,7 @@
     </div>
 
 <style>
-    /* ===== ANIMACIONES LOADING ===== */
+    /* ===== ANIMACIONES ===== */
     .loading-particles {
         position:absolute;
         width:100%;
@@ -128,7 +127,7 @@
         .logo-glow { width:180px; height:180px; }
     }
 
-    /* ===== HERO CON TEXTURA DE CÉSPED ===== */
+    /* ===== HERO CON PASTO ===== */
     .hero {
         position: relative;
         padding: 0px 0 !important;
@@ -136,13 +135,19 @@
         overflow: hidden;
     }
     
+    /* Pasto SVG en el fondo */
     .hero::before {
         content: "";
         position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2338bdf8' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        opacity: 0.4;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 200px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 200'%3E%3Cdefs%3E%3ClinearGradient id='pastoGrad' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%230f172a;stop-opacity:0'/%3E%3Cstop offset='50%25' style='stop-color:%23166534;stop-opacity:0.3'/%3E%3Cstop offset='100%25' style='stop-color:%23166534;stop-opacity:0.6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0,100 Q300,50 600,100 T1200,100 L1200,200 L0,200 Z' fill='url(%23pastoGrad)'/%3E%3Cpath d='M0,120 Q400,80 800,120 T1200,120 L1200,200 L0,200 Z' fill='url(%23pastoGrad)' opacity='0.5'/%3E%3C/svg%3E");
+        background-size: cover;
+        background-position: bottom;
         pointer-events: none;
+        z-index: 1;
     }
 
     .hero-container {
@@ -150,14 +155,14 @@
         z-index: 2;
         max-width: 1200px;
         margin: 0 auto;
-        padding: 20px 20px;
+        padding: 20px 20px 100px;
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 60px;
         align-items: center;
     }
 
-    /* ===== CONTENIDO DEL HERO CON ALMA ===== */
+    /* ===== CONTENIDO HERO ===== */
     .hero-content h1 {
         font-size: 3.5rem;
         font-weight: 800;
@@ -174,7 +179,6 @@
         color: #cbd5e1;
         margin-bottom: 30px;
         line-height: 1.7;
-        font-style: italic;
     }
     .hero-badge {
         display: inline-flex;
@@ -251,7 +255,7 @@
         font-size: 0.8rem;
     }
 
-    /* ===== PREVIEW CARD CON EQUIPO REAL ===== */
+    /* ===== PREVIEW CARD ===== */
     .hero-preview {
         position: relative;
     }
@@ -342,7 +346,14 @@
         align-items: center;
         justify-content: center;
         color: #38bdf8;
-        font-size: 0.8rem;
+        flex-shrink: 0;
+    }
+    .feature-icon svg {
+        width: 14px;
+        height: 14px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
     }
     .preview-url {
         margin-top: 20px;
@@ -355,7 +366,7 @@
         text-align: center;
     }
 
-    /* ===== FEATURES SECTION ===== */
+    /* ===== FEATURES ===== */
     .features-section {
         background: #0f172a;
         padding: 100px 20px;
@@ -380,7 +391,6 @@
         margin: 0 auto;
     }
     
-    /* ===== FEATURES GRID ===== */
     .features-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -415,8 +425,14 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.5rem;
         margin-bottom: 20px;
+    }
+    .feature-card-icon svg {
+        width: 28px;
+        height: 28px;
+        stroke: #38bdf8;
+        fill: none;
+        stroke-width: 2;
     }
     .feature-card h3 {
         color: white;
@@ -430,12 +446,14 @@
         font-size: 0.95rem;
     }
     
-    /* Feature especial "After" */
     .feature-card.feature-after {
         border-color: rgba(245, 158, 11, 0.3);
     }
     .feature-card.feature-after .feature-card-icon {
         background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(217, 119, 6, 0.2) 100%);
+    }
+    .feature-card.feature-after .feature-card-icon svg {
+        stroke: #f59e0b;
     }
 
     /* ===== BOTÓN TOGGLE ===== */
@@ -460,7 +478,7 @@
         background: #1d4ed8;
     }
 
-    /* ===== TESTIMONIOS SECTION ===== */
+    /* ===== TESTIMONIOS ===== */
     .testimonios-section {
         background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
         padding: 100px 20px;
@@ -528,7 +546,7 @@
         font-weight: 600;
     }
 
-    /* ===== RESTO DE SECCIONES ===== */
+    /* ===== RESTO SECCIONES ===== */
     .buscador-section {
         background: #0f172a;
         padding: 80px 20px;
@@ -587,7 +605,7 @@
         margin-bottom: 30px;
     }
 
-    /* ===== FOOTER CON ALMA ===== */
+    /* ===== FOOTER CON CREDITO ===== */
     .footer {
         background: #020617;
         padding: 60px 20px 30px;
@@ -630,6 +648,21 @@
         padding-top: 30px;
         border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
+    .footer-copy a {
+        color: #38bdf8;
+        text-decoration: none;
+    }
+    .footer-copy a:hover {
+        text-decoration: underline;
+    }
+    .footer-made-by {
+        margin-top: 10px;
+        font-size: 0.85rem;
+        color: #64748b;
+    }
+    .footer-made-by strong {
+        color: #f59e0b;
+    }
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 968px) {
@@ -637,6 +670,7 @@
             grid-template-columns: 1fr;
             text-align: center;
             gap: 40px;
+            padding-bottom: 60px;
         }
         .hero-content h1 {
             font-size: 2.5rem;
@@ -677,11 +711,6 @@
     }
 
     /* ===== UTILITIES ===== */
-    .feature-card-icon svg {
-        width: 32px;
-        height: 32px;
-        stroke: #38bdf8;
-    }
     .equipos-slider::-webkit-scrollbar,
     .paises-slider::-webkit-scrollbar {
         height: 8px;
@@ -763,25 +792,24 @@
         </div>
     </nav>
 
-    <!-- HERO SECTION CON ALMA -->
+    <!-- HERO -->
     <section class="hero">
         <div class="hero-container">
             <div class="hero-content">
                 <div class="hero-badge">
-                    <span>🏉 Creado por rugbiers, para rugbiers</span>
+                    <span>🏉 Hecho por rugbiers</span>
                 </div>
                 <h1>
                     Tu equipo existe.
-                    <span>Ahora que el mundo lo sepa.</span>
+                    <span>Que el mundo lo sepa.</span>
                 </h1>
                 <p class="hero-subtitle">
-                    Nosotros también pasamos horas en WhatsApp tratando de juntar 15 tipos. 
-                    También nos cansamos de prestar plata para las pelotas. 
-                    ARVET existe porque el rugby amateur merece herramientas profesionales.
+                    Si organizás un equipo de veteranos, sabés lo que es pasar horas en WhatsApp tratando de juntar 15 tipos. 
+                    ARVET nació porque nos cansamos de prestar plata para las pelotas y de que nadie sepa cuándo jugamos.
                 </p>
                 <div class="hero-cta">
                     <a href="registro.html" class="btn-primary-large" id="btnCrearEquipoSticky">
-                        <span>Sumate!</span>
+                        <span>Sumate</span>
                         <span class="icono-flecha">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M5 12h14M12 5l7 7-7 7" stroke="white"/>
@@ -795,47 +823,56 @@
                 </div>
                 <div class="hero-trust">
                     <div class="trust-avatar">+50</div>
-                    <span>equipos ya dejaron de ser invisibles</span>
+                    <span>equipos ya tienen su página</span>
                 </div>
             </div>
 
             <div class="hero-preview">
                 <div class="preview-card">
                     <div class="preview-header">
-                        <div class="preview-logo">
-                            <!-- REEMPLAZAR CON: <img src="images/equipos/tigres-logo.jpg" alt="Tigres RC"> -->
-                            TC
-                        </div>
+                        <div class="preview-logo">TC</div>
                         <div class="preview-title">
                             <h3>Tigres RC</h3>
-                            <p>🏆 Veteranos • Buenos Aires • Desde 1998</p>
+                            <p>Veteranos • Buenos Aires • Desde 1998</p>
                             <div class="preview-motto">"El que abandona no tiene premio"</div>
                         </div>
                     </div>
                     <div class="preview-features">
                         <div class="preview-feature">
-                            <div class="feature-icon">🌐</div>
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                            </div>
                             <span>Página propia: arvetrugby.com/tigresrc</span>
                         </div>
                         <div class="preview-feature">
-                            <div class="feature-icon">👥</div>
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            </div>
                             <span>32 jugadores con foto y datos</span>
                         </div>
                         <div class="preview-feature">
-                            <div class="feature-icon">📸</div>
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                            </div>
                             <span>Foto del último partido vs Los Matreros</span>
                         </div>
                         <div class="preview-feature">
-                            <div class="feature-icon">💰</div>
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            </div>
                             <span>Cuotas al día, sin perseguir a nadie</span>
                         </div>
                         <div class="preview-feature">
-                            <div class="feature-icon">🏉</div>
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                            </div>
                             <span>3 partidos armados este mes</span>
                         </div>
                         <div class="preview-feature">
-                            <div class="feature-icon">🍻</div>
-                            <span>After en El Boliche de Juan (siempre)</span>
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+                            </div>
+                            <span>After en El Boliche de Juan</span>
                         </div>
                     </div>
                     <div class="preview-url">arvetrugby.com/tigresrc</div>
@@ -844,91 +881,69 @@
         </div>
     </section>
 
-    <!-- FEATURES SECTION CON BENEFICIOS EMOCIONALES -->
+    <!-- FEATURES -->
     <section class="features-section" id="como-funciona">
         <div class="features-container">
             <div class="section-header">
-                <h2>Lo que necesitás para dejar de sufrir</h2>
-                <p>Herramientas pensadas por quienes saben que organizar un equipo amateur es un trabajo de titanes.</p>
+                <h2>Para dejar de romperte la cabeza</h2>
+                <p>Herramientas pensadas por quienes sabemos que organizar un equipo de veteranos es un laburo de titanes.</p>
             </div>
             
             <div class="features-grid" id="featuresGrid">
                 <div class="feature-card">
                     <div class="feature-card-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
-                            <rect x="3" y="3" width="18" height="18" rx="2"/>
-                            <circle cx="12" cy="12" r="3"/>
-                            <path d="M12 8V3M8 12H3M16 12h5M12 16v5"/>
-                        </svg>
+                        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M12 8V3M8 12H3M16 12h5M12 16v5"/></svg>
                     </div>
-                    <h3>Tu lugar en internet</h3>
-                    <p>Dejá de depender de Instagram. Tu historia, tus reglas, tu página. URL profesional que podés pasarle a cualquier rival.</p>
+                    <h3>Tu página, tu reglas</h3>
+                    <p>Dejá de depender de Instagram. Una URL propia que podés pasarle a cualquier equipo para que te encuentren.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-card-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                            <circle cx="12" cy="7" r="4"/>
-                        </svg>
+                        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                     </div>
-                    <h3>El roster que se actualiza solo</h3>
-                    <p>Los jugadores se registran solos. Vos solo mirás quién confirma para el sábado. Fin de los "che, ¿venís?" a las 3 AM.</p>
+                    <h3>El plantel se anota solo</h3>
+                    <p>Los jugadores se registran solos. Vos solo mirás quién confirma para el sábado. Fin de los mensajes a las 3 AM.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-card-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M12 6v6l4 2"/>
-                        </svg>
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
                     </div>
-                    <h3>La plata que nunca falta</h3>
-                    <p>Cobrá la cuota, el viaje, las medias que se perdió. Sin vergüenza, sin perseguir a nadie. Los jugadores pagan desde su celular.</p>
+                    <h3>La plata aparece</h3>
+                    <p>Cobrá cuota, viaje, lo que sea. Los jugadores pagan desde el celular y queda todo anotado. Sin perseguir a nadie.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-card-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
-                            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
-                            <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
-                            <path d="M4 22h16"/>
-                            <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
-                            <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
-                            <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
-                        </svg>
+                        <svg viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
                     </div>
                     <h3>Partidos sin rogar</h3>
-                    <p>Creá un partido y llega a 50 equipos. Ellos vienen a vos. Sí, en serio. Coordiná fecha, lugar y precio sin 40 grupos de WhatsApp.</p>
+                    <p>Publicás que querés jugar y llegan equipos de todos lados. Coordinás fecha, lugar y precio sin 40 grupos de WhatsApp.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-card-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
-                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                        </svg>
+                        <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                     </div>
                     <h3>Contacto directo</h3>
-                    <p>Números de managers y capitanes reales. Coordiná por WhatsApp sin intermediarios ni burocracia.</p>
+                    <p>Números de managers y capitanes reales. Coordinás por WhatsApp sin intermediarios ni burocracia.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-card-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
-                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                        </svg>
+                        <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                     </div>
-                    <h3>Sin costos ocultos</h3>
-                    <p>La plataforma es gratuita para equipos y jugadores. Sin suscripciones, sin comisiones, sin sorpresas. El rugby es caro de por sí.</p>
+                    <h3>Gratis, posta</h3>
+                    <p>Sin suscripción, sin comisión, sin sorpresas. El rugby de veteranos ya es caro de por sí.</p>
                 </div>
 
-                <!-- FEATURE ESPECIAL: EL AFTER -->
                 <div class="feature-card feature-after">
                     <div class="feature-card-icon">
-                        <span style="font-size: 28px;">🍻</span>
+                        <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
                     </div>
-                    <h3>El after también cuenta</h3>
-                    <p>Porque el rugby no termina en el 80'. Agregá dónde se juntan, fotos de los asados, y los mejores momentos del vestuario.</p>
+                    <h3>El after cuenta</h3>
+                    <p>Porque el partido no termina en el 80'. Agregá dónde se juntan, fotos del asado, y los mejores momentos.</p>
                 </div>
             </div>
             
@@ -938,15 +953,14 @@
         </div>
     </section>
 
-    <!-- TESTIMONIOS: EQUIPOS REALES -->
+    <!-- TESTIMONIOS -->
     <section class="testimonios-section">
         <div class="container">
-            <h2>Equipos que ya dejaron de ser invisibles</h2>
+            <h2>Equipos que ya tienen su página</h2>
             
             <div class="testimonios-grid">
                 <div class="testimonio-card">
                     <div class="testimonio-header">
-                        <!-- REEMPLAZAR CON: <img src="images/equipos/tigres-logo.jpg" alt="Tigres RC"> -->
                         <div style="width:50px;height:50px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:12px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;">TC</div>
                         <div>
                             <h4>Tigres RC</h4>
@@ -954,17 +968,16 @@
                         </div>
                     </div>
                     <p class="testimonio-text">
-                        "Antes teníamos un grupo de WhatsApp con 40 tipos y 3 números de capitán por año. Ahora cada uno sabe cuánto debe, cuándo jugamos, y los rivales nos encuentran solos."
+                        "Antes teníamos un grupo de WhatsApp con 40 tipos y cada año cambiaba el número del capitán. Ahora cada uno sabe cuánto debe y cuándo jugamos. Los rivales nos encuentran solos."
                     </p>
                     <div class="testimonio-stats">
-                        <span>👥 32 jugadores</span>
-                        <span>🏉 12 partidos este año</span>
+                        <span>32 jugadores</span>
+                        <span>12 partidos este año</span>
                     </div>
                 </div>
 
                 <div class="testimonio-card">
                     <div class="testimonio-header">
-                        <!-- REEMPLAZAR CON: <img src="images/equipos/lobos-logo.jpg" alt="Lobos del Sur"> -->
                         <div style="width:50px;height:50px;background:linear-gradient(135deg,#38bdf8,#2563eb);border-radius:12px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;">LS</div>
                         <div>
                             <h4>Lobos del Sur</h4>
@@ -975,15 +988,15 @@
                         "Armamos un partido de veteranos en 2 días. Llegaron equipos de 3 provincias que nunca habríamos encontrado. El sistema de pagos nos salvó de financiar nosotros el viaje."
                     </p>
                     <div class="testimonio-stats">
-                        <span>👥 28 jugadores</span>
-                        <span>🚍 4 viajes coordinados</span>
+                        <span>28 jugadores</span>
+                        <span>4 viajes coordinados</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- RESTO DEL CONTENIDO ORIGINAL -->
+    <!-- RESTO CONTENIDO -->
     <section id="buscador" class="buscador-section">
         <div class="container">
             <h2>Ranking Equipos</h2>
@@ -1014,23 +1027,26 @@
         </div>
     </section>
 
-    <!-- FOOTER CON ALMA -->
+    <!-- FOOTER CON CREDITO -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
                     <img src="images/ARVET.png" alt="ARVET">
-                    <p>Porque el rugby amateur es el verdadero rugby. Creado por jugadores que cansados de organizar todo por WhatsApp.</p>
+                    <p>Porque el rugby de veteranos es el mejor rugby. Creado por jugadores que se cansaron de organizar todo por WhatsApp.</p>
                 </div>
                 <div class="footer-links">
                     <a href="registro.html">Sumá tu equipo</a>
-                    <a href="#">Historias de equipos</a>
-                    <a href="#">¿Cómo empezó ARVET?</a>
+                    <a href="#">Historias</a>
                     <a href="#">Contacto</a>
                 </div>
             </div>
             <p class="footer-copy">
-                Hecho con 🏉 en Buenos Aires • 2026 • ARVET
+                Hecho con 🏉 en Buenos Aires • 2026
+            </p>
+            <p class="footer-made-by">
+                Codeado a los mates por <strong>Ronaldox</strong> • 
+                <a href="https://wa.me/5493435020970" target="_blank">+54 9 343 502-0970</a>
             </p>
         </div>
     </footer>
@@ -1039,11 +1055,9 @@
         // Loading screen con frases rotativas
         const frasesLoading = [
             "Alistando los botines...",
-            "Inflando la pelota...",
-            "Juntando al plantel...",
+            "Buscando los 15...",
             "Preparando el scrum...",
-            "Poniendo la cerveza en hielo...",
-            "Buscando los 15..."
+            "Poniendo la cerveza en hielo..."
         ];
         
         let fraseIndex = 0;
@@ -1063,14 +1077,12 @@
                 logo.style.opacity = "1";
                 logo.style.animation = "logoIntro 1.4s ease, logoFloat 4s ease-in-out infinite 1.4s";
             };
-            // Fallback si ya cargó
             if (logo.complete) {
                 logo.style.opacity = "1";
                 logo.style.animation = "logoIntro 1.4s ease, logoFloat 4s ease-in-out infinite 1.4s";
             }
         }
         
-        // Simular carga
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.getElementById('loadingScreen').classList.add('loading-hidden');
@@ -1118,6 +1130,7 @@
     <script src="js/app.js"></script>
 </body>
 </html>
+
 
 
 

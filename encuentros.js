@@ -303,7 +303,7 @@ async function subirFlyer() {
     }
 }
 
-function guardarEncuentro(e) {
+ffunction guardarEncuentro(e) {
     e.preventDefault();
     
     // Obtener tipo
@@ -361,7 +361,6 @@ function guardarEncuentro(e) {
     // Crear objeto encuentro
     const usuario = obtenerUsuarioActual();
     const encuentro = {
-        id: 'enc_' + Date.now(),
         equipoCreadorId: usuario.equipoId,
         creadorNombre: usuario.equipoNombre,
         nombre: document.getElementById('encNombre').value,
@@ -372,23 +371,28 @@ function guardarEncuentro(e) {
         lugar: document.getElementById('encLugar').value,
         tipo: tipo,
         descripcion: document.getElementById('encDescripcion').value,
-        estado: 'publicado',
-        equipos: [],
-        invitacionesPendientes: [],
-        fechaCreacion: new Date().toISOString()
+        estado: 'publicado'
     };
     
-    // Guardar en localStorage (simulando hasta que conectes con Apps Script)
-    let encuentros = JSON.parse(localStorage.getItem('arvet_encuentros') || '[]');
-    encuentros.push(encuentro);
-    localStorage.setItem('arvet_encuentros', JSON.stringify(encuentros));
-    
-    // TODO: Aquí irá la llamada a Apps Script para guardar en la hoja
-    // guardarEncuentroEnHoja(encuentro);
-    
-    cerrarModalEncuentro();
-    mostrarMensaje('Encuentro creado correctamente', 'success');
-    renderizarMisEncuentros();
+    // Enviar a Apps Script
+    fetch(API_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            action: 'crearEncuentro',
+            ...encuentro
+        })
+    })
+    .then(() => {
+        cerrarModalEncuentro();
+        mostrarMensaje('Encuentro creado correctamente', 'success');
+        renderizarMisEncuentros();
+    })
+    .catch(err => {
+        console.error('Error:', err);
+        mostrarMensaje('Error al crear encuentro', 'error');
+    });
 }
 // ============================================
 // RENDERIZAR MIS ENCUENTROS
@@ -830,5 +834,24 @@ function cerrarModalEncuentro() {
     const modal = document.getElementById('modalEncuentro');
     if (modal) {
         modal.remove();
+    }
+}
+
+async function cargarEncuentrosDesdeHoja() {
+    const usuario = obtenerUsuarioActual();
+    
+    try {
+        const response = await fetch(`${API_URL}?action=getEncuentros&equipoId=${usuario.equipoId}`);
+        const data = await response.json();
+        
+        if (data.success) {
+            // Guardar en localStorage para uso offline
+            localStorage.setItem('arvet_encuentros', JSON.stringify(data.data));
+            renderizarMisEncuentros();
+        }
+    } catch (err) {
+        console.error('Error cargando encuentros:', err);
+        // Fallback a localStorage
+        renderizarMisEncuentros();
     }
 }

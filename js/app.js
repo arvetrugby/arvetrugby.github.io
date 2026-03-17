@@ -347,9 +347,9 @@ function initIndex() {
         
         // Cambiar texto según progreso
         if (progress > 30 && progress < 60) {
-            loadingText.textContent = 'Buscando equipos...';
+            loadingText.textContent = 'Preparando el scrum...';
         } else if (progress > 60) {
-            loadingText.textContent = 'Preparando todo...';
+            loadingText.textContent = 'Poniendo la cerveza en hielo...';
         }
     }, 200);
     
@@ -357,7 +357,7 @@ function initIndex() {
     setTimeout(() => {
         clearInterval(progressInterval);
         progressBar.style.width = '100%';
-        loadingText.textContent = '¡Listo!';
+        loadingText.textContent = 'Inflando la pelota...¡Listo!';
         
         setTimeout(() => {
             loadingScreen.classList.add('loading-hidden');

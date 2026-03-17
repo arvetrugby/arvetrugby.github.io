@@ -1,3 +1,5 @@
+console.log('encuentros.js cargado correctamente');
+window.testCarga = true;
 // ============================================
 // ARVET - SISTEMA DE ENCUENTROS/PARTIDOS
 // ============================================

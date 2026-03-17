@@ -303,7 +303,7 @@ async function subirFlyer() {
     }
 }
 
-ffunction guardarEncuentro(e) {
+function guardarEncuentro(e) {
     e.preventDefault();
     
     // Obtener tipo

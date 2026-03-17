@@ -1,6 +1,5 @@
-// Función de mensajes propia para encuentros.js
-function mostrarMensaje(texto, tipo = 'info') {
-    // Crear overlay si no existe
+// Al inicio de encuentros.js - cambiar el nombre
+function mostrarMensajeEncuentros(texto, tipo = 'info') {
     let overlay = document.getElementById('msgOverlayEncuentros');
     if (!overlay) {
         overlay = document.createElement('div');
@@ -278,7 +277,7 @@ async function subirFlyer() {
     
     // Validar
     if (!file.type.startsWith('image/')) {
-        mostrarMensaje('El archivo debe ser una imagen', 'error');
+        mostrarMensajeEncuentros('El archivo debe ser una imagen', 'error');
         return;
     }
     
@@ -309,12 +308,12 @@ async function subirFlyer() {
             const url = result.data.url || result.data.display_url;
             document.getElementById('flyerUrl').value = url;
             document.getElementById('flyerPreview').innerHTML = `<img src="${url}" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
-            mostrarMensaje('Flyer subido correctamente', 'success');
+            mostrarMensajeEncuentros('Flyer subido correctamente', 'success');
         } else {
-            mostrarMensaje('Error al subir flyer', 'error');
+            mostrarMensajeEncuentros('Error al subir flyer', 'error');
         }
     } catch (err) {
-        mostrarMensaje('Error de conexión', 'error');
+        mostrarMensajeEncuentros('Error de conexión', 'error');
     } finally {
         const btnGuardar = document.getElementById('btnGuardarEncuentro');
         if (btnGuardar) {
@@ -355,7 +354,7 @@ function guardarEncuentro(e) {
     });
     
     if (fechas.length === 0) {
-        mostrarMensaje('Debes agregar al menos una fecha', 'error');
+        mostrarMensajeEncuentros('Debes agregar al menos una fecha', 'error');
         return;
     }
     
@@ -375,7 +374,7 @@ function guardarEncuentro(e) {
     });
     
     if (valores.length === 0) {
-        mostrarMensaje('Debes agregar al menos una opción de valor', 'error');
+        mostrarMensajeEncuentros('Debes agregar al menos una opción de valor', 'error');
         return;
     }
     
@@ -407,12 +406,12 @@ function guardarEncuentro(e) {
     })
     .then(() => {
         cerrarModalEncuentro();
-        mostrarMensaje('Encuentro creado correctamente', 'success');
+        mostrarMensajeEncuentros('Encuentro creado correctamente', 'success');
         renderizarMisEncuentros();
     })
     .catch(err => {
         console.error('Error:', err);
-        mostrarMensaje('Error al crear encuentro', 'error');
+        mostrarMensajeEncuentros('Error al crear encuentro', 'error');
     });
 }
 // ============================================
@@ -656,7 +655,7 @@ function aceptarInvitacion(invitacionId) {
         notificarJugadoresDeEquipo(encuentros[encIndex]);
     }
 
-    mostrarMensaje('Invitación aceptada. Se notificó a tu plantel.', 'success');
+    mostrarMensajeEncuentros('Invitación aceptada. Se notificó a tu plantel.', 'success');
     renderizarInvitaciones();
 }
 
@@ -673,7 +672,7 @@ function rechazarInvitacion(invitacionId) {
 
     localStorage.setItem('arvet_invitaciones', JSON.stringify(invitaciones));
 
-    mostrarMensaje('Invitación rechazada', 'info');
+    mostrarMensajeEncuentros('Invitación rechazada', 'info');
     renderizarInvitaciones();
 }
 
@@ -709,18 +708,18 @@ function editarEncuentro(encuentroId) {
     // Solo el creador puede editar
     const usuario = obtenerUsuarioActual();
     if (encuentro.creadorId !== usuario.id) {
-        mostrarMensaje('Solo el creador puede editar este encuentro', 'error');
+        mostrarMensajeEncuentros('Solo el creador puede editar este encuentro', 'error');
         return;
     }
 
     // No se puede editar si ya hay equipos confirmados (solo cancelar)
     if (encuentro.equipos && encuentro.equipos.length > 0) {
-        mostrarMensaje('No se puede editar: ya hay equipos confirmados', 'error');
+        mostrarMensajeEncuentros('No se puede editar: ya hay equipos confirmados', 'error');
         return;
     }
 
     // TODO: Implementar modal de edición
-    mostrarMensaje('Función de edición en desarrollo', 'info');
+    mostrarMensajeEncuentros('Función de edición en desarrollo', 'info');
 }
 
 function cancelarEncuentro(encuentroId) {
@@ -729,7 +728,7 @@ function cancelarEncuentro(encuentroId) {
 
     const usuario = obtenerUsuarioActual();
     if (encuentro.creadorId !== usuario.id) {
-        mostrarMensaje('Solo el creador puede cancelar', 'error');
+        mostrarMensajeEncuentros('Solo el creador puede cancelar', 'error');
         return;
     }
 
@@ -743,7 +742,7 @@ function cancelarEncuentro(encuentroId) {
     // Notificar a equipos invitados
     // TODO: Implementar notificación
 
-    mostrarMensaje('Encuentro cancelado', 'info');
+    mostrarMensajeEncuentros('Encuentro cancelado', 'info');
     renderizarMisEncuentros();
 }
 
@@ -752,7 +751,7 @@ function verDetalleEncuentro(encuentroId) {
     if (!encuentro) return;
 
     // TODO: Implementar vista detallada
-    mostrarMensaje('Vista detallada en desarrollo', 'info');
+    mostrarMensajeEncuentros('Vista detallada en desarrollo', 'info');
 }
 
 // ============================================
@@ -796,21 +795,7 @@ function formatearFecha(fechaStr) {
     });
 }
 
-function mostrarMensaje(texto, tipo = 'info') {
-    // Usar tu sistema de mensajes existente
-    const overlay = document.getElementById('msgOverlay');
-    const msg = document.getElementById('msgConfig');
 
-    if (overlay && msg) {
-        msg.textContent = texto;
-        msg.className = 'message ' + tipo;
-        overlay.style.display = 'flex';
-
-        setTimeout(() => {
-            overlay.style.display = 'none';
-        }, 3000);
-    }
-}
 
 function cargarEncuentros() {
     renderizarMisEncuentros();

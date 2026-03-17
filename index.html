@@ -1,14 +1,15 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
-    <title>ARVET - Gestión Deportiva</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARVET - Tu equipo, tu historia</title>
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Georama:wdth,wght@75..100,400;75..100,600;75..100,700;75..100,800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     
-    <!-- LOADING SCREEN -->
+    <!-- LOADING SCREEN CON ALMA -->
     <div id="loadingScreen" style="
         position:fixed;
         top:0;
@@ -62,9 +63,11 @@
             margin:0;
             animation:textPulse 2s ease-in-out infinite;
         ">Alistando los botines...</p>
+        <div style="margin-top:30px;font-size:32px;animation:bounce 1s infinite;">🏉</div>
     </div>
+
 <style>
-    /* ===== ANIMACIONES LOADING (mantener igual) ===== */
+    /* ===== ANIMACIONES LOADING ===== */
     .loading-particles {
         position:absolute;
         width:100%;
@@ -111,6 +114,10 @@
         0% { transform:translateY(0) }
         100% { transform:translateY(-200px) }
     }
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
     .loading-hidden {
         opacity:0!important;
         visibility:hidden!important;
@@ -121,7 +128,23 @@
         .logo-glow { width:180px; height:180px; }
     }
 
-    /* ===== HERO CONTAINER (solo el layout, sin tocar el fondo) ===== */
+    /* ===== HERO CON TEXTURA DE CÉSPED ===== */
+    .hero {
+        position: relative;
+        padding: 0px 0 !important;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        overflow: hidden;
+    }
+    
+    .hero::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2338bdf8' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        opacity: 0.4;
+        pointer-events: none;
+    }
+
     .hero-container {
         position: relative;
         z-index: 2;
@@ -133,12 +156,8 @@
         gap: 60px;
         align-items: center;
     }
-    
-    .hero {
-        padding: 0px 0 !important; 
-    }
 
-    /* ===== CONTENIDO DEL HERO ===== */
+    /* ===== CONTENIDO DEL HERO CON ALMA ===== */
     .hero-content h1 {
         font-size: 3.5rem;
         font-weight: 800;
@@ -151,10 +170,11 @@
         display: block;
     }
     .hero-subtitle {
-        font-size: 1.01rem;
-        color: #94a3b8;
+        font-size: 1.1rem;
+        color: #cbd5e1;
         margin-bottom: 30px;
-        line-height: 1.6;
+        line-height: 1.7;
+        font-style: italic;
     }
     .hero-badge {
         display: inline-flex;
@@ -218,8 +238,20 @@
         color: #cbd5e1;
         font-size: 0.9rem;
     }
+    .trust-avatar {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #38bdf8, #2563eb);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: white;
+        font-size: 0.8rem;
+    }
 
-    /* ===== PREVIEW CARD ===== */
+    /* ===== PREVIEW CARD CON EQUIPO REAL ===== */
     .hero-preview {
         position: relative;
     }
@@ -231,9 +263,21 @@
         padding: 30px;
         transform: perspective(1000px) rotateY(-5deg) rotateX(5deg);
         transition: transform 0.3s ease;
+        position: relative;
     }
     .preview-card:hover {
         transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
+    }
+    .preview-card::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        right: -10px;
+        width: 60px;
+        height: 60px;
+        background: radial-gradient(circle, rgba(139, 69, 19, 0.15) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
     }
     .preview-header {
         display: flex;
@@ -246,7 +290,7 @@
     .preview-logo {
         width: 60px;
         height: 60px;
-        background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%);
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
         border-radius: 12px;
         display: flex;
         align-items: center;
@@ -254,6 +298,12 @@
         color: white;
         font-weight: 800;
         font-size: 1.5rem;
+        overflow: hidden;
+    }
+    .preview-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
     .preview-title h3 {
         color: white;
@@ -264,6 +314,12 @@
         color: #94a3b8;
         margin: 5px 0 0 0;
         font-size: 0.9rem;
+    }
+    .preview-motto {
+        color: #64748b;
+        font-size: 0.8rem;
+        font-style: italic;
+        margin-top: 4px;
     }
     .preview-features {
         display: flex;
@@ -324,23 +380,18 @@
         margin: 0 auto;
     }
     
-    /* ===== FEATURES GRID CON EXPANSIÓN ===== */
+    /* ===== FEATURES GRID ===== */
     .features-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 30px;
-        
-        /* Inicia colapsado */
-        max-height: 320px; /* Muestra solo 1 fila aprox */
+        max-height: 320px;
         overflow: hidden;
         opacity: 1;
-        
         transition: max-height 0.6s ease, padding 0.3s ease, margin 0.3s ease;
     }
-
-    /* CUANDO ESTÁ ABIERTO */
     .features-grid.open {
-        max-height: 1200px; /* Suficiente para mostrar todo */
+        max-height: 1200px;
     }
 
     .feature-card {
@@ -349,6 +400,7 @@
         border-radius: 16px;
         padding: 30px;
         transition: all 0.3s ease;
+        position: relative;
     }
     .feature-card:hover {
         background: rgba(255, 255, 255, 0.08);
@@ -377,13 +429,20 @@
         line-height: 1.6;
         font-size: 0.95rem;
     }
+    
+    /* Feature especial "After" */
+    .feature-card.feature-after {
+        border-color: rgba(245, 158, 11, 0.3);
+    }
+    .feature-card.feature-after .feature-card-icon {
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(217, 119, 6, 0.2) 100%);
+    }
 
     /* ===== BOTÓN TOGGLE ===== */
     .features-toggle {
         text-align: center;
         margin-top: 40px;
     }
-
     #toggleFeatures {
         background: #2563eb;
         color: white;
@@ -395,16 +454,181 @@
         font-size: 1rem;
         transition: all 0.25s ease;
     }
-
     #toggleFeatures:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         background: #1d4ed8;
     }
 
-    #toggleFeatures:active {
-        transform: translateY(0);
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    /* ===== TESTIMONIOS SECTION ===== */
+    .testimonios-section {
+        background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+        padding: 100px 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .testimonios-section h2 {
+        text-align: center;
+        color: white;
+        font-size: 2.5rem;
+        margin-bottom: 60px;
+    }
+    .testimonios-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 30px;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    .testimonio-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 30px;
+        transition: all 0.3s ease;
+    }
+    .testimonio-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(56, 189, 248, 0.3);
+    }
+    .testimonio-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+    .testimonio-header img {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        object-fit: cover;
+        background: linear-gradient(135deg, #38bdf8, #2563eb);
+    }
+    .testimonio-header h4 {
+        color: white;
+        margin: 0;
+        font-size: 1.1rem;
+    }
+    .testimonio-header p {
+        color: #94a3b8;
+        margin: 5px 0 0 0;
+        font-size: 0.9rem;
+    }
+    .testimonio-text {
+        color: #cbd5e1;
+        font-size: 1rem;
+        line-height: 1.7;
+        font-style: italic;
+        margin-bottom: 20px;
+    }
+    .testimonio-stats {
+        display: flex;
+        gap: 20px;
+        color: #38bdf8;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    /* ===== RESTO DE SECCIONES ===== */
+    .buscador-section {
+        background: #0f172a;
+        padding: 80px 20px;
+    }
+    .buscador-section h2 {
+        color: white;
+        font-size: 2rem;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+    .buscador-section > div > p {
+        color: #94a3b8;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    .equipos-slider, .paises-slider {
+        margin-bottom: 40px;
+        scrollbar-width: thin;
+        scrollbar-color: #007bff #f1f1f199;
+    }
+    .search-box {
+        max-width: 600px;
+        margin: 0 auto 40px;
+    }
+    .search-box input {
+        width: 100%;
+        padding: 16px 24px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.05);
+        color: white;
+        font-size: 1rem;
+        outline: none;
+        transition: all 0.3s ease;
+    }
+    .search-box input:focus {
+        border-color: #38bdf8;
+        background: rgba(255, 255, 255, 0.08);
+    }
+    .search-box input::placeholder {
+        color: #64748b;
+    }
+
+    .partidos-section {
+        background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+        padding: 80px 20px;
+        text-align: center;
+    }
+    .partidos-section h2 {
+        color: white;
+        font-size: 2rem;
+        margin-bottom: 15px;
+    }
+    .partidos-section p {
+        color: #94a3b8;
+        margin-bottom: 30px;
+    }
+
+    /* ===== FOOTER CON ALMA ===== */
+    .footer {
+        background: #020617;
+        padding: 60px 20px 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        max-width: 1200px;
+        margin: 0 auto 40px;
+        flex-wrap: wrap;
+        gap: 40px;
+    }
+    .footer-brand img {
+        height: 40px;
+        margin-bottom: 15px;
+    }
+    .footer-brand p {
+        color: #94a3b8;
+        font-size: 1rem;
+        max-width: 300px;
+    }
+    .footer-links {
+        display: flex;
+        gap: 30px;
+    }
+    .footer-links a {
+        color: #cbd5e1;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    .footer-links a:hover {
+        color: #38bdf8;
+    }
+    .footer-copy {
+        text-align: center;
+        color: #475569;
+        font-size: 0.9rem;
+        padding-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     /* ===== RESPONSIVE ===== */
@@ -429,158 +653,98 @@
             margin: 0 auto;
         }
         .features-grid {
-            max-height: 640px; /* 2 filas en móvil */
+            max-height: 640px;
         }
         .features-grid.open {
             max-height: 2000px;
         }
+        .testimonios-grid {
+            grid-template-columns: 1fr;
+        }
+        .footer-content {
+            flex-direction: column;
+            text-align: center;
+        }
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .footer-links {
+            justify-content: center;
+            flex-wrap: wrap;
+        }
     }
 
+    /* ===== UTILITIES ===== */
     .feature-card-icon svg {
-    width: 32px;
-    height: 32px;
-    stroke: #38bdf8;
-}
-
-    .equipos-slider,
-.paises-slider {
-    
-    /* Scrollbar visible solo en desktop */
-    scrollbar-width: thin;
-    scrollbar-color: #007bff #f1f1f199;
-}
-
-/* Webkit scrollbar */
-.equipos-slider::-webkit-scrollbar,
-.paises-slider::-webkit-scrollbar {
-    height: 8px;
-}
-
-.equipos-slider::-webkit-scrollbar-track,
-.paises-slider::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-}
-
-.equipos-slider::-webkit-scrollbar-thumb,
-.paises-slider::-webkit-scrollbar-thumb {
-    background: #007bff;
-    border-radius: 4px;
-}
-
-/* En móvil: scrollbar nativo del sistema */
-@media (max-width: 768px) {
-    .equipos-slider,
-    .paises-slider {
-        scrollbar-width: none;
+        width: 32px;
+        height: 32px;
+        stroke: #38bdf8;
     }
-    
     .equipos-slider::-webkit-scrollbar,
     .paises-slider::-webkit-scrollbar {
+        height: 8px;
+    }
+    .equipos-slider::-webkit-scrollbar-track,
+    .paises-slider::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+    .equipos-slider::-webkit-scrollbar-thumb,
+    .paises-slider::-webkit-scrollbar-thumb {
+        background: #007bff;
+        border-radius: 4px;
+    }
+    @media (max-width: 768px) {
+        .equipos-slider::-webkit-scrollbar,
+        .paises-slider::-webkit-scrollbar {
+            display: none;
+        }
+    }
+    .icono-flecha {
+        display: inline-flex;
+        animation: bounceRight 1.5s infinite;
+    }
+    @keyframes bounceRight {
+        0%, 100% { transform: translateX(0); }
+        50% { transform: translateX(4px); }
+    }
+    
+    /* Sticky button */
+    #btnCrearEquipoSticky {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-width: 100%;
+        border-radius: 0;
+        justify-content: center;
+        z-index: 100;
+        transform: translateY(-100%);
+        opacity: 0;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
+    }
+    #btnCrearEquipoSticky.visible {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    .hero-cta #btnCrearEquipoSticky {
+        position: relative;
+        top: auto;
+        left: auto;
+        right: auto;
+        width: auto;
+        border-radius: 12px;
+        transform: none;
+        opacity: 1;
+        box-shadow: 0 10px 30px rgba(56, 189, 248, 0.3);
+    }
+    #btnCrearEquipoSticky.visible-en-hero {
         display: none;
     }
-}
-
-    .jugadores-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    background: rgba(0, 123, 255, 0.1);
-    color: #007bff;
-    padding: 4px 10px;
-    border-radius: 0px;
-    font-size: 12px;
-    font-weight: 600;
-    margin-top: 8px;
-    transition: all 0.3s ease;
-}
-
-.jugadores-icono {
-    font-size: 14px;
-}
-
-.jugadores-numero {
-    font-weight: 700;
-    min-width: 18px;
-    text-align: center;
-}
-
-/* Variante: si querés que se vea más como un "chip" */
-.equipo-card-slider .jugadores-badge {
-    position: absolute;
-    top: 45px;
-    left: 0px;
-    background: rgba(0, 0, 0, 0.1);
-    color: white;
-    backdrop-filter: blur(4px);
-}
-
-/* Animación al cargar */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.jugadores-badge {
-    animation: fadeIn 0.3s ease;
-}
-
-    /* Botón sticky al hacer scroll */
-#btnCrearEquipoSticky {
-    position: fixed;
-    top: 70px; /* Ajustá según la altura de tu navbar */
-    left: 0;
-    right: 0;
-    width: 100%;
-    max-width: 100%;
-    border-radius: 0;
-    justify-content: center;
-    z-index: 100;
-    transform: translateY(-100%);
-    opacity: 0;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
-}
-
-/* Cuando tiene la clase visible (se agrega con JS) */
-#btnCrearEquipoSticky.visible {
-    transform: translateY(0);
-    opacity: 1;
-}
-
-/* El texto centrado y angosto */
-#btnCrearEquipoSticky span:first-child {
-    max-width: 350px;
-    text-align: center;
-    line-height: 1.2;
-}
-
-/* En el hero normal (sin scroll) */
-.hero-cta #btnCrearEquipoSticky {
-    position: relative;
-    top: auto;
-    left: auto;
-    right: auto;
-    width: auto;
-    border-radius: 12px;
-    transform: none;
-    opacity: 1;
-    box-shadow: 0 10px 30px rgba(56, 189, 248, 0.3);
-}
-
-/* Ocultar el botón del hero cuando el sticky está visible */
-#btnCrearEquipoSticky.visible-en-hero {
-    display: none;
-}
-    .icono-flecha {
-    display: inline-flex;
-    animation: bounceRight 1.5s infinite;
-}
-
-@keyframes bounceRight {
-    0%, 100% { transform: translateX(0); }
-    50% { transform: translateX(4px); }
-}
 </style>
 </head>
 <body>
@@ -598,12 +762,13 @@
             </div>
         </div>
     </nav>
-<!-- HERO SECTION REDISEÑADA -->
+
+    <!-- HERO SECTION CON ALMA -->
     <section class="hero">
         <div class="hero-container">
             <div class="hero-content">
                 <div class="hero-badge">
-                    <span>Creado por rugbiers, para rugbiers.</span>
+                    <span>🏉 Creado por rugbiers, para rugbiers</span>
                 </div>
                 <h1>
                     Tu equipo existe.
@@ -611,80 +776,66 @@
                 </h1>
                 <p class="hero-subtitle">
                     Nosotros también pasamos horas en WhatsApp tratando de juntar 15 tipos. 
-    También nos cansamos de prestar plata para las pelotas. 
-    ARVET existe porque el rugby amateur merece herramientas profesionales.
+                    También nos cansamos de prestar plata para las pelotas. 
+                    ARVET existe porque el rugby amateur merece herramientas profesionales.
                 </p>
                 <div class="hero-cta">
                     <a href="registro.html" class="btn-primary-large" id="btnCrearEquipoSticky">
-    <span>Sumate!</span>
-    <span>
-        <span class="icono-flecha">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 12h14M12 5l7 7-7 7" stroke="white"/>
-        </svg>
-    </span> <span>Crear equipo</span>
-</a>
+                        <span>Sumate!</span>
+                        <span class="icono-flecha">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14M12 5l7 7-7 7" stroke="white"/>
+                            </svg>
+                        </span>
+                        <span>Crear equipo</span>
+                    </a>
                     <a href="#como-funciona" class="btn-secondary-large">
                         Ver cómo funciona
                     </a>
                 </div>
                 <div class="hero-trust">
-                    <div class="hero-trust-icons">
-                        <div class="trust-avatar">+50</div>
-                    </div>
-                    <span>equipos ya están usando ARVET</span>
+                    <div class="trust-avatar">+50</div>
+                    <span>equipos ya dejaron de ser invisibles</span>
                 </div>
             </div>
 
             <div class="hero-preview">
                 <div class="preview-card">
                     <div class="preview-header">
-                        <div class="preview-logo">TC</div>
+                        <div class="preview-logo">
+                            <!-- REEMPLAZAR CON: <img src="images/equipos/tigres-logo.jpg" alt="Tigres RC"> -->
+                            TC
+                        </div>
                         <div class="preview-title">
                             <h3>Tigres RC</h3>
-                            <p>Veteranos - Buenos Aires</p>
+                            <p>🏆 Veteranos • Buenos Aires • Desde 1998</p>
+                            <div class="preview-motto">"El que abandona no tiene premio"</div>
                         </div>
                     </div>
                     <div class="preview-features">
                         <div class="preview-feature">
-                            <div class="feature-icon">
-                                <svg viewBox="0 0 24 24" width="16" height="16" fill="white">
-                                    <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm7.93 9h-3.01a15.6 15.6 0 00-1.38-5.01A8.02 8.02 0 0119.93 11zM12 4c1.5 1.83 2.44 4.18 2.73 7H9.27C9.56 8.18 10.5 5.83 12 4zM4.07 13h3.01c.28 1.79.8 3.46 1.52 4.88A8.01 8.01 0 014.07 13zm3.01-2H4.07a8.01 8.01 0 014.52-4.88A15.6 15.6 0 007.08 11zm4.92 9c-1.5-1.83-2.44-4.18-2.73-7h5.46c-.29 2.82-1.23 5.17-2.73 7zm3.4-2.12A15.6 15.6 0 0016.92 13h3.01a8.01 8.01 0 01-4.53 4.88z"/>
-                                </svg>
-                            </div>
-                            <span>Página web propia: arvetrugby.com/tigresrc</span>
+                            <div class="feature-icon">🌐</div>
+                            <span>Página propia: arvetrugby.com/tigresrc</span>
                         </div>
                         <div class="preview-feature">
-                            <div class="feature-icon">
-                                <svg viewBox="0 0 24 24" width="16" height="16" fill="white">
-                                    <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.98 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-                                </svg>
-                            </div>
-                            <span>Plantel completo con fotos y datos</span>
+                            <div class="feature-icon">👥</div>
+                            <span>32 jugadores con foto y datos</span>
                         </div>
                         <div class="preview-feature">
-                            <div class="feature-icon">
-                                <svg viewBox="0 0 24 24" width="16" height="16" fill="white">
-                                    <path d="M2 4h20v16H2V4zm2 4v2h16V8H4zm0 4v4h6v-4H4z"/>
-                                </svg>
-                            </div>
-                            <span>Cobros de cuotas o gastos grupales</span>
+                            <div class="feature-icon">📸</div>
+                            <span>Foto del último partido vs Los Matreros</span>
                         </div>
                         <div class="preview-feature">
-                            <div class="feature-icon">
-                                <svg viewBox="0 0 24 24" width="16" height="16" fill="white">
-                                    <path d="M12 2c2 0 4 1 5 3s1 4 0 6-3 3-5 3-4-1-5-3-1-4 0-6 3-3 5-3zm0 12c3 0 8 2 8 5v3H4v-3c0-3 5-5 8-5z"/>
-                                </svg>
-                            </div>
-                            <span>Encuentros automáticos con otros equipos</span>
+                            <div class="feature-icon">💰</div>
+                            <span>Cuotas al día, sin perseguir a nadie</span>
                         </div>
                         <div class="preview-feature">
-                            <div class="feature-icon">
-                                <svg viewBox="0 0 24 24" width="16" height="16" fill="white">
-                                    <path d="M7 2h10a2 2 0 012 2v16a2 2 0 01-2 2H7a2 2 0 01-2-2V4a2 2 0 012-2zm5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/>
-                                </svg>
-                            </div>
-                            <span>Comunicación directa WhatsApp</span>
+                            <div class="feature-icon">🏉</div>
+                            <span>3 partidos armados este mes</span>
+                        </div>
+                        <div class="preview-feature">
+                            <div class="feature-icon">🍻</div>
+                            <span>After en El Boliche de Juan (siempre)</span>
                         </div>
                     </div>
                     <div class="preview-url">arvetrugby.com/tigresrc</div>
@@ -693,198 +844,276 @@
         </div>
     </section>
 
-    <!-- FEATURES SECTION -->
-<section class="features-section" id="como-funciona">
-    <div class="features-container">
-        <div class="section-header">
-            <h2>Conocé todo lo que necesita tu equipo</h2>
+    <!-- FEATURES SECTION CON BENEFICIOS EMOCIONALES -->
+    <section class="features-section" id="como-funciona">
+        <div class="features-container">
+            <div class="section-header">
+                <h2>Lo que necesitás para dejar de sufrir</h2>
+                <p>Herramientas pensadas por quienes saben que organizar un equipo amateur es un trabajo de titanes.</p>
+            </div>
+            
+            <div class="features-grid" id="featuresGrid">
+                <div class="feature-card">
+                    <div class="feature-card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M12 8V3M8 12H3M16 12h5M12 16v5"/>
+                        </svg>
+                    </div>
+                    <h3>Tu lugar en internet</h3>
+                    <p>Dejá de depender de Instagram. Tu historia, tus reglas, tu página. URL profesional que podés pasarle a cualquier rival.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                    </div>
+                    <h3>El roster que se actualiza solo</h3>
+                    <p>Los jugadores se registran solos. Vos solo mirás quién confirma para el sábado. Fin de los "che, ¿venís?" a las 3 AM.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 6v6l4 2"/>
+                        </svg>
+                    </div>
+                    <h3>La plata que nunca falta</h3>
+                    <p>Cobrá la cuota, el viaje, las medias que se perdió. Sin vergüenza, sin perseguir a nadie. Los jugadores pagan desde su celular.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
+                            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+                            <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+                            <path d="M4 22h16"/>
+                            <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+                            <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+                            <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+                        </svg>
+                    </div>
+                    <h3>Partidos sin rogar</h3>
+                    <p>Creá un partido y llega a 50 equipos. Ellos vienen a vos. Sí, en serio. Coordiná fecha, lugar y precio sin 40 grupos de WhatsApp.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        </svg>
+                    </div>
+                    <h3>Contacto directo</h3>
+                    <p>Números de managers y capitanes reales. Coordiná por WhatsApp sin intermediarios ni burocracia.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                        </svg>
+                    </div>
+                    <h3>Sin costos ocultos</h3>
+                    <p>La plataforma es gratuita para equipos y jugadores. Sin suscripciones, sin comisiones, sin sorpresas. El rugby es caro de por sí.</p>
+                </div>
+
+                <!-- FEATURE ESPECIAL: EL AFTER -->
+                <div class="feature-card feature-after">
+                    <div class="feature-card-icon">
+                        <span style="font-size: 28px;">🍻</span>
+                    </div>
+                    <h3>El after también cuenta</h3>
+                    <p>Porque el rugby no termina en el 80'. Agregá dónde se juntan, fotos de los asados, y los mejores momentos del vestuario.</p>
+                </div>
+            </div>
+            
+            <div class="features-toggle">
+                <button id="toggleFeatures">Ver más</button>
+            </div>
         </div>
-        
-        <div class="features-grid" id="featuresGrid">
-            <div class="feature-card">
-                <div class="feature-card-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
-                        <rect x="3" y="3" width="18" height="18" rx="2"/>
-                        <circle cx="12" cy="12" r="3"/>
-                        <path d="M12 8V3M8 12H3M16 12h5M12 16v5"/>
-                    </svg>
-                </div>
-                <h3>Landing Personalizada</h3>
-                <p>Tu propia página con logo, colores, descripción, ubicación en mapa y galería de fotos. URL profesional: arvet.com/tu-equipo</p>
-            </div>
+    </section>
+
+    <!-- TESTIMONIOS: EQUIPOS REALES -->
+    <section class="testimonios-section">
+        <div class="container">
+            <h2>Equipos que ya dejaron de ser invisibles</h2>
             
-            <div class="feature-card">
-                <div class="feature-card-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                        <circle cx="12" cy="7" r="4"/>
-                    </svg>
+            <div class="testimonios-grid">
+                <div class="testimonio-card">
+                    <div class="testimonio-header">
+                        <!-- REEMPLAZAR CON: <img src="images/equipos/tigres-logo.jpg" alt="Tigres RC"> -->
+                        <div style="width:50px;height:50px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:12px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;">TC</div>
+                        <div>
+                            <h4>Tigres RC</h4>
+                            <p>Veteranos, Buenos Aires</p>
+                        </div>
+                    </div>
+                    <p class="testimonio-text">
+                        "Antes teníamos un grupo de WhatsApp con 40 tipos y 3 números de capitán por año. Ahora cada uno sabe cuánto debe, cuándo jugamos, y los rivales nos encuentran solos."
+                    </p>
+                    <div class="testimonio-stats">
+                        <span>👥 32 jugadores</span>
+                        <span>🏉 12 partidos este año</span>
+                    </div>
                 </div>
-                <h3>Gestión de Plantel</h3>
-                <p>Los jugadores se registran solos, suben sus datos y foto. Vos como admin o capitán tenés el control total del roster.</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-card-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M12 6v6l4 2"/>
-                    </svg>
+
+                <div class="testimonio-card">
+                    <div class="testimonio-header">
+                        <!-- REEMPLAZAR CON: <img src="images/equipos/lobos-logo.jpg" alt="Lobos del Sur"> -->
+                        <div style="width:50px;height:50px;background:linear-gradient(135deg,#38bdf8,#2563eb);border-radius:12px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;">LS</div>
+                        <div>
+                            <h4>Lobos del Sur</h4>
+                            <p>Primera, Córdoba</p>
+                        </div>
+                    </div>
+                    <p class="testimonio-text">
+                        "Armamos un partido de veteranos en 2 días. Llegaron equipos de 3 provincias que nunca habríamos encontrado. El sistema de pagos nos salvó de financiar nosotros el viaje."
+                    </p>
+                    <div class="testimonio-stats">
+                        <span>👥 28 jugadores</span>
+                        <span>🚍 4 viajes coordinados</span>
+                    </div>
                 </div>
-                <h3>Cobros Simplificados</h3>
-                <p>Cobrá cuotas del club, gastos de pelotas, viajes o lo que necesites. Los jugadores pagan desde su panel y queda todo registrado.</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-card-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
-                        <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
-                        <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
-                        <path d="M4 22h16"/>
-                        <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
-                        <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
-                        <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
-                    </svg>
-                </div>
-                <h3>Encuentros Automáticos</h3>
-                <p>Creá un partido y llega automáticamente a todos los equipos de la plataforma. Ellos aceptan, sus jugadores reciben notificación con precio y documentación.</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-card-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
-                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                    </svg>
-                </div>
-                <h3>Comunicación Directa</h3>
-                <p>Acceso a números de managers y capitanes. Integración con WhatsApp para coordinar sin intermediarios.</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-card-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
-                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                    </svg>
-                </div>
-                <h3>Sin Costos Ocultos</h3>
-                <p>La plataforma es gratuita para equipos y jugadores. Sin suscripciones, sin comisiones, sin sorpresas.</p>
             </div>
         </div>
-        
-        <div class="features-toggle">
-            <button id="toggleFeatures">Ver más</button>
-        </div>
-    </div>
-</section>
+    </section>
+
     <!-- RESTO DEL CONTENIDO ORIGINAL -->
     <section id="buscador" class="buscador-section">
         <div class="container">
             <h2>Ranking Equipos</h2>
-            <p>Los 10 Equipos con más jugadores.</p>
+            <p>Los 10 equipos con más jugadores activos.</p>
             <div class="equipos-slider" id="equiposSlider"></div>
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Buscar Equipos: Por Nombre | Ciudad ...">
+                <input type="text" id="searchInput" placeholder="Buscar equipos por nombre o ciudad...">
             </div>
             <div id="searchResults" class="results-grid"></div>
-            
         </div>
     </section>
 
-    <!-- PAISES - Mismo diseño que Equipos, sin buscador -->
-<section id="paises" class="buscador-section">
-    <div class="container">
-        <h2>PAISES</h2>
-        <div class="paises-slider" id="paisesGrid"></div>
-    </div>
-</section>
+    <section id="paises" class="buscador-section">
+        <div class="container">
+            <h2>Países</h2>
+            <p>Equipos activos en toda Latinoamérica.</p>
+            <div class="paises-slider" id="paisesGrid"></div>
+        </div>
+    </section>
     
     <section id="partidos" class="partidos-section">
         <div class="container">
-            <h2>PRÓXIMOS ENCUENTROS</h2>
-            <p>Próximamente vas a poder crear encuentro entre equipos y se van a visualizar en esta sección.</p>
+            <h2>Próximos Encuentros</h2>
+            <p>Próximamente vas a poder crear encuentros entre equipos y se van a visualizar acá.</p>
             <div id="partidosList" class="partidos-list">
-                <p style="margin-top:20px; opacity:0.8;">Por el momento no hay encuentros publicados.</p>
+                <p style="margin-top:20px; opacity:0.8;">Por el momento no hay encuentros publicados. ¡Sé el primero en crear uno!</p>
             </div>
         </div>
     </section>
 
-
+    <!-- FOOTER CON ALMA -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2026 ARVET. Todos los derechos reservos.</p>
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <img src="images/ARVET.png" alt="ARVET">
+                    <p>Porque el rugby amateur es el verdadero rugby. Creado por jugadores que cansados de organizar todo por WhatsApp.</p>
+                </div>
+                <div class="footer-links">
+                    <a href="registro.html">Sumá tu equipo</a>
+                    <a href="#">Historias de equipos</a>
+                    <a href="#">¿Cómo empezó ARVET?</a>
+                    <a href="#">Contacto</a>
+                </div>
+            </div>
+            <p class="footer-copy">
+                Hecho con 🏉 en Buenos Aires • 2026 • ARVET
+            </p>
         </div>
     </footer>
 
     <script>
-        // Loading screen logic
+        // Loading screen con frases rotativas
+        const frasesLoading = [
+            "Alistando los botines...",
+            "Inflando la pelota...",
+            "Juntando al plantel...",
+            "Preparando el scrum...",
+            "Poniendo la cerveza en hielo...",
+            "Buscando los 15..."
+        ];
+        
+        let fraseIndex = 0;
+        const loadingText = document.getElementById('loadingText');
+        
+        setInterval(() => {
+            if (loadingText && !document.getElementById('loadingScreen').classList.contains('loading-hidden')) {
+                fraseIndex = (fraseIndex + 1) % frasesLoading.length;
+                loadingText.textContent = frasesLoading[fraseIndex];
+            }
+        }, 800);
+
+        // Logo animation
         const logo = document.getElementById("loadingLogo");
-        logo.onload = function() {
-            logo.style.opacity = "1";
-            logo.style.animation = "logoIntro 1.4s ease, logoFloat 4s ease-in-out infinite 1.4s";
-        };
+        if (logo) {
+            logo.onload = function() {
+                logo.style.opacity = "1";
+                logo.style.animation = "logoIntro 1.4s ease, logoFloat 4s ease-in-out infinite 1.4s";
+            };
+            // Fallback si ya cargó
+            if (logo.complete) {
+                logo.style.opacity = "1";
+                logo.style.animation = "logoIntro 1.4s ease, logoFloat 4s ease-in-out infinite 1.4s";
+            }
+        }
         
         // Simular carga
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.getElementById('loadingScreen').classList.add('loading-hidden');
-            }, 2000);
+            }, 2500);
         });
 
-        // Contar equipos y países automáticamente
-        function actualizarStatsBar() {
-            const equipos = document.querySelectorAll('.equipo-card').length;
-            const paises = document.querySelectorAll('.pais-card').length;
-            
-            const statsBar = document.querySelector('.stats-bar');
-            if (statsBar) {
-                statsBar.innerHTML = `🏉 <strong>${equipos} equipos</strong> activos en <strong>${paises} países</strong> de Latinoamérica`;
-            }
-        }
-
-        // Ejecutar cuando cargue
-        window.addEventListener('load', actualizarStatsBar);
-
+        // Toggle features
         document.addEventListener('DOMContentLoaded', function() {
-    const btn = document.getElementById('toggleFeatures');
-    const grid = document.getElementById('featuresGrid');
-    
-    if (btn && grid) {
-        btn.addEventListener('click', function() {
-            const isOpen = grid.classList.toggle('open');
-            btn.textContent = isOpen ? 'Ver menos' : 'Ver más';
+            const btn = document.getElementById('toggleFeatures');
+            const grid = document.getElementById('featuresGrid');
+            
+            if (btn && grid) {
+                btn.addEventListener('click', function() {
+                    const isOpen = grid.classList.toggle('open');
+                    btn.textContent = isOpen ? 'Ver menos' : 'Ver más';
+                });
+            }
         });
-    }
-});
-    </script>
-    <script>
-// Sticky button al hacer scroll
-document.addEventListener('DOMContentLoaded', function() {
-    const btn = document.getElementById('btnCrearEquipoSticky');
-    const hero = document.querySelector('.hero');
-    
-    if (!btn || !hero) return;
-    
-    // Clonar el botón para ponerlo en el body (fuera del hero)
-    const btnSticky = btn.cloneNode(true);
-    btnSticky.id = 'btnCrearEquipoSticky';
-    btnSticky.classList.remove('visible-en-hero');
-    document.body.appendChild(btnSticky);
-    
-    // Ocultar el original del hero cuando scrolleamos
-    btn.classList.add('visible-en-hero');
-    
-    window.addEventListener('scroll', function() {
-        const heroBottom = hero.getBoundingClientRect().bottom;
-        
-        if (heroBottom < 100) {
-            // Hero ya no se ve, mostrar sticky
-            btnSticky.classList.add('visible');
-        } else {
-            // Hero visible, ocultar sticky
-            btnSticky.classList.remove('visible');
-        }
-    });
-});
+
+        // Sticky button
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnOriginal = document.getElementById('btnCrearEquipoSticky');
+            const hero = document.querySelector('.hero');
+            
+            if (!btnOriginal || !hero) return;
+            
+            const btnSticky = btnOriginal.cloneNode(true);
+            btnSticky.id = 'btnCrearEquipoSticky';
+            btnSticky.classList.remove('visible-en-hero');
+            document.body.appendChild(btnSticky);
+            
+            btnOriginal.classList.add('visible-en-hero');
+            
+            window.addEventListener('scroll', function() {
+                const heroBottom = hero.getBoundingClientRect().bottom;
+                
+                if (heroBottom < 100) {
+                    btnSticky.classList.add('visible');
+                } else {
+                    btnSticky.classList.remove('visible');
+                }
+            });
+        });
     </script>
     <script src="js/app.js"></script>
 </body>

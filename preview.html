@@ -172,7 +172,52 @@
     text-align: center;
     margin: auto 0;
   }
+/* Fechas - Desktop */
+.date-range-desktop {
+  display: block;
+}
 
+.date-range-mobile {
+  display: none;
+}
+
+/* Fechas - Mobile */
+@media (max-width: 768px) {
+  .date-range-desktop {
+    display: none;
+  }
+  
+  .date-range-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .date-detail-item {
+    background: rgba(10, 22, 40, 0.7);
+    border: 1px solid var(--gold-dark);
+    border-radius: 10px;
+    padding: 15px 25px;
+    backdrop-filter: blur(10px);
+  }
+  
+  .date-day {
+    display: block;
+    font-family: 'Teko', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+    letter-spacing: 2px;
+  }
+  
+  .date-time {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--gold-light);
+    letter-spacing: 1px;
+    margin-top: 3px;
+  }
+}
   .date-main {
     font-family: 'Teko', sans-serif;
     font-size: clamp(3rem, 8vw, 6rem);
@@ -430,39 +475,68 @@
     return new Date().getFullYear();
   }
 
-  // Formatear fechas sin repetir año
-  function formatDates(fechasJSON) {
-    let fechas = [];
-    try { fechas = JSON.parse(fechasJSON); } catch(e) {}
-    
-    if (fechas.length === 0) return { texto: 'FECHA POR CONFIRMAR', year: '' };
-    
-    const dias = fechas.map(f => {
-      // Extraer día y mes, quitar año si existe
-      let dia = f.dia.replace(/\s*de\s*/gi, ' ').trim();
-      // Quitar año 20xx si está
-      dia = dia.replace(/\s+20\d{2}$/, '');
-      // Quitar año 2 dígitos si está
-      dia = dia.replace(/\s+'?\d{2}$/, '');
-      return dia;
-    });
-    
-    const unicos = [...new Set(dias)];
-    const year = extractYear('', fechas[0].dia);
-    
-    let texto = '';
-    if (unicos.length === 1) {
-      texto = unicos[0].toUpperCase();
-    } else if (unicos.length === 2) {
-      texto = `${unicos[0]} Y ${unicos[1]}`.toUpperCase();
-    } else {
-      const ultimo = unicos.pop();
-      texto = `${unicos.join(', ')} Y ${ultimo}`.toUpperCase();
-    }
-    
-    return { texto, year };
-  }
+  // Reemplazá la función formatDates por esta:
 
+function formatDates(fechasJSON) {
+  let fechas = [];
+  try { fechas = JSON.parse(fechasJSON); } catch(e) {}
+  
+  if (fechas.length === 0) return { 
+    rango: 'FECHA POR CONFIRMAR', 
+    year: '',
+    detalles: []
+  };
+  
+  const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 
+                 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+  
+  const procesadas = fechas.map(f => {
+    const [year, month, day] = f.dia.split('-');
+    return {
+      diaNum: parseInt(day),
+      mes: meses[parseInt(month) - 1],
+      year: year,
+      horarios: f.horarios || []
+    };
+  });
+  
+  const year = procesadas[0].year;
+  const mes = procesadas[0].mes;
+  
+  // Si son del mismo mes
+  const mismoMes = procesadas.every(p => p.mes === mes);
+  
+  let rangoTexto = '';
+  if (mismoMes) {
+    if (procesadas.length === 1) {
+      rangoTexto = `${procesadas[0].diaNum} DE ${mes}`;
+    } else {
+      const dias = procesadas.map(p => p.diaNum);
+      if (dias.length === 2) {
+        rangoTexto = `${dias[0]} Y ${dias[1]} DE ${mes}`;
+      } else {
+        const ultimo = dias.pop();
+        rangoTexto = `${dias.join(', ')} Y ${ultimo} DE ${mes}`;
+      }
+    }
+  } else {
+    // Diferentes meses
+    rangoTexto = procesadas.map(p => `${p.diaNum} DE ${p.mes}`).join(' Y ');
+  }
+  
+  // Detalles para mobile o lista completa
+  const detalles = procesadas.map(p => ({
+    fecha: `${p.diaNum} DE ${p.mes}`,
+    hora: p.horarios[0]?.hora || '',
+    desc: p.horarios[0]?.desc || ''
+  }));
+  
+  return { 
+    rango: rangoTexto, 
+    year: year,
+    detalles: detalles
+  };
+}
   if (!encuentroId) {
     document.getElementById('app').innerHTML = '<div class="loading">ERROR: ID NO ENCONTRADO</div>';
   } else {
@@ -511,22 +585,24 @@
                 </div>
                 
                 <!-- CENTER: Fechas -->
-                <div class="hero-center">
-                  <div class="date-main">${fechasData.texto}</div>
-                  ${fechasData.year ? `<div class="year-sub">${fechasData.year}</div>` : ''}
-                </div>
-                
-                <!-- BOTTOM: Lugar y Tags -->
-                <div class="hero-bottom">
-                  <div class="location-box">
-                    <div class="location-text">${enc.lugar || 'Lugar por confirmar'}</div>
-                  </div>
-                  
-                  <div class="tags-row">
-                    ${enc.cupoMaximo ? `<span class="tag cupo">${enc.cupoMaximo} Equipos</span>` : ''}
-                    ${tipos.map(t => `<span class="tag">${t}</span>`).join('')}
-                  </div>
-                </div>
+               
+<div class="hero-center">
+  <!-- Vista PC: Rango grande -->
+  <div class="date-range-desktop">
+    <div class="date-main">${fechasData.rango}</div>
+    <div class="year-sub">${fechasData.year}</div>
+  </div>
+  
+  <!-- Vista Mobile: Detalles individuales -->
+  <div class="date-range-mobile">
+    ${fechasData.detalles.map(d => `
+      <div class="date-detail-item">
+        <span class="date-day">${d.fecha}</span>
+        ${d.hora ? `<span class="date-time">${d.hora} HS ${d.desc ? `• ${d.desc.toUpperCase()}` : ''}</span>` : ''}
+      </div>
+    `).join('')}
+  </div>
+</div>v>
               </div>
             </section>
 

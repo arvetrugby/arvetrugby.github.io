@@ -3,432 +3,570 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Preview Encuentro</title>
+<title>Encuentro Rugby Veterans</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Teko:wght@300;400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&family=Black+Ops+One&display=swap');
+  
   * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
   }
 
+  :root {
+    --neon-blue: #00f3ff;
+    --neon-pink: #ff006e;
+    --neon-gold: #ffd700;
+    --blood-red: #dc143c;
+    --dark-metal: #0a0a0f;
+    --grid-line: rgba(0, 243, 255, 0.1);
+  }
+
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background: #f8f9fa;
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--dark-metal);
     min-height: 100vh;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .card {
-    background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
-    max-width: 900px;
-    width: 100%;
-    overflow: hidden;
-    display: grid;
-    grid-template-columns: 0.9fr 1.1fr;
-    animation: fadeIn 0.5s ease-out;
-    border: 1px solid #e9ecef;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* Sección de imagen - SIEMPRE COMPLETA */
-  .image-section {
-    background: #f1f3f5;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-    position: relative;
-  }
-
-  .image-wrapper {
-    width: 100%;
-    position: relative;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .image-wrapper:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-  }
-
-  .image-section img {
-    width: 100%;
-    height: auto;
-    display: block;
-    transition: transform 0.5s ease;
-  }
-
-  .image-wrapper:hover img {
-    transform: scale(1.02);
-  }
-
-  /* Efecto de cinta/esquina para tipo de evento */
-  .event-type-ribbon {
-    position: absolute;
-    top: 16px;
-    right: -32px;
-    background: #212529;
+    overflow-x: hidden;
     color: white;
-    padding: 6px 40px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transform: rotate(45deg);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  }
+
+  .flyer-container {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Background Image Layer */
+  .bg-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  .bg-layer img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.4) contrast(1.1) saturate(0.8);
+    transform: scale(1.1);
+    animation: slowZoom 20s ease-in-out infinite alternate;
+  }
+
+  @keyframes slowZoom {
+    to { transform: scale(1.2); }
+  }
+
+  /* Overlay Effects */
+  .overlay-fx {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background: 
+      linear-gradient(180deg, rgba(10,10,15,0.3) 0%, rgba(10,10,15,0.6) 50%, rgba(10,10,15,0.9) 100%),
+      repeating-linear-gradient(0deg, transparent, transparent 2px, var(--grid-line) 2px, var(--grid-line) 4px),
+      repeating-linear-gradient(90deg, transparent, transparent 2px, var(--grid-line) 2px, var(--grid-line) 4px);
+    pointer-events: none;
+  }
+
+  /* Scanline effect */
+  .scanlines {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+    background-size: 100% 4px;
+    pointer-events: none;
+    opacity: 0.3;
+  }
+
+  /* Vignette */
+  .vignette {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.8) 100%);
+    pointer-events: none;
+  }
+
+  /* Content Layer */
+  .content-layer {
+    position: relative;
     z-index: 10;
-  }
-
-  /* Sección de contenido */
-  .content-section {
-    padding: 40px;
+    width: 100%;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-  }
-
-  .event-header {
-    margin-bottom: 28px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #e9ecef;
-  }
-
-  h2 {
-    font-size: 1.9rem;
-    color: #212529;
-    font-weight: 700;
-    line-height: 1.3;
-    margin-bottom: 12px;
-    letter-spacing: -0.5px;
-  }
-
-  .meta-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    align-items: center;
-    margin-top: 8px;
-  }
-
-  .meta-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.9rem;
-    color: #495057;
-  }
-
-  .meta-item svg {
-    width: 16px;
-    height: 16px;
-    color: #6c757d;
-  }
-
-  .creator-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: #f8f9fa;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    color: #495057;
-    border: 1px solid #dee2e6;
-  }
-
-  /* Descripción */
-  .description-box {
-    background: #f8f9fa;
     padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 24px;
-    border-left: 4px solid #adb5bd;
+    background: linear-gradient(180deg, 
+      rgba(10,10,15,0.2) 0%, 
+      rgba(10,10,15,0.1) 20%, 
+      rgba(10,10,15,0.3) 60%, 
+      rgba(10,10,15,0.95) 100%);
   }
 
-  .description-box p {
-    color: #495057;
-    line-height: 1.6;
-    font-size: 0.95rem;
-  }
-
-  /* Secciones de datos */
-  .data-section {
-    margin-bottom: 24px;
-  }
-
-  .section-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: #6c757d;
-    font-weight: 600;
-  }
-
-  .section-header svg {
-    width: 18px;
-    height: 18px;
-    color: #adb5bd;
-  }
-
-  /* Fechas */
-  .dates-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .date-card {
-    background: white;
-    border: 1px solid #e9ecef;
-    border-radius: 10px;
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    transition: all 0.2s ease;
-  }
-
-  .date-card:hover {
-    border-color: #adb5bd;
-    background: #f8f9fa;
-    transform: translateX(4px);
-  }
-
-  .date-icon {
-    width: 36px;
-    height: 36px;
-    background: #e9ecef;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    flex-shrink: 0;
-  }
-
-  .date-content {
-    flex: 1;
-  }
-
-  .date-day {
-    font-weight: 600;
-    color: #212529;
-    font-size: 0.95rem;
-  }
-
-  .date-time {
-    font-size: 0.85rem;
-    color: #6c757d;
-    margin-top: 2px;
-  }
-
-  /* Precios */
-  .prices-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 10px;
-  }
-
-  .price-card {
-    background: white;
-    border: 2px solid #e9ecef;
-    border-radius: 10px;
-    padding: 16px;
+  /* Header */
+  .event-header {
     text-align: center;
-    transition: all 0.2s ease;
+    padding-top: 40px;
+    position: relative;
+  }
+
+  .event-type {
+    font-family: 'Black Ops One', cursive;
+    font-size: clamp(0.8rem, 2vw, 1.2rem);
+    letter-spacing: 8px;
+    color: var(--neon-blue);
+    text-shadow: 0 0 20px var(--neon-blue);
+    margin-bottom: 10px;
+    animation: flicker 3s infinite;
+  }
+
+  @keyframes flicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+    52% { opacity: 0.3; }
+    54% { opacity: 1; }
+  }
+
+  .main-title {
+    font-family: 'Teko', sans-serif;
+    font-size: clamp(3rem, 12vw, 8rem);
+    font-weight: 700;
+    line-height: 0.9;
+    text-transform: uppercase;
+    letter-spacing: -2px;
+    background: linear-gradient(180deg, #fff 0%, #a0a0a0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.8));
+    position: relative;
+  }
+
+  .main-title::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    z-index: -1;
+    background: linear-gradient(180deg, var(--neon-pink), var(--blood-red));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0.5;
+    filter: blur(2px);
+  }
+
+  .subtitle {
+    font-family: 'Teko', sans-serif;
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    font-weight: 300;
+    letter-spacing: 10px;
+    color: var(--neon-gold);
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+    margin-top: -10px;
+  }
+
+  /* VS Section */
+  .vs-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin: 30px 0;
+    flex-wrap: wrap;
+  }
+
+  .team-badge {
+    background: rgba(0, 243, 255, 0.1);
+    border: 2px solid var(--neon-blue);
+    padding: 15px 30px;
+    transform: skew(-10deg);
+    backdrop-filter: blur(10px);
+  }
+
+  .team-badge span {
+    display: block;
+    transform: skew(10deg);
+    font-family: 'Teko', sans-serif;
+    font-size: clamp(1.2rem, 3vw, 2rem);
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: white;
+  }
+
+  .vs-text {
+    font-family: 'Black Ops One', cursive;
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: var(--neon-pink);
+    text-shadow: 0 0 30px var(--neon-pink);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  /* Info Grid */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .info-card {
+    background: rgba(10, 10, 15, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    text-align: center;
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
   }
 
-  .price-card:hover {
-    border-color: #212529;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  .info-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+    animation: scan 3s infinite;
   }
 
-  .price-card.featured {
-    border-color: #212529;
-    background: #212529;
+  @keyframes scan {
+    to { left: 100%; }
+  }
+
+  .info-card:hover {
+    border-color: var(--neon-blue);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 243, 255, 0.2);
+  }
+
+  .info-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--neon-blue);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .info-value {
+    font-family: 'Teko', sans-serif;
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
+    font-weight: 500;
     color: white;
+    line-height: 1.2;
   }
 
-  .price-card.featured .price-amount {
+  /* Date Section */
+  .date-section {
+    text-align: center;
+    margin: 40px 0;
+    position: relative;
+  }
+
+  .date-big {
+    font-family: 'Teko', sans-serif;
+    font-size: clamp(3rem, 8vw, 5rem);
+    font-weight: 700;
     color: white;
+    line-height: 1;
+    text-shadow: 0 0 40px rgba(255,255,255,0.3);
   }
 
-  .price-card.featured .price-label {
-    color: rgba(255,255,255,0.8);
+  .time-location {
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    color: var(--neon-gold);
+    letter-spacing: 4px;
+    margin-top: 10px;
+    font-weight: 500;
+  }
+
+  /* Pricing Section */
+  .pricing-section {
+    margin: 30px auto;
+    max-width: 600px;
+    width: 100%;
+  }
+
+  .section-title {
+    text-align: center;
+    font-family: 'Black Ops One', cursive;
+    font-size: 0.9rem;
+    letter-spacing: 6px;
+    color: var(--neon-pink);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  .price-boxes {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+
+  .price-box {
+    background: linear-gradient(135deg, rgba(220, 20, 60, 0.2), rgba(255, 0, 110, 0.2));
+    border: 2px solid var(--blood-red);
+    padding: 20px 30px;
+    text-align: center;
+    position: relative;
+    min-width: 140px;
+    clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);
+  }
+
+  .price-box.featured {
+    background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(0, 243, 255, 0.05));
+    border-color: var(--neon-blue);
+    transform: scale(1.05);
   }
 
   .price-amount {
-    font-size: 1.4rem;
+    font-family: 'Teko', sans-serif;
+    font-size: clamp(2rem, 5vw, 2.5rem);
     font-weight: 700;
-    color: #212529;
-    margin-bottom: 4px;
+    color: white;
+    line-height: 1;
   }
 
   .price-label {
     font-size: 0.8rem;
-    color: #6c757d;
-    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.7);
+    margin-top: 5px;
   }
 
-  /* Cupo */
-  .cupo-indicator {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: #fff3cd;
-    color: #856404;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
+  /* CTA Button */
+  .cta-section {
+    text-align: center;
+    margin: 40px 0;
+  }
+
+  .cta-button {
+    display: inline-block;
+    background: linear-gradient(90deg, var(--neon-pink), var(--blood-red));
+    color: white;
+    font-family: 'Teko', sans-serif;
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
     font-weight: 600;
-    margin-top: 4px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    padding: 20px 50px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+    transition: all 0.3s ease;
+    box-shadow: 0 0 30px rgba(255, 0, 110, 0.4);
   }
 
-  /* Footer */
-  .card-footer {
+  .cta-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 40px rgba(255, 0, 110, 0.6);
+  }
+
+  .cta-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+  }
+
+  .cta-button:hover::before {
+    left: 100%;
+  }
+
+  /* Footer Info */
+  .footer-info {
+    text-align: center;
+    padding: 20px;
     margin-top: auto;
-    padding-top: 20px;
-    border-top: 1px solid #e9ecef;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.8rem;
-    color: #adb5bd;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .creator-info {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 2px;
   }
 
   .coordinates {
     font-family: 'Courier New', monospace;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.3);
+    margin-top: 10px;
   }
 
-  /* Loading y Error */
-  .loading {
-    text-align: center;
-    color: #6c757d;
-    font-size: 1.1rem;
-    padding: 40px;
+  /* Loading & Error States */
+  .loading-screen, .error-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--dark-metal);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    font-family: 'Teko', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 4px;
   }
 
-  .error-message {
-    background: white;
-    padding: 40px;
-    border-radius: 16px;
-    text-align: center;
-    color: #dc3545;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    max-width: 400px;
+  .loading-screen {
+    color: var(--neon-blue);
   }
 
-  /* Responsive */
-  @media (max-width: 768px) {
-    body {
-      padding: 12px;
-      background: white;
-    }
-
-    .card {
-      grid-template-columns: 1fr;
-      border-radius: 0;
-      box-shadow: none;
-      border: none;
-      max-width: 100%;
-    }
-
-    .image-section {
-      padding: 16px;
-      background: white;
-    }
-
-    .image-wrapper {
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      max-width: 400px;
-      margin: 0 auto;
-    }
-
-    .event-type-ribbon {
-      top: 12px;
-      right: -28px;
-      padding: 5px 35px;
-      font-size: 0.65rem;
-    }
-
-    .content-section {
-      padding: 24px;
-    }
-
-    h2 {
-      font-size: 1.5rem;
-    }
-
-    .prices-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .price-card {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      text-align: left;
-    }
-
-    .price-amount {
-      font-size: 1.1rem;
-    }
+  .error-screen {
+    color: var(--neon-pink);
   }
 
-  /* Efecto de profundidad sutil */
-  .card {
+  .glitch-text {
     position: relative;
+    animation: glitch 2s infinite;
   }
 
-  .card::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 16px;
-    padding: 1px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(255,255,255,0));
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
+  @keyframes glitch {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+  }
+
+  /* Mobile Optimizations */
+  @media (max-width: 768px) {
+    .content-layer {
+      padding: 15px;
+      justify-content: flex-start;
+    }
+
+    .event-header {
+      padding-top: 20px;
+    }
+
+    .vs-section {
+      margin: 20px 0;
+    }
+
+    .info-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .info-card {
+      padding: 15px;
+    }
+
+    .price-boxes {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .price-box {
+      width: 100%;
+      max-width: 250px;
+    }
+
+    .price-box.featured {
+      transform: scale(1);
+      order: -1;
+    }
+  }
+
+  /* Large screens */
+  @media (min-width: 1200px) {
+    .content-layer {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px;
+    }
+  }
+
+  /* Decorative elements */
+  .corner-decor {
+    position: fixed;
+    width: 100px;
+    height: 100px;
+    border: 2px solid var(--neon-blue);
+    z-index: 5;
     pointer-events: none;
+  }
+
+  .corner-decor.top-left {
+    top: 20px;
+    left: 20px;
+    border-right: none;
+    border-bottom: none;
+  }
+
+  .corner-decor.top-right {
+    top: 20px;
+    right: 20px;
+    border-left: none;
+    border-bottom: none;
+  }
+
+  .corner-decor.bottom-left {
+    bottom: 20px;
+    left: 20px;
+    border-right: none;
+    border-top: none;
+  }
+
+  .corner-decor.bottom-right {
+    bottom: 20px;
+    right: 20px;
+    border-left: none;
+    border-top: none;
+  }
+
+  @media (max-width: 768px) {
+    .corner-decor {
+      width: 50px;
+      height: 50px;
+    }
   }
 </style>
 </head>
 <body>
 
-<div id="preview-container">
-  <div class="loading">
-    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite; margin: 0 auto 12px; display: block;">
-      <circle cx="12" cy="12" r="10" stroke-dasharray="60" stroke-dashoffset="20"/>
-    </svg>
-    Cargando encuentro...
+<div id="app">
+  <div class="loading-screen">
+    <div class="glitch-text">CARGANDO EVENTO...</div>
   </div>
 </div>
 
@@ -437,132 +575,138 @@
   const encuentroId = params.get('id');
 
   if (!encuentroId) {
-    document.getElementById('preview-container').innerHTML = 
-      '<div class="error-message">ID del encuentro no provisto</div>';
+    document.getElementById('app').innerHTML = `
+      <div class="error-screen">
+        <div class="glitch-text">ERROR: ID NO ENCONTRADO</div>
+      </div>
+    `;
   } else {
     const API_URL = "https://script.google.com/macros/s/AKfycbxE-UiI85pCcUYq5LqJjN7UU7aOtXsVV_7Hyag-hYgOT4LcjGhVQaDt6js9PEQQ6E9Z/exec";
-    const fetchUrl = `${API_URL}?action=getEncuentroById&id=${encuentroId}`;
-
-    fetch(fetchUrl)
+    
+    fetch(`${API_URL}?action=getEncuentroById&id=${encuentroId}`)
       .then(res => res.json())
       .then(res => {
         if (!res.success || !res.data) {
-          document.getElementById('preview-container').innerHTML = 
-            '<div class="error-message">Encuentro no encontrado</div>';
-          return;
+          throw new Error('Not found');
         }
 
         const enc = res.data;
-        const container = document.getElementById('preview-container');
         
-        container.innerHTML = `
-          <div class="card">
-            <div class="image-section">
-              <div class="image-wrapper">
-                <div class="event-type-ribbon">${enc.tipo}</div>
-                <img src="${enc.flyerUrl}" alt="Flyer del encuentro" onerror="this.src='https://via.placeholder.com/400x600/f1f3f5/6c757d?text=Sin+imagen'">
-              </div>
+        // Parse dates
+        let fechas = [];
+        try { fechas = JSON.parse(enc.fechasJSON); } catch(e) {}
+        
+        // Parse prices
+        let precios = [];
+        try { precios = JSON.parse(enc.valoresJSON); } catch(e) {}
+
+        // Format date display
+        let fechaDisplay = 'PRÓXIMAMENTE';
+        let horaDisplay = '';
+        
+        if (fechas.length > 0) {
+          const primera = fechas[0];
+          fechaDisplay = primera.dia.toUpperCase();
+          if (primera.horarios.length > 0) {
+            horaDisplay = `${primera.horarios[0].hora} HS | ${enc.lugar}`;
+          }
+        }
+
+        document.getElementById('app').innerHTML = `
+          <div class="flyer-container">
+            <!-- Background -->
+            <div class="bg-layer">
+              <img src="${enc.flyerUrl}" alt="Background" onerror="this.src='https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=1920&q=80'">
             </div>
+            
+            <!-- Effects -->
+            <div class="overlay-fx"></div>
+            <div class="scanlines"></div>
+            <div class="vignette"></div>
+            
+            <!-- Corner Decorations -->
+            <div class="corner-decor top-left"></div>
+            <div class="corner-decor top-right"></div>
+            <div class="corner-decor bottom-left"></div>
+            <div class="corner-decor bottom-right"></div>
+            
+            <!-- Content -->
+            <div class="content-layer">
+              <header class="event-header">
+                <div class="event-type">/// ${enc.tipo || 'ENCUENTRO'} ///</div>
+                <h1 class="main-title" data-text="${enc.nombre}">${enc.nombre}</h1>
+                <div class="subtitle">VETERANOS RUGBY</div>
+              </header>
 
-            <div class="content-section">
-              <div class="event-header">
-                <h2>${enc.nombre}</h2>
-                <div class="meta-row">
-                  <div class="meta-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                    ${enc.lugar}
-                  </div>
-                  <div class="creator-tag">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    ${enc.creadorNombre}
-                  </div>
+              <div class="vs-section">
+                <div class="team-badge"><span>OLD BOYS</span></div>
+                <div class="vs-text">VS</div>
+                <div class="team-badge" style="border-color: var(--neon-pink); background: rgba(255, 0, 110, 0.1);">
+                  <span style="color: var(--neon-pink);">RIVALES</span>
                 </div>
-                ${enc.cupoMaximo ? `<div class="cupo-indicator">🎟️ ${enc.cupoMaximo} cupos disponibles</div>` : ''}
               </div>
 
-              ${enc.descripcion ? `
-              <div class="description-box">
-                <p>${enc.descripcion}</p>
+              <div class="info-grid">
+                <div class="info-card">
+                  <div class="info-label">Cupo</div>
+                  <div class="info-value">${enc.cupoMaximo || 'ILIMITADO'}</div>
+                </div>
+                <div class="info-card">
+                  <div class="info-label">Formato</div>
+                  <div class="info-value">10 VS 10</div>
+                </div>
+                <div class="info-card">
+                  <div class="info-label">Categoría</div>
+                  <div class="info-value">+35 AÑOS</div>
+                </div>
+                <div class="info-card">
+                  <div class="info-label">Organiza</div>
+                  <div class="info-value">${enc.creadorNombre}</div>
+                </div>
+              </div>
+
+              <div class="date-section">
+                <div class="date-big">${fechaDisplay}</div>
+                <div class="time-location">${horaDisplay}</div>
+              </div>
+
+              ${precios.length > 0 ? `
+              <div class="pricing-section">
+                <div class="section-title">/// Entradas ///</div>
+                <div class="price-boxes">
+                  ${precios.map((p, i) => `
+                    <div class="price-box ${i === 0 ? 'featured' : ''}">
+                      <div class="price-amount">$${parseFloat(p.precio).toLocaleString('es-AR')}</div>
+                      <div class="price-label">${p.titulo}</div>
+                    </div>
+                  `).join('')}
+                </div>
               </div>
               ` : ''}
 
-              <div class="data-section">
-                <div class="section-header">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                  Fechas y Horarios
-                </div>
-                <div class="dates-list" id="fechas"></div>
+              <div class="cta-section">
+                <button class="cta-button" onclick="alert('Inscripción próximamente')">
+                  Reservar Lugar
+                </button>
               </div>
 
-              <div class="data-section">
-                <div class="section-header">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                  Entradas
-                </div>
-                <div class="prices-grid" id="valores"></div>
-              </div>
-
-              <div class="card-footer">
-                <span class="coordinates">📍 ${enc.lat}, ${enc.lng}</span>
-              </div>
+              <footer class="footer-info">
+                <div class="creator-info">ORGANIZA: ${enc.creadorNombre}</div>
+                <div class="coordinates">${enc.lat}, ${enc.lng}</div>
+              </footer>
             </div>
           </div>
         `;
-
-        // Fechas
-        let fechasArray = [];
-        try { fechasArray = JSON.parse(enc.fechasJSON); } catch (e) {}
-        const fechasDiv = document.getElementById('fechas');
-        
-        if (fechasArray.length === 0) {
-          fechasDiv.innerHTML = '<div class="date-card"><div class="date-content"><div class="date-day">Fechas por confirmar</div></div></div>';
-        } else {
-          fechasArray.forEach(f => {
-            f.horarios.forEach(h => {
-              const div = document.createElement('div');
-              div.className = 'date-card';
-              div.innerHTML = `
-                <div class="date-icon">📅</div>
-                <div class="date-content">
-                  <div class="date-day">${f.dia}</div>
-                  <div class="date-time">${h.hora} • ${h.desc}</div>
-                </div>
-              `;
-              fechasDiv.appendChild(div);
-            });
-          });
-        }
-
-        // Precios
-        let valoresArray = [];
-        try { valoresArray = JSON.parse(enc.valoresJSON); } catch (e) {}
-        const valoresDiv = document.getElementById('valores');
-        
-        if (valoresArray.length === 0) {
-          valoresDiv.innerHTML = '<div class="price-card"><div class="price-amount">Gratis</div><div class="price-label">Entrada libre</div></div>';
-        } else {
-          valoresArray.forEach((v, idx) => {
-            const div = document.createElement('div');
-            div.className = `price-card ${idx === 0 ? 'featured' : ''}`;
-            div.innerHTML = `
-              <div class="price-amount">$${parseFloat(v.precio).toLocaleString('es-AR')}</div>
-              <div class="price-label">${v.titulo}${v.desc ? ` • ${v.desc}` : ''}</div>
-            `;
-            valoresDiv.appendChild(div);
-          });
-        }
       })
       .catch(err => {
-        console.error(err);
-        document.getElementById('preview-container').innerHTML = 
-          '<div class="error-message">Error al cargar el encuentro</div>';
+        document.getElementById('app').innerHTML = `
+          <div class="error-screen">
+            <div class="glitch-text">EVENTO NO ENCONTRADO</div>
+          </div>
+        `;
       });
   }
 </script>
-
-<style>
-  @keyframes spin { 100% { transform: rotate(360deg); } }
-</style>
 
 </body>
 </html>

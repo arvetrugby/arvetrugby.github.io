@@ -861,13 +861,16 @@ async function renderizarInvitaciones() {
                             `).join('') : '<span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #f1f5f9; color: #64748b; margin-left: 8px;">Sin tipo</span>'}
                         </div>
                         <div style="text-align: right;">
-                            <div style="font-size: 0.9rem; color: #64748b; margin-bottom: 4px;">
-                                Organiza:
-                            </div>
-                            <div style="font-weight: 600; color: #1e293b;">
-                                ${enc.creadorNombre || 'Equipo desconocido'}
-                            </div>
-                        </div>
+    <div style="font-size: 1.5rem; font-weight: 800; color: #4f46e5;">
+        0/${enc.cupoMaximo}
+    </div>
+    <div style="font-size: 0.8rem; color: #64748b;">
+        ${enc.cupoMaximo} plazas
+    </div>
+    <div style="font-size: 0.9rem; color: #64748b; margin-top: 8px;">
+        Organiza: <strong>${enc.creadorNombre || 'Equipo desconocido'}</strong>
+    </div>
+</div>
                     </div>
 
                     <div class="encuentro-meta" style="margin-bottom: 15px; color: #64748b; font-size: 0.9rem;">

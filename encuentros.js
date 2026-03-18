@@ -893,7 +893,7 @@ async function renderizarInvitaciones() {
                         </div>
                     ` : ''}
                     ${enc.telefonoOrganizador ? `
-    <a href="https://wa.me/${enc.telefonoOrganizador.replace(/[^0-9]/g, '')}" 
+    <a href="https://wa.me/${String(enc.telefonoOrganizador).replace(/[^0-9]/g, '')}" 
        target="_blank" 
        style="display: inline-flex; align-items: center; gap: 5px; color: #22c55e; text-decoration: none; font-weight: 500;">
         📱 WhatsApp

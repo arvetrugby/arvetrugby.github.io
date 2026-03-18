@@ -767,6 +767,9 @@ async function renderizarMisEncuentros() {
                         <button onclick="invitarEquipos('${enc.id}')" class="btn-aceptar" style="padding: 8px 16px; border-radius: 6px; border: none; background: #4f46e5; color: white; cursor: pointer; font-weight: 500;">
                             + Invitar equipos
                         </button>
+                        <button onclick="compartirEncuentro('${enc.id}')" class="btn-compartir" style="padding: 8px 16px; border-radius: 6px; border: none; background: #22c55e; color: white; cursor: pointer; font-weight: 500;">
+        Compartir
+    </button>
                     </div>
                 </div>
             `;
@@ -777,7 +780,12 @@ async function renderizarMisEncuentros() {
         mostrarMensajeEncuentros('Error de conexión al cargar encuentros', 'error');
     }
 }
-
+function compartirEncuentro(id) {
+    const url = `https://arvetrugby.github.io/Arvet/preview.html?action=getEncuentroById&id=${id}`;
+    navigator.clipboard.writeText(url)
+        .then(() => alert('Link copiado al portapapeles:\n' + url))
+        .catch(err => alert('No se pudo copiar el link: ' + err));
+}
 // ============================================
 // RENDERIZAR INVITACIONES (encuentros de otros equipos)
 // ============================================

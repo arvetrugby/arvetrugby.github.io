@@ -90,7 +90,7 @@ function nuevoEncuentro() {
     modal.id = 'modalEncuentro';
     
     modal.innerHTML = `
-        <div class="modal-content" style="max-width: 800px;">
+        <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
             <div class="modal-header">
                 <h2>Crear Nuevo Encuentro</h2>
                 <button class="btn-cerrar" onclick="cerrarModalEncuentro()">×</button>
@@ -120,7 +120,6 @@ function nuevoEncuentro() {
                 <div class="form-group">
                     <label>Tipo de encuentro * (podés elegir varios)</label>
                     
-                    <!-- Opciones predefinidas -->
                     <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
                         <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
                             <input type="checkbox" name="encTipo" value="Veteranos +35" style="width: 18px; height: 18px;">
@@ -136,10 +135,8 @@ function nuevoEncuentro() {
                         </label>
                     </div>
                     
-                    <!-- Container para tipos personalizados ilimitados -->
                     <div id="containerOtrosTipos" style="display: none; flex-direction: column; gap: 10px; margin-left: 26px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 2px solid #e2e8f0;">
                         <div style="font-size: 12px; color: #64748b; margin-bottom: 5px;">Agregá los tipos que necesites:</div>
-                        <!-- Se agregan dinámicamente -->
                     </div>
                     
                     <button type="button" onclick="agregarOtroTipo()" class="btn-secondary" style="width: 100%; margin-top: 10px; display: none;" id="btnAgregarOtroTipo">
@@ -147,9 +144,31 @@ function nuevoEncuentro() {
                     </button>
                 </div>
 
+                <!-- UBICACIÓN DEL ENCUENTRO CON MAPA -->
                 <div class="form-group">
-                    <label>Lugar / Cancha *</label>
-                    <input type="text" id="encLugar" required placeholder="Nombre y dirección de la cancha">
+                    <label>Ubicación del encuentro *</label>
+                    <p style="color: #64748b; font-size: 12px; margin-bottom: 10px;">
+                        📍 Arrastrá el pin rojo para marcar exactamente dónde se juega (puede ser diferente a tu club)
+                    </p>
+                    
+                    <!-- Mapa selector -->
+                    <div id="mapaEncuentro" style="width: 100%; height: 300px; border-radius: 12px; margin-bottom: 15px; border: 2px solid #e2e8f0;"></div>
+                    
+                    <!-- Campos ocultos para coordenadas y ubicación -->
+                    <input type="hidden" id="encLat" value="">
+                    <input type="hidden" id="encLng" value="">
+                    <input type="hidden" id="encPaisId" value="">
+                    <input type="hidden" id="encProvinciaId" value="">
+                    <input type="hidden" id="encCiudadId" value="">
+                    
+                    <!-- Dirección escrita (se completa automáticamente pero editable) -->
+                    <label style="font-size: 12px; color: #64748b; margin-bottom: 5px;">Dirección completa *</label>
+                    <input type="text" id="encDireccion" required placeholder="Calle, número, ciudad, país..." style="margin-bottom: 10px;">
+                    
+                    <!-- Info de ubicación detectada -->
+                    <div id="encUbicacionInfo" style="display: none; background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 10px; font-size: 12px; color: #166534;">
+                        ✅ Ubicación confirmada: <span id="encPaisNombre"></span> > <span id="encProvinciaNombre"></span> > <span id="encCiudadNombre"></span>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -194,6 +213,9 @@ function nuevoEncuentro() {
     
     document.body.appendChild(modal);
     
+    // Inicializar mapa
+    setTimeout(() => initMapaEncuentro(), 100);
+    
     agregarDia();
     agregarValor();
     
@@ -236,6 +258,105 @@ function agregarOtroTipo() {
     container.appendChild(div);
 }
 
+
+
+let mapaEncuentro, markerEncuentro;
+
+function initMapaEncuentro() {
+    // Coordenadas por defecto (Argentina/Buenos Aires) o usar la del club si está disponible
+    const defaultLat = -34.6037;
+    const defaultLng = -58.3816;
+    
+    // Crear mapa
+    mapaEncuentro = L.map('mapaEncuentro').setView([defaultLat, defaultLng], 13);
+    
+    // Agregar capa de OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(mapaEncuentro);
+    
+    // Crear marker draggable
+    markerEncuentro = L.marker([defaultLat, defaultLng], {
+        draggable: true,
+        icon: L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34]
+        })
+    }).addTo(mapaEncuentro);
+    
+    // Evento cuando se arrastra el marker
+    markerEncuentro.on('dragend', async function() {
+        const pos = markerEncuentro.getLatLng();
+        await actualizarUbicacionEncuentro(pos.lat, pos.lng);
+    });
+    
+    // Click en el mapa para mover el marker
+    mapaEncuentro.on('click', async function(e) {
+        markerEncuentro.setLatLng(e.latlng);
+        await actualizarUbicacionEncuentro(e.latlng.lat, e.latlng.lng);
+    });
+    
+    // Geolocalización del usuario (opcional)
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                mapaEncuentro.setView([lat, lng], 13);
+                markerEncuentro.setLatLng([lat, lng]);
+                actualizarUbicacionEncuentro(lat, lng);
+            },
+            () => {
+                // Si falla, usar default
+                actualizarUbicacionEncuentro(defaultLat, defaultLng);
+            }
+        );
+    } else {
+        actualizarUbicacionEncuentro(defaultLat, defaultLng);
+    }
+}
+
+// Función para obtener datos de ubicación desde coordenadas (reverse geocoding)
+async function actualizarUbicacionEncuentro(lat, lng) {
+    document.getElementById('encLat').value = lat;
+    document.getElementById('encLng').value = lng;
+    
+    try {
+        // Usar OpenStreetMap Nominatim para reverse geocoding (gratuito)
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`);
+        const data = await response.json();
+        
+        if (data && data.address) {
+            const addr = data.address;
+            
+            // Completar dirección
+            const direccionParts = [];
+            if (addr.road) direccionParts.push(addr.road);
+            if (addr.house_number) direccionParts.push(addr.house_number);
+            if (addr.suburb) direccionParts.push(addr.suburb);
+            if (addr.city || addr.town || addr.village) direccionParts.push(addr.city || addr.town || addr.village);
+            
+            const direccionCompleta = direccionParts.join(', ') || data.display_name || '';
+            document.getElementById('encDireccion').value = direccionCompleta;
+            
+            // Guardar IDs de ubicación (simplificado - en producción deberías mapear a tus IDs reales)
+            document.getElementById('encPaisId').value = addr.country_code || '';
+            document.getElementById('encProvinciaId').value = addr.state || addr.province || '';
+            document.getElementById('encCiudadId').value = addr.city || addr.town || addr.village || '';
+            
+            // Mostrar info
+            document.getElementById('encPaisNombre').textContent = addr.country || 'Desconocido';
+            document.getElementById('encProvinciaNombre').textContent = addr.state || addr.province || '';
+            document.getElementById('encCiudadNombre').textContent = addr.city || addr.town || addr.village || '';
+            document.getElementById('encUbicacionInfo').style.display = 'block';
+        }
+    } catch (err) {
+        console.error('Error obteniendo ubicación:', err);
+        // Dejar los campos para que el usuario complete manualmente
+    }
+}
 // ============================================
 // FECHAS DINÁMICAS
 // ============================================
@@ -359,15 +480,18 @@ async function subirFlyer() {
 function guardarEncuentro(e) {
     e.preventDefault();
     
-    // Recolectar tipos seleccionados (MÚLTIPLE SELECCIÓN)
-    const tiposSeleccionados = [];
+    // Validar ubicación
+    if (!document.getElementById('encLat').value || !document.getElementById('encLng').value) {
+        mostrarMensajeEncuentros('⚠️ Por favor marcá la ubicación en el mapa', 'error');
+        return;
+    }
     
-    // Checkboxes predefinidos
+    // Recolectar tipos seleccionados
+    const tiposSeleccionados = [];
     document.querySelectorAll('input[name="encTipo"]:checked').forEach(cb => {
         tiposSeleccionados.push(cb.value);
     });
     
-    // Otros tipos personalizados
     const otrosInputs = document.querySelectorAll('.otro-tipo-input');
     otrosInputs.forEach(input => {
         if (input.value.trim()) {
@@ -380,9 +504,9 @@ function guardarEncuentro(e) {
         return;
     }
     
-    // Guardar como string separado por comas
     const tipoFinal = tiposSeleccionados.join(', ');
     
+    // Fechas
     const fechas = [];
     document.querySelectorAll('.dia-item').forEach(dia => {
         const fechaInput = dia.querySelector('.dia-fecha');
@@ -408,6 +532,7 @@ function guardarEncuentro(e) {
         return;
     }
     
+    // Valores
     const valores = [];
     document.querySelectorAll('#containerValores > div').forEach(v => {
         const titulo = v.querySelector('.valor-titulo').value;
@@ -436,8 +561,16 @@ function guardarEncuentro(e) {
         fechasJSON: JSON.stringify(fechas),
         valoresJSON: JSON.stringify(valores),
         cupoMaximo: parseInt(document.getElementById('encCupo').value),
-        lugar: document.getElementById('encLugar').value,
-        tipo: tipoFinal,  // ← AHORA SOPORTA MÚLTIPLES TIPOS: "Veteranos +35, Senior, Otro"
+        
+        // Ubicación completa del encuentro
+        direccion: document.getElementById('encDireccion').value,
+        lat: document.getElementById('encLat').value,
+        lng: document.getElementById('encLng').value,
+        paisId: document.getElementById('encPaisId').value,
+        provinciaId: document.getElementById('encProvinciaId').value,
+        ciudadId: document.getElementById('encCiudadId').value,
+        
+        tipo: tipoFinal,
         descripcion: document.getElementById('encDescripcion').value,
         estado: 'publicado'
     };
@@ -461,6 +594,7 @@ function guardarEncuentro(e) {
         mostrarMensajeEncuentros('Error al crear encuentro', 'error');
     });
 }
+
 
 // ============================================
 // RENDERIZAR MIS ENCUENTROS (desde API)
@@ -525,6 +659,28 @@ async function renderizarMisEncuentros() {
                 `;
             }).join('');
 
+            // Mapa miniatura si tiene coordenadas
+            const mapaHTML = (enc.lat && enc.lng) ? `
+                <div style="margin: 15px 0; border-radius: 8px; overflow: hidden; border: 2px solid #e2e8f0;">
+                    <iframe 
+                        width="100%" 
+                        height="150" 
+                        frameborder="0" 
+                        scrolling="no" 
+                        marginheight="0" 
+                        marginwidth="0" 
+                        src="https://www.openstreetmap.org/export/embed.html?bbox=${enc.lng-0.01}%2C${enc.lat-0.01}%2C${enc.lng+0.01}%2C${enc.lat+0.01}&layer=mapnik&marker=${enc.lat}%2C${enc.lng}" 
+                        style="border: 0;">
+                    </iframe>
+                    <div style="background: #f8fafc; padding: 8px 12px; font-size: 12px; display: flex; justify-content: space-between; align-items: center;">
+                        <span>📍 ${enc.direccion || 'Ubicación marcada'}</span>
+                        <a href="https://www.google.com/maps?q=${enc.lat},${enc.lng}" target="_blank" style="color: #4f46e5; text-decoration: none; font-weight: 500;">
+                            Abrir mapa →
+                        </a>
+                    </div>
+                </div>
+            ` : `<div style="color: #64748b; margin: 10px 0;">📍 ${enc.direccion || 'Sin ubicación'}</div>`;
+
             const estadoClass = `estado-${enc.estado || 'publicado'}`;
             const estadoTexto = enc.estado === 'publicado' ? 'Publicado' : 
                                enc.estado === 'borrador' ? 'Borrador' : 
@@ -558,11 +714,10 @@ async function renderizarMisEncuentros() {
 
                     <div class="encuentro-meta" style="margin-bottom: 15px; color: #64748b; font-size: 0.9rem;">
                         ${fechasHTML}
-                        <div style="margin-top: 10px;">
-                            <span>📍 ${enc.lugar}</span>
-                            ${valores.length > 0 ? `<span style="margin-left: 15px;">💰 Desde $${Math.min(...valores.map(v => v.precio))}</span>` : ''}
-                        </div>
+                        ${valores.length > 0 ? `<div style="margin-top: 10px;">💰 Desde $${Math.min(...valores.map(v => v.precio))}</div>` : ''}
                     </div>
+
+                    ${mapaHTML}
 
                     ${enc.descripcion ? `<p style="color: #64748b; margin-bottom: 15px; line-height: 1.5;">${enc.descripcion}</p>` : ''}
 
@@ -667,6 +822,28 @@ async function renderizarInvitaciones() {
                 `;
             }).join('');
 
+            // Mapa miniatura si tiene coordenadas
+            const mapaHTML = (enc.lat && enc.lng) ? `
+                <div style="margin: 15px 0; border-radius: 8px; overflow: hidden; border: 2px solid #e2e8f0;">
+                    <iframe 
+                        width="100%" 
+                        height="150" 
+                        frameborder="0" 
+                        scrolling="no" 
+                        marginheight="0" 
+                        marginwidth="0" 
+                        src="https://www.openstreetmap.org/export/embed.html?bbox=${enc.lng-0.01}%2C${enc.lat-0.01}%2C${enc.lng+0.01}%2C${enc.lat+0.01}&layer=mapnik&marker=${enc.lat}%2C${enc.lng}" 
+                        style="border: 0;">
+                    </iframe>
+                    <div style="background: #f8fafc; padding: 8px 12px; font-size: 12px; display: flex; justify-content: space-between; align-items: center;">
+                        <span>📍 ${enc.direccion || 'Ubicación marcada'}</span>
+                        <a href="https://www.google.com/maps?q=${enc.lat},${enc.lng}" target="_blank" style="color: #4f46e5; text-decoration: none; font-weight: 500;">
+                            Abrir mapa →
+                        </a>
+                    </div>
+                </div>
+            ` : `<div style="color: #64748b; margin: 10px 0;">📍 ${enc.direccion || 'Sin ubicación'}</div>`;
+
             return `
                 <div class="encuentro-card invitacion-pendiente" style="border-left: 4px solid #f59e0b; margin-bottom: 20px; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                     <div class="encuentro-header" style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
@@ -695,11 +872,10 @@ async function renderizarInvitaciones() {
 
                     <div class="encuentro-meta" style="margin-bottom: 15px; color: #64748b; font-size: 0.9rem;">
                         ${fechasHTML}
-                        <div style="margin-top: 10px;">
-                            <span>📍 ${enc.lugar}</span>
-                            ${valores.length > 0 ? `<span style="margin-left: 15px;">💰 Desde $${Math.min(...valores.map(v => v.precio))}</span>` : ''}
-                        </div>
+                        ${valores.length > 0 ? `<div style="margin-top: 10px;">💰 Desde $${Math.min(...valores.map(v => v.precio))}</div>` : ''}
                     </div>
+
+                    ${mapaHTML}
 
                     ${enc.descripcion ? `<p style="color: #64748b; margin-bottom: 15px; line-height: 1.5;">${enc.descripcion}</p>` : ''}
 

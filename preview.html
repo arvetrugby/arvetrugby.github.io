@@ -2,53 +2,107 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Preview del Encuentro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview Encuentro</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .encuentro-preview-card { background: white; padding: 20px; border-radius: 10px; text-align: center; width: 300px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .preview-img { width: 100%; border-radius: 8px; margin-bottom: 15px; }
-        .btn { display: inline-block; padding: 10px 20px; margin-top: 15px; background: #4f46e5; color: white; text-decoration: none; border-radius: 5px; }
-        .btn:hover { background: #4338ca; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f4f6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .encuentro-preview-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 20px;
+            max-width: 350px;
+            text-align: center;
+        }
+        .preview-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        h2 {
+            margin: 15px 0 10px 0;
+            font-size: 1.4em;
+        }
+        p {
+            margin: 5px 0;
+            color: #4b5563;
+        }
+        .btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: #4f46e5;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+        .btn:hover {
+            background: #4338ca;
+        }
     </style>
 </head>
 <body>
 
-<div id="preview-container">
-    <!-- La card del encuentro se genera aquí -->
-</div>
+    <div id="preview-container">
+        <p>Cargando encuentro...</p>
+    </div>
 
-<script>
-const params = new URLSearchParams(window.location.search);
-const encuentroId = params.get('encuentroId');
+    <script>
+        // Función para hacer fetch público al Apps Script
+        function fetchEncuentroPublico(encuentroId) {
+            // Reemplaza TU_SCRIPT con tu ID real
+            const url = `https://script.google.com/macros/s/AKfycbxE-UiI85pCcUYq5LqJjN7UU7aOtXsVV_7Hyag-hYgOT4LcjGhVQaDt6js9PEQQ6E9Z/exec?action=getEncuentro&encuentroId=${encuentroId}`;
+            return fetch(url)
+                .then(res => res.json())
+                .catch(err => ({ success: false, error: err }));
+        }
 
-if (!encuentroId) {
-    document.getElementById('preview-container').innerHTML = '<p>No se encontró el encuentro.</p>';
-} else {
-    // Traemos los datos del encuentro desde Google Sheets
-    fetch(`https://script.google.com/macros/s/AKfycbxE-UiI85pCcUYq5LqJjN7UU7aOtXsVV_7Hyag-hYgOT4LcjGhVQaDt6js9PEQQ6E9Z/exec?action=getEncuentro&encuentroId=${encuentroId}`)
-        .then(res => res.json())
-        .then(data => {
-            if (data.success && data.data) {
-                const encuentro = data.data;
-                document.getElementById('preview-container').innerHTML = `
-                    <div class="encuentro-preview-card">
-                        <img src="${encuentro.imagen}" alt="Foto del encuentro" class="preview-img">
-                        <h2>${encuentro.nombre}</h2>
-                        <p>Fecha: ${encuentro.fecha}</p>
-                        <p>Lugar: ${encuentro.lugar}</p>
-                        <a href="login.html" class="btn">Registrarme / Iniciar sesión</a>
-                    </div>
-                `;
+        // Mostrar la preview
+        function mostrarPreviewEncuentro(encuentroId) {
+            const container = document.getElementById('preview-container');
+            fetchEncuentroPublico(encuentroId)
+                .then(res => {
+                    if (res.success && res.data) {
+                        const e = res.data;
+                        container.innerHTML = `
+                            <div class="encuentro-preview-card">
+                                <img src="${e.imagen}" alt="Foto del encuentro" class="preview-img">
+                                <h2>${e.nombre}</h2>
+                                <p>Fecha: ${e.fecha}</p>
+                                <p>Lugar: ${e.lugar}</p>
+                                <a href="login.html" class="btn">Registrarme / Iniciar sesión</a>
+                            </div>
+                        `;
+                    } else {
+                        container.innerHTML = `<p>Encuentro no encontrado.</p>`;
+                        console.error('Error al cargar preview:', res.error || 'No data');
+                    }
+                });
+        }
+
+        // Al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+            const encuentroId = params.get('encuentroId');
+
+            if (encuentroId) {
+                mostrarPreviewEncuentro(encuentroId);
             } else {
-                document.getElementById('preview-container').innerHTML = '<p>Encuentro no encontrado.</p>';
+                document.getElementById('preview-container').innerHTML = `<p>No se proporcionó encuentroId.</p>`;
             }
-        })
-        .catch(err => {
-            console.error('Error al cargar preview:', err);
-            document.getElementById('preview-container').innerHTML = '<p>Error al cargar el encuentro.</p>';
         });
-}
-</script>
+    </script>
 
 </body>
 </html>

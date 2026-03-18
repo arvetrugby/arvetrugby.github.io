@@ -373,6 +373,83 @@ color:white;
     max-height: 100%;
     object-fit: contain;
 }
+
+    /* Contenedor de tabs */
+.encuentros-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 10px;
+}
+
+/* Botones de tab */
+.encuentros-tabs .tab-btn {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: relative;
+}
+
+/* Hover */
+.encuentros-tabs .tab-btn:hover {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+/* Tab activo */
+.encuentros-tabs .tab-btn.active {
+    background: #4f46e5;
+    color: white;
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+}
+
+/* Badge de notificaciones */
+.badge-pendientes {
+    background: #ef4444;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive móvil */
+@media (max-width: 480px) {
+    .encuentros-tabs {
+        gap: 8px;
+    }
+    
+    .encuentros-tabs .tab-btn {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+    }
+    
+    .badge-pendientes {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        font-size: 0.65rem;
+        min-width: 16px;
+        height: 16px;
+    }
+}
 </style>
 <body class="admin-body">
 <div id="msgOverlay" class="overlay" style="display:none;">

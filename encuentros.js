@@ -860,20 +860,21 @@ async function renderizarInvitaciones() {
                                 </span>
                             `).join('') : '<span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #f1f5f9; color: #64748b; margin-left: 8px;">Sin tipo</span>'}
                         </div>
-                        <div style="text-align: right;">
-   <div style="text-align: right; min-width: 80px; flex-shrink: 0;">
-    <div style="font-size: 1.5rem; font-weight: 800; color: #4f46e5;">
-        0/${enc.cupoMaximo}
-    </div>
-    <div style="font-size: 0.8rem; color: #64748b; white-space: nowrap;">
-        ${enc.cupoMaximo} plazas
-    </div>
-    <div style="font-size: 0.9rem; color: #64748b; margin-top: 8px;">
-        Organiza: <strong>${enc.creadorNombre || 'Equipo desconocido'}</strong>
-    </div>
-</div>
-                    </div>
-
+                        
+                        <!-- CIERRE del div del título ↑ y APERTURA del div derecho ↓ -->
+                        <div style="text-align: right; min-width: 80px; flex-shrink: 0;">
+                            <div style="font-size: 1.5rem; font-weight: 800; color: #4f46e5;">
+                                0/${enc.cupoMaximo}
+                            </div>
+                            <div style="font-size: 0.8rem; color: #64748b; white-space: nowrap;">
+                                ${enc.cupoMaximo} plazas
+                            </div>
+                            <div style="font-size: 0.9rem; color: #64748b; margin-top: 8px;">
+                                Organiza: <strong>${enc.creadorNombre || 'Equipo desconocido'}</strong>
+                            </div>
+                        </div>
+                    </div> <!-- ESTE es el cierre de encuentro-header -->
+                    
                     <div class="encuentro-meta" style="margin-bottom: 15px; color: #64748b; font-size: 0.9rem;">
                         ${fechasHTML}
                        ${valores.length > 0 ? `<div style="margin-top: 5px;"><strong>💰 Valores:</strong><br>${valores.map(v => `• ${v.titulo}: $${parseFloat(v.precio).toLocaleString('es-AR')}${v.desc ? ` (${v.desc})` : ''}`).join('<br>')}</div>` : ''}

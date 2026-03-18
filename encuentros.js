@@ -116,43 +116,37 @@ function nuevoEncuentro() {
                     <input type="text" id="encNombre" required placeholder="Ej: Encuentro Argentino - Santiago 2026">
                 </div>
 
-               <!-- TIPO DE ENCUENTRO - MÚLTIPLE SELECCIÓN -->
-<div class="form-group">
-    <label>Tipo de encuentro * (podés elegir varios)</label>
-    
-    <!-- Opciones predefinidas -->
-    <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
-        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-            <input type="checkbox" name="encTipo" value="Veteranos +35" style="width: 18px; height: 18px;">
-            <span>Veteranos +35</span>
-        </label>
-        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-            <input type="checkbox" name="encTipo" value="Veteranos +50" style="width: 18px; height: 18px;">
-            <span>Veteranos +50</span>
-        </label>
-        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-            <input type="checkbox" name="encTipo" value="Senior" style="width: 18px; height: 18px;">
-            <span>Senior</span>
-        </label>
-        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-            <input type="checkbox" name="encTipo" value="Juveniles" style="width: 18px; height: 18px;">
-            <span>Juveniles</span>
-        </label>
-        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-            <input type="checkbox" id="chkOtro" value="otro" style="width: 18px; height: 18px;" onchange="toggleOtrosTipos()">
-            <span>Otro (especificar)</span>
-        </label>
-    </div>
-    
-    <!-- Container para otros tipos personalizados -->
-    <div id="containerOtrosTipos" style="display: none; flex-direction: column; gap: 10px; margin-left: 26px; padding-left: 15px; border-left: 3px solid #cbd5e1;">
-        <!-- Se agregan dinámicamente -->
-    </div>
-    
-    <button type="button" onclick="agregarOtroTipo()" class="btn-secondary" style="width: 100%; margin-top: 10px; display: none;" id="btnAgregarOtroTipo">
-        + Agregar otro término
-    </button>
-</div>
+                <!-- TIPO DE ENCUENTRO - MÚLTIPLE SELECCIÓN -->
+                <div class="form-group">
+                    <label>Tipo de encuentro * (podés elegir varios)</label>
+                    
+                    <!-- Opciones predefinidas -->
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" name="encTipo" value="Veteranos +35" style="width: 18px; height: 18px;">
+                            <span>Veteranos +35</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" name="encTipo" value="Veteranos +50" style="width: 18px; height: 18px;">
+                            <span>Veteranos +50</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="chkOtro" style="width: 18px; height: 18px;" onchange="toggleOtrosTipos()">
+                            <span>Otro (agregar personalizados)</span>
+                        </label>
+                    </div>
+                    
+                    <!-- Container para tipos personalizados ilimitados -->
+                    <div id="containerOtrosTipos" style="display: none; flex-direction: column; gap: 10px; margin-left: 26px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 2px solid #e2e8f0;">
+                        <div style="font-size: 12px; color: #64748b; margin-bottom: 5px;">Agregá los tipos que necesites:</div>
+                        <!-- Se agregan dinámicamente -->
+                    </div>
+                    
+                    <button type="button" onclick="agregarOtroTipo()" class="btn-secondary" style="width: 100%; margin-top: 10px; display: none;" id="btnAgregarOtroTipo">
+                        + Agregar otro tipo personalizado
+                    </button>
+                </div>
+
                 <div class="form-group">
                     <label>Lugar / Cancha *</label>
                     <input type="text" id="encLugar" required placeholder="Nombre y dirección de la cancha">
@@ -205,7 +199,6 @@ function nuevoEncuentro() {
     
     document.getElementById('inputFlyer').addEventListener('change', subirFlyer);
 }
-
 function toggleOtrosTipos() {
     const chkOtro = document.getElementById('chkOtro');
     const container = document.getElementById('containerOtrosTipos');
@@ -214,14 +207,16 @@ function toggleOtrosTipos() {
     if (chkOtro.checked) {
         container.style.display = 'flex';
         btnAgregar.style.display = 'block';
-        // Agregar el primero automáticamente
-        if (container.children.length === 0) {
+        // Agregar el primero automáticamente si está vacío
+        if (container.children.length <= 1) { // 1 porque hay el texto de ayuda
             agregarOtroTipo();
         }
     } else {
         container.style.display = 'none';
         btnAgregar.style.display = 'none';
-        container.innerHTML = ''; // Limpiar al desmarcar
+        // Limpiar los inputs personalizados al desmarcar
+        const inputs = container.querySelectorAll('.otro-tipo-input');
+        inputs.forEach(input => input.parentElement.remove());
     }
 }
 

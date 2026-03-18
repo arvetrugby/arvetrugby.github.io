@@ -893,11 +893,21 @@ async function renderizarInvitaciones() {
                         </div>
                     ` : ''}
                     ${enc.telefonoOrganizador ? `
-    <a href="https://wa.me/${String(enc.telefonoOrganizador).replace(/[^0-9]/g, '')}" 
-       target="_blank" 
-       style="display: inline-flex; align-items: center; gap: 5px; color: #22c55e; text-decoration: none; font-weight: 500;">
-        📱 WhatsApp
-    </a>
+    <div style="display: inline-flex; flex-direction: column; align-items: center; margin-top: 10px;">
+        <a href="https://wa.me/${String(enc.telefonoOrganizador).replace(/[^0-9]/g, '')}" 
+           target="_blank" 
+           style="display: inline-flex; align-items: center; gap: 6px; color: #25D366; text-decoration: none; font-weight: 600; font-size: 0.95rem;">
+           
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32" fill="#25D366">
+                <path d="M16 .4C7.2.4.4 7.2.4 16c0 2.8.7 5.5 2.1 7.9L.4 32l8.3-2.1c2.3 1.3 4.9 2 7.6 2 8.8 0 15.6-6.8 15.6-15.6S24.8.4 16 .4zm0 28.6c-2.4 0-4.7-.6-6.7-1.8l-.5-.3-4.9 1.2 1.3-4.8-.3-.5C3.6 20.7 3 18.4 3 16 3 8.8 8.8 3 16 3s13 5.8 13 13-5.8 13-13 13zm7.2-9.8c-.4-.2-2.3-1.1-2.6-1.2-.3-.1-.6-.2-.8.2-.2.4-.9 1.2-1.1 1.5-.2.3-.4.3-.7.1-.3-.2-1.3-.5-2.5-1.6-.9-.8-1.6-1.9-1.8-2.2-.2-.3 0-.5.2-.7.2-.2.4-.4.6-.6.2-.2.3-.4.4-.6.1-.2 0-.4 0-.6 0-.2-.8-2-1.1-2.7-.3-.7-.6-.6-.8-.6h-.7c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.1 3.1 1.3 3.3c.2.2 2.2 3.4 5.4 4.7.8.3 1.4.5 1.9.6.8.2 1.5.2 2 .1.6-.1 2.3-.9 2.6-1.8.3-.9.3-1.7.2-1.8-.1-.1-.4-.2-.8-.4z"/>
+            </svg>
+
+            WhatsApp
+        </a>
+        <span style="font-size: 0.75rem; color: #64748b; margin-top: 2px;">
+            Organizador
+        </span>
+    </div>
 ` : ''}
 
                     <div class="acciones-encuentro" style="display: flex; gap: 10px; flex-wrap: wrap;">

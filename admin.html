@@ -80,18 +80,66 @@ color:white;
    ENCUENTROS - CSS LIMPIO
    ============================================ */
 
-/* Cards de encuentros */
+/* Cards de encuentros - Sin borde lateral, con sombra */
 .encuentro-card {
-    background: white;
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     margin-bottom: 20px;
-    border-left: 4px solid #4f46e5;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+                0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: none; /* Sin borde */
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
+/* Efecto hover sutil */
+.encuentro-card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 
+                0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+}
+
+/* Variante para invitaciones (sin borde naranja) */
 .encuentro-card.invitacion-pendiente {
-    border-left-color: #f59e0b;
+    border-left: none; /* Eliminar borde naranja */
+    box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.15), 
+                0 2px 4px -1px rgba(245, 158, 11, 0.1);
+}
+
+.encuentro-card.invitacion-pendiente:hover {
+    box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.2), 
+                0 4px 6px -2px rgba(245, 158, 11, 0.15);
+}
+
+/* Header del card */
+.encuentro-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    gap: 15px;
+}
+
+/* Responsive móvil */
+@media (max-width: 640px) {
+    .encuentro-card {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .encuentro-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .encuentro-header > div:last-child {
+        text-align: left;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
 }
 
 .encuentro-card.invitacion-aceptada {
@@ -103,12 +151,7 @@ color:white;
     opacity: 0.7;
 }
 
-.encuentro-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 15px;
-}
+
 
 .encuentro-titulo {
     font-size: 1.2rem;

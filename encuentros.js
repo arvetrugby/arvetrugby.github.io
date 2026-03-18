@@ -507,11 +507,23 @@ async function renderizarMisEncuentros() {
             const equiposConfirmados = 0;
             const plazasLibres = enc.cupoMaximo - equiposConfirmados;
             
-            const primeraFecha = fechas.length > 0 ? fechas[0] : null;
-            const fechaTexto = primeraFecha ? formatearFecha(primeraFecha.dia) : 'Sin fecha';
-            const horaTexto = primeraFecha && primeraFecha.horarios.length > 0 
-                ? `• ${primeraFecha.horarios[0].hora}hs` 
-                : '';
+            // Generar HTML de todas las fechas y horarios
+            const fechasHTML = fechas.map(f => {
+                const horariosHTML = f.horarios.map(h => `
+                    <span style="display: inline-block; background: #f1f5f9; padding: 2px 8px; border-radius: 4px; font-size: 0.85rem; margin-right: 5px;">
+                        ${h.hora}hs - ${h.desc}
+                    </span>
+                `).join('');
+                
+                return `
+                    <div style="margin-bottom: 8px;">
+                        <strong>📅 ${formatearFecha(f.dia)}</strong>
+                        <div style="margin-top: 4px; margin-left: 24px;">
+                            ${horariosHTML}
+                        </div>
+                    </div>
+                `;
+            }).join('');
 
             const estadoClass = `estado-${enc.estado || 'publicado'}`;
             const estadoTexto = enc.estado === 'publicado' ? 'Publicado' : 
@@ -544,10 +556,12 @@ async function renderizarMisEncuentros() {
                         </div>
                     </div>
 
-                    <div class="encuentro-meta" style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 15px; color: #64748b; font-size: 0.9rem;">
-                        <span>📅 ${fechaTexto} ${horaTexto}</span>
-                        <span>📍 ${enc.lugar}</span>
-                        ${valores.length > 0 ? `<span>💰 Desde $${Math.min(...valores.map(v => v.precio))}</span>` : ''}
+                    <div class="encuentro-meta" style="margin-bottom: 15px; color: #64748b; font-size: 0.9rem;">
+                        ${fechasHTML}
+                        <div style="margin-top: 10px;">
+                            <span>📍 ${enc.lugar}</span>
+                            ${valores.length > 0 ? `<span style="margin-left: 15px;">💰 Desde $${Math.min(...valores.map(v => v.precio))}</span>` : ''}
+                        </div>
                     </div>
 
                     ${enc.descripcion ? `<p style="color: #64748b; margin-bottom: 15px; line-height: 1.5;">${enc.descripcion}</p>` : ''}
@@ -635,11 +649,23 @@ async function renderizarInvitaciones() {
                 console.error('Error parseando JSON:', e);
             }
             
-            const primeraFecha = fechas.length > 0 ? fechas[0] : null;
-            const fechaTexto = primeraFecha ? formatearFecha(primeraFecha.dia) : 'Sin fecha';
-            const horaTexto = primeraFecha && primeraFecha.horarios.length > 0 
-                ? `• ${primeraFecha.horarios[0].hora}hs` 
-                : '';
+            // Generar HTML de todas las fechas y horarios
+            const fechasHTML = fechas.map(f => {
+                const horariosHTML = f.horarios.map(h => `
+                    <span style="display: inline-block; background: #f1f5f9; padding: 2px 8px; border-radius: 4px; font-size: 0.85rem; margin-right: 5px;">
+                        ${h.hora}hs - ${h.desc}
+                    </span>
+                `).join('');
+                
+                return `
+                    <div style="margin-bottom: 8px;">
+                        <strong>📅 ${formatearFecha(f.dia)}</strong>
+                        <div style="margin-top: 4px; margin-left: 24px;">
+                            ${horariosHTML}
+                        </div>
+                    </div>
+                `;
+            }).join('');
 
             return `
                 <div class="encuentro-card invitacion-pendiente" style="border-left: 4px solid #f59e0b; margin-bottom: 20px; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
@@ -667,10 +693,12 @@ async function renderizarInvitaciones() {
                         </div>
                     </div>
 
-                    <div class="encuentro-meta" style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 15px; color: #64748b; font-size: 0.9rem;">
-                        <span>📅 ${fechaTexto} ${horaTexto}</span>
-                        <span>📍 ${enc.lugar}</span>
-                        ${valores.length > 0 ? `<span>💰 Desde $${Math.min(...valores.map(v => v.precio))}</span>` : ''}
+                    <div class="encuentro-meta" style="margin-bottom: 15px; color: #64748b; font-size: 0.9rem;">
+                        ${fechasHTML}
+                        <div style="margin-top: 10px;">
+                            <span>📍 ${enc.lugar}</span>
+                            ${valores.length > 0 ? `<span style="margin-left: 15px;">💰 Desde $${Math.min(...valores.map(v => v.precio))}</span>` : ''}
+                        </div>
                     </div>
 
                     ${enc.descripcion ? `<p style="color: #64748b; margin-bottom: 15px; line-height: 1.5;">${enc.descripcion}</p>` : ''}

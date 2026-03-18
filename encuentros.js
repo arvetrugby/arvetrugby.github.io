@@ -687,8 +687,8 @@ async function renderizarMisEncuentros() {
                                enc.estado === 'cancelado' ? 'Cancelado' : enc.estado;
 
             return `
-                <div class="encuentro-card" style="border-left: 4px solid #4f46e5; margin-bottom: 20px; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <div class="encuentro-header" style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+               <div class="encuentro-card">
+    <div class="encuentro-header">
                         <div>
                            <div class="encuentro-titulo" style="font-size: 1.3rem; font-weight: 700; color: #1e293b; margin-bottom: 5px; line-height: 1.2;">
     ${enc.nombre}
@@ -845,8 +845,8 @@ async function renderizarInvitaciones() {
             ` : `<div style="color: #64748b; margin: 10px 0;">📍 ${enc.direccion || 'Sin ubicación'}</div>`;
 
             return `
-                <div class="encuentro-card invitacion-pendiente" style="border-left: 4px solid #f59e0b; margin-bottom: 20px; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                    <div class="encuentro-header" style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                <div class="encuentro-card">
+    <div class="encuentro-header">
                         <div>
                             <div class="encuentro-titulo" style="font-size: 1.3rem; font-weight: 700; color: #1e293b; margin-bottom: 5px;">
                                 ${enc.nombre}

@@ -4,498 +4,299 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Flyer Evento Rugby</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Teko:wght@300;400;500;600;700&family=Barlow+Condensed:wght@300;400;500;600;700&display=swap');
-  
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Teko:wght@300;400;500;600;700&family=Barlow+Condensed:wght@300;400;500;600;700&display=swap');
 
-  :root {
-  /* Crema/dorado suave con gradiente a blanco */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
   --cream: #f5f0e6;
   --cream-light: #faf8f3;
-  --cream-dark: #e8e0d0;
+  --cream-dark: #d4c4a8;
   --gold-gradient: linear-gradient(135deg, #f5f0e6 0%, #ffffff 50%, #f5f0e6 100%);
-  
-  /* Neutros en vez de azul */
   --neutral-dark: #1a1a1a;
   --neutral-mid: #2d2d2d;
-  --neutral-light: #3a3a3a;
-  
-  /* Resto mantenido en neutros */
-  --text-primary: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
 }
 
-  body {
-    font-family: 'Barlow Condensed', sans-serif;
-    background: #050505;
-    color: white;
-    overflow-x: hidden;
-  }
-
-  /* CONTENEDOR PRINCIPAL */
-  .flyer-wrapper {
-    width: 100%;
-    min-height: 100vh;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* SECCION HERO - Imagen de fondo completa */
-  .hero-section {
-    position: relative;
-    width: 100%;
-    flex: 1;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
-  /* Background */
-  .hero-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-  }
-
-  .hero-bg img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: brightness(0.6) contrast(1.1);
-  }
-
-  /* Overlay gradiente */
-  .hero-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    background: 
-      radial-gradient(ellipse at center top, transparent 0%, rgba(5,5,10,0.4) 50%, rgba(5,5,10,0.9) 100%),
-      linear-gradient(to bottom, rgba(10,22,40,0.3) 0%, transparent 30%, transparent 60%, rgba(10,22,40,0.95) 100%);
-  }
-
-  /* BORDES DORADOS CURVOS (efecto ARVET) */
-  .gold-border {
-    position: absolute;
-    z-index: 2;
-    pointer-events: none;
-  }
-
-  .gold-border.top {
-    top: -50px;
-    left: -50px;
-    right: -50px;
-    height: 200px;
-    border-bottom: 3px solid var(--gold);
-    border-radius: 0 0 50% 50%;
-    box-shadow: 0 10px 40px rgba(201, 162, 39, 0.3);
-    background: linear-gradient(to bottom, rgba(10,22,40,0.8), transparent);
-  }
-
-  .gold-border.bottom {
-    bottom: -50px;
-    left: -50px;
-    right: -50px;
-    height: 200px;
-    border-top: 3px solid var(--gold);
-    border-radius: 50% 50% 0 0;
-    box-shadow: 0 -10px 40px rgba(201, 162, 39, 0.3);
-    background: linear-gradient(to top, rgba(10,22,40,0.9), transparent);
-  }
-
-  /* CONTENIDO SOBRE IMAGEN */
-  .hero-content {
-    position: relative;
-    z-index: 10;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 40px;
-    justify-content: space-between;
-  }
-
-  /* HEADER: Logo + Nombre + Edición */
-  .hero-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 30px;
-    margin-top: 20px;
-  }
-
-  .logo-container {
-    flex-shrink: 0;
-  }
-
-  .logo-container img {
-    height: clamp(100px, 15vw, 180px);
-    width: auto;
-    filter: drop-shadow(0 4px 20px rgba(0,0,0,0.5));
-  }
-
-  .title-group {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    padding-top: 10px;
-  }
-
-  .edicion-tag {
-    font-family: 'Teko', sans-serif;
-    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
-    font-weight: 400;
-    letter-spacing: 8px;
-    color: var(--gold-light);
-    text-transform: uppercase;
-    margin-bottom: 5px;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-  }
-
-  .event-name {
-    font-family: 'Teko', sans-serif;
-    font-size: clamp(2.5rem, 6vw, 5rem);
-    font-weight: 600;
-    line-height: 0.95;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: white;
-    text-shadow: 0 4px 20px rgba(0,0,0,0.8);
-  }
-
-  /* CENTER: Fechas grandes */
-  .hero-center {
-    text-align: center;
-    margin: auto 0;
-  }
-/* Fechas - Desktop */
-.date-range-desktop {
-  display: block;
+body {
+  font-family: 'Barlow Condensed', sans-serif;
+  background: #050505;
+  color: white;
+  overflow-x: hidden;
 }
 
-.date-range-mobile {
-  display: none;
-}
-
-/* Fechas - Mobile */
-@media (max-width: 768px) {
-  .date-range-desktop {
-    display: none;
-  }
-  
-  .date-range-mobile {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .date-detail-item {
-    background: rgba(10, 22, 40, 0.7);
-    border: 1px solid var(--gold-dark);
-    border-radius: 10px;
-    padding: 15px 25px;
-    backdrop-filter: blur(10px);
-  }
-  
-  .date-day {
-    display: block;
-    font-family: 'Teko', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: white;
-    letter-spacing: 2px;
-  }
-  
-  .date-time {
-    display: block;
-    font-size: 0.95rem;
-    color: var(--gold-light);
-    letter-spacing: 1px;
-    margin-top: 3px;
-  }
-}
-  .date-main {
-    font-family: 'Teko', sans-serif;
-    font-size: clamp(3rem, 8vw, 6rem);
-    font-weight: 700;
-    line-height: 1;
-    color: white;
-    text-shadow: 0 4px 30px rgba(0,0,0,0.9);
-    letter-spacing: 2px;
-  }
-
-  .date-main .gold {
-    color: var(--gold-light);
-    font-weight: 600;
-  }
-
-  .year-sub {
-    font-family: 'Teko', sans-serif;
-    font-size: clamp(1.5rem, 3vw, 2.5rem);
-    font-weight: 300;
-    letter-spacing: 15px;
-    color: var(--gold);
-    margin-top: 10px;
-    text-transform: uppercase;
-  }
-
-  /* BOTTOM: Lugar + Tags */
-  .hero-bottom {
-    text-align: center;
-    margin-bottom: 30px;
-  }
-
-  .location-box {
-    display: inline-block;
-    background: rgba(10, 22, 40, 0.8);
-    border: 1px solid var(--gold-dark);
-    border-radius: 50px;
-    padding: 15px 40px;
-    margin-bottom: 20px;
-    backdrop-filter: blur(10px);
-  }
-
-  .location-text {
-    font-family: 'Teko', sans-serif;
-    font-size: clamp(1.5rem, 3vw, 2.2rem);
-    font-weight: 500;
-    letter-spacing: 3px;
-    color: white;
-  }
-
-  .tags-row {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    flex-wrap: wrap;
-  }
-
-  .tag {
-    font-family: 'Teko', sans-serif;
-    font-size: clamp(0.9rem, 1.5vw, 1.1rem);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    padding: 8px 20px;
-    background: rgba(201, 162, 39, 0.15);
-    border: 1px solid var(--gold-dark);
-    color: var(--gold-light);
-  }
-
-  .tag.cupo {
-    background: rgba(10, 22, 40, 0.9);
-    border-color: var(--gold);
-    color: white;
-  }
-
-  /* INFO SECTION (fuera de imagen) */
-  .info-section {
-    background: linear-gradient(to bottom, #0a1628, #050505);
-    padding: 60px 20px;
-    position: relative;
-  }
-
-  .info-container {
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  .info-block {
-    margin-bottom: 50px;
-  }
-
-  .info-title {
-    font-family: 'Teko', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 500;
-    letter-spacing: 5px;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-  }
-
-  .info-title::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, var(--gold-dark), transparent);
-  }
-
-  .description-text {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: rgba(255, 255, 255, 0.85);
-    font-weight: 300;
-  }
-
-  /* Pricing cards */
-  .pricing-row {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .price-item {
-    background: linear-gradient(135deg, rgba(201, 162, 39, 0.1), rgba(10, 22, 40, 0.5));
-    border: 1px solid var(--gold-dark);
-    border-radius: 12px;
-    padding: 30px 40px;
-    text-align: center;
-    min-width: 200px;
-    transition: all 0.3s ease;
-  }
-
-  .price-item:hover {
-    transform: translateY(-5px);
-    border-color: var(--gold);
-    box-shadow: 0 10px 30px rgba(201, 162, 39, 0.2);
-  }
-
-  .price-value {
-    font-family: 'Teko', sans-serif;
-    font-size: 2.5rem;
-    font-weight: 600;
-    color: var(--gold-light);
-    line-height: 1;
-  }
-
-  .price-name {
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: rgba(255, 255, 255, 0.6);
-    margin-top: 8px;
-  }
-
-  /* Footer */
-  .footer-section {
-    background: #050505;
-    border-top: 1px solid rgba(201, 162, 39, 0.2);
-    padding: 30px 20px;
-    text-align: center;
-  }
-
-  .org-info {
-    font-size: 0.9rem;
-    letter-spacing: 3px;
-    color: rgba(255, 255, 255, 0.5);
-    text-transform: uppercase;
-  }
-
-  /* MOBILE: Logo arriba, nombre abajo */
-  @media (max-width: 768px) {
-    .hero-content {
-      padding: 30px 20px;
-    }
-
-    .hero-header {
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .logo-container img {
-      height: 140px;
-    }
-
-    .title-group {
-      align-items: center;
-      text-align: center;
-    }
-
-    .edicion-tag {
-      letter-spacing: 4px;
-    }
-
-    .year-sub {
-      letter-spacing: 8px;
-    }
-
-    .location-box {
-      padding: 12px 25px;
-      width: 100%;
-      max-width: 400px;
-    }
-
-    .gold-border.top,
-    .gold-border.bottom {
-      display: none; /* En mobile simplificamos los bordes curvos */
-    }
-  }
-
-  /* PC: Logo al lado, bordes curvos visibles */
-  @media (min-width: 769px) {
-    .hero-header {
-      flex-direction: row;
-      align-items: flex-start;
-    }
-  }
-
-  /* Loading */
-  .loading {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #0a1628;
-    color: var(--gold);
-    font-family: 'Teko', sans-serif;
-    font-size: 1.5rem;
-    letter-spacing: 5px;
-  }
-
-  /* Hora destacada debajo del año */
-.hora-destacada {
-  font-family: 'Teko', sans-serif;
-  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
-  font-weight: 400;
-  letter-spacing: 8px;
-  color: var(--cream-light);
-  margin-top: 10px;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-}
-
-/* Oblea de info en el centro */
-.info-oblea {
+/* CONTENEDOR PRINCIPAL */
+.flyer-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 30px;
-  margin-top: 30px;
-  padding: 20px 40px;
-  background: rgba(26, 26, 26, 0.6);
-  border: 1px solid var(--cream-dark);
-  border-radius: 50px;
-  backdrop-filter: blur(10px);
+  flex-direction: column;
 }
 
-.oblea-item {
+/* SECCION HERO */
+.hero-section {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Background */
+.hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.hero-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.6) contrast(1.1);
+}
+
+/* Overlay */
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background: 
+    radial-gradient(ellipse at center top, transparent 0%, rgba(5,5,10,0.4) 50%, rgba(5,5,10,0.9) 100%),
+    linear-gradient(to bottom, rgba(26,26,26,0.3) 0%, transparent 30%, transparent 60%, rgba(26,26,26,0.95) 100%);
+}
+
+/* Bordes curvos crema */
+.cream-border {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.cream-border.top {
+  top: -100px;
+  left: -10%;
+  right: -10%;
+  height: 300px;
+  border-bottom: 2px solid var(--cream-dark);
+  border-radius: 0 0 50% 50%;
+  background: linear-gradient(to bottom, rgba(26,26,26,0.9), transparent);
+  opacity: 0.8;
+}
+
+.cream-border.bottom {
+  bottom: -100px;
+  left: -10%;
+  right: -10%;
+  height: 300px;
+  border-top: 2px solid var(--cream-dark);
+  border-radius: 50% 50% 0 0;
+  background: linear-gradient(to top, rgba(26,26,26,0.95), transparent);
+  opacity: 0.8;
+}
+
+/* Contenido */
+.hero-content {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 60px 40px;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+}
+
+/* Header */
+.hero-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.logo-container img {
+  height: clamp(120px, 20vh, 200px);
+  width: auto;
+  filter: drop-shadow(0 4px 20px rgba(0,0,0,0.5));
+}
+
+.title-group {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 5px;
 }
 
-.oblea-num {
+.edicion-tag {
+  font-family: 'Teko', sans-serif;
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  font-weight: 300;
+  letter-spacing: 6px;
+  color: var(--cream);
+  text-transform: uppercase;
+}
+
+.event-name {
+  font-family: 'Teko', sans-serif;
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 600;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: white;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.8);
+}
+
+/* Center - Fechas */
+.hero-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  margin: auto 0;
+}
+
+.fecha-principal {
+  font-family: 'Teko', sans-serif;
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  font-weight: 700;
+  line-height: 1;
+  color: white;
+  text-shadow: 0 4px 30px rgba(0,0,0,0.9);
+  letter-spacing: 4px;
+}
+
+.hora-inicio {
+  font-family: 'Teko', sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: 400;
+  letter-spacing: 8px;
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.tags-subtle {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+  font-family: 'Teko', sans-serif;
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+  letter-spacing: 3px;
+  color: var(--cream);
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+/* Bottom - Lugar discreto */
+.hero-bottom {
+  margin-bottom: 40px;
+}
+
+.lugar-discreto {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: clamp(0.8rem, 1.2vw, 0.95rem);
+  letter-spacing: 2px;
+  color: var(--cream-dark);
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.lugar-discreto svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Info section */
+.info-section {
+  background: linear-gradient(to bottom, var(--neutral-dark), #050505);
+  padding: 60px 20px;
+}
+
+.info-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.info-block {
+  margin-bottom: 50px;
+}
+
+.info-title {
+  font-family: 'Teko', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--cream);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.info-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--cream-dark), transparent);
+}
+
+.description-text {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 300;
+}
+
+/* Pricing */
+.pricing-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.price-item {
+  background: linear-gradient(135deg, rgba(245, 240, 230, 0.1), rgba(26, 26, 26, 0.5));
+  border: 1px solid var(--cream-dark);
+  border-radius: 12px;
+  padding: 30px 40px;
+  text-align: center;
+  min-width: 200px;
+  transition: all 0.3s ease;
+}
+
+.price-item:hover {
+  transform: translateY(-5px);
+  border-color: var(--cream);
+  box-shadow: 0 10px 30px rgba(245, 240, 230, 0.1);
+}
+
+.price-value {
   font-family: 'Teko', sans-serif;
   font-size: 2.5rem;
-  font-weight: 700;
+  font-weight: 600;
   background: var(--gold-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -503,94 +304,72 @@
   line-height: 1;
 }
 
-.oblea-label {
-  font-size: 0.8rem;
-  letter-spacing: 3px;
+.price-name {
+  font-size: 0.9rem;
   text-transform: uppercase;
-  color: var(--cream);
-}
-
-.oblea-divider {
-  width: 1px;
-  height: 40px;
-  background: linear-gradient(to bottom, transparent, var(--cream-dark), transparent);
-}
-
-.tipos {
-  flex-direction: row;
-  gap: 15px;
-}
-
-.tipo-tag {
-  font-family: 'Teko', sans-serif;
-  font-size: 1.1rem;
   letter-spacing: 2px;
-  color: var(--cream-light);
-  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 8px;
 }
 
-/* Mobile ajustes */
-@media (max-width: 768px) {
-  .info-oblea {
-    flex-direction: column;
-    gap: 15px;
-    border-radius: 20px;
-    padding: 20px;
-  }
-  
-  .oblea-divider {
-    width: 60px;
-    height: 1px;
-  }
-  
-  .tipos {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-}
-
-/* Details grid en info section */
-.details-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 15px;
-}
-
-.detail-card {
-  background: rgba(45, 45, 45, 0.5);
-  border: 1px solid var(--neutral-light);
-  border-radius: 12px;
-  padding: 20px;
+/* Footer */
+.footer-section {
+  background: #050505;
+  border-top: 1px solid rgba(245, 240, 230, 0.2);
+  padding: 30px 20px;
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  transition: all 0.3s ease;
 }
 
-.detail-card:hover {
-  border-color: var(--cream-dark);
-  transform: translateY(-3px);
-}
-
-.detail-icon {
-  font-size: 1.5rem;
-}
-
-.detail-label {
-  font-size: 0.75rem;
-  letter-spacing: 2px;
+.org-info {
+  font-size: 0.9rem;
+  letter-spacing: 3px;
+  color: rgba(255, 255, 255, 0.5);
   text-transform: uppercase;
-  color: var(--cream);
 }
 
-.detail-value {
-  font-family: 'Teko', sans-serif;
-  font-size: 1.3rem;
-  font-weight: 500;
-  color: white;
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-content {
+    padding: 40px 20px;
+  }
+  
+  .hero-header {
+    margin-top: 20px;
+  }
+  
+  .logo-container img {
+    height: 100px;
+  }
+  
+  .cream-border.top,
+  .cream-border.bottom {
+    height: 200px;
+  }
+  
+  .fecha-principal {
+    font-size: clamp(2rem, 10vw, 3rem);
+  }
+  
+  .hora-inicio {
+    font-size: clamp(1.2rem, 5vw, 1.8rem);
+    letter-spacing: 4px;
+  }
 }
-</style>
+
+/* Loading */
+.loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--neutral-dark);
+  color: var(--cream);
+  font-family: 'Teko', sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: 5px;
+}
+
+  </style>
 </head>
 <body>
 
@@ -714,7 +493,7 @@ document.getElementById('app').innerHTML = `
         <!-- HEADER -->
         <div class="hero-header">
           <div class="logo-container">
-            <img src="https://i.ibb.co/gbRGZWyN/ARVET.png" alt="Logo" id="event-logo">
+            <img src="https://i.ibb.co/gbRGZWyN/ARVET.png" alt="Logo">
           </div>
           <div class="title-group">
             <div class="edicion-tag">Edición ${year}</div>
@@ -722,48 +501,26 @@ document.getElementById('app').innerHTML = `
           </div>
         </div>
         
-        <!-- CENTER: Fechas + Info clave -->
+        <!-- CENTER: Fecha principal + hora -->
         <div class="hero-center">
-          <div class="date-range-desktop">
-            <div class="date-main">${fechasData.rango}</div>
-            <div class="year-sub">${fechasData.year}</div>
-            ${fechasData.detalles[0]?.hora ? `<div class="hora-destacada">${fechasData.detalles[0].hora} HS</div>` : ''}
-          </div>
+          <div class="fecha-principal">${fechasData.rango}</div>
+          ${fechasData.detalles[0]?.hora ? `<div class="hora-inicio">${fechasData.detalles[0].hora} HS</div>` : ''}
           
-          <div class="date-range-mobile">
-            ${fechasData.detalles.map(d => `
-              <div class="date-detail-item">
-                <span class="date-day">${d.fecha}</span>
-                ${d.hora ? `<span class="date-time">${d.hora} HS ${d.desc ? `• ${d.desc.toUpperCase()}` : ''}</span>` : ''}
-              </div>
-            `).join('')}
-          </div>
-          
-          <!-- INFO CLAVE EN OBLEA -->
-          <div class="info-oblea">
-            ${enc.cupoMaximo ? `
-              <div class="oblea-item">
-                <span class="oblea-num">${enc.cupoMaximo}</span>
-                <span class="oblea-label">Equipos</span>
-              </div>
-            ` : ''}
-            ${tipos.length > 0 ? `
-              <div class="oblea-divider"></div>
-              <div class="oblea-item tipos">
-                ${tipos.map(t => `<span class="tipo-tag">${t}</span>`).join('')}
-              </div>
-            ` : ''}
+          <!-- Tags discretos -->
+          <div class="tags-subtle">
+            ${enc.cupoMaximo ? `<span>${enc.cupoMaximo} Equipos</span>` : ''}
+            ${tipos.length > 0 ? `<span>•</span><span>${tipos.join(' • ')}</span>` : ''}
           </div>
         </div>
         
-        <!-- BOTTOM: Lugar -->
+        <!-- BOTTOM: Lugar discreto -->
         <div class="hero-bottom">
-          <div class="location-box">
-            <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <div class="lugar-discreto">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
               <circle cx="12" cy="10" r="3"/>
             </svg>
-            <div class="location-text">${enc.lugar || 'Lugar por confirmar'}</div>
+            ${enc.lugar || 'Lugar por confirmar'}
           </div>
         </div>
       </div>
@@ -778,34 +535,6 @@ document.getElementById('app').innerHTML = `
           <p class="description-text">${enc.descripcion}</p>
         </div>
         ` : ''}
-        
-        <!-- INFO ADICIONAL EN CARDS -->
-        <div class="info-block">
-          <h3 class="info-title">Detalles</h3>
-          <div class="details-grid">
-            ${enc.cupoMaximo ? `
-              <div class="detail-card">
-                <span class="detail-icon">🏉</span>
-                <span class="detail-label">Cupos</span>
-                <span class="detail-value">${enc.cupoMaximo} equipos</span>
-              </div>
-            ` : ''}
-            ${tipos.map(t => `
-              <div class="detail-card">
-                <span class="detail-icon">⚡</span>
-                <span class="detail-label">Modalidad</span>
-                <span class="detail-value">${t}</span>
-              </div>
-            `).join('')}
-            ${fechasData.detalles.length > 0 ? `
-              <div class="detail-card">
-                <span class="detail-icon">📅</span>
-                <span class="detail-label">Inicio</span>
-                <span class="detail-value">${fechasData.detalles[0].fecha} ${fechasData.detalles[0].hora}</span>
-              </div>
-            ` : ''}
-          </div>
-        </div>
         
         ${precios.length > 0 ? `
         <div class="info-block">

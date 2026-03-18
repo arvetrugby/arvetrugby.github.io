@@ -559,93 +559,64 @@ function formatDates(fechasJSON) {
         let precios = [];
         try { precios = JSON.parse(enc.valoresJSON); } catch(e) {}
 
-        document.getElementById('app').innerHTML = `
-          <div class="flyer-wrapper">
-            <!-- HERO SECTION -->
-            <section class="hero-section">
-              <div class="hero-bg">
-                <img src="${enc.flyerUrl}" alt="Flyer" onerror="this.src='https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=1920&q=80'">
-              </div>
-              <div class="hero-overlay"></div>
-              
-              <!-- Bordes dorados curvos -->
-              <div class="gold-border top"></div>
-              <div class="gold-border bottom"></div>
-              
-              <div class="hero-content">
-                <!-- HEADER -->
-                <div class="hero-header">
-                  <div class="logo-container">
-                    <img src="https://i.ibb.co/gbRGZWyN/ARVET.png" alt="Logo" id="event-logo">
-                  </div>
-                  <div class="title-group">
-                    <div class="edicion-tag">Edición: ${year}</div>
-                    <h1 class="event-name">${nombreSinYear}</h1>
-                  </div>
-                </div>
-                
-                <!-- CENTER: Fechas -->
-               
-<div class="hero-center">
-<div class="hero-content">
-  <!-- HEADER -->
-  <div class="hero-header">
-    <div class="logo-container">
-      <img src="https://i.ibb.co/gbRGZWyN/ARVET.png" alt="Logo" id="event-logo">
-    </div>
-    <div class="title-group">
-      <div class="edicion-tag">Edición: ${year}</div>
-      <h1 class="event-name">${nombreSinYear}</h1>
-    </div>
-  </div>
-  
-  <!-- CENTER: Fechas -->
-  <div class="hero-center">
-    <div class="date-range-desktop">
-      <div class="date-main">${fechasData.rango}</div>
-      <div class="year-sub">${fechasData.year}</div>
-    </div>
-    </div>
-    <div class="date-range-mobile">
-      ${fechasData.detalles.map(d => `
-        <div class="date-detail-item">
-          <span class="date-day">${d.fecha}</span>
-          ${d.hora ? `<span class="date-time">${d.hora} HS ${d.desc ? `• ${d.desc.toUpperCase()}` : ''}</span>` : ''}
-        </div>
-      `).join('')}
-    </div>
-  
-  
-  <!-- BOTTOM: Lugar y Tags (ESTO FALTABA) -->
-  <div class="hero-bottom">
-    <div class="location-box">
-      <div class="location-text">${enc.lugar || 'Lugar por confirmar'}</div>
-    </div>
-    
-    <div class="tags-row">
-      ${enc.cupoMaximo ? `<span class="tag cupo">${enc.cupoMaximo} Equipos</span>` : ''}
-      ${tipos.map(t => `<span class="tag">${t}</span>`).join('')}
-    </div>
-  </div>
-</div>
-  <!-- Vista PC: Rango grande -->
-  <div class="date-range-desktop">
-    <div class="date-main">${fechasData.rango}</div>
-    <div class="year-sub">${fechasData.year}</div>
-  </div>
-  
-  <!-- Vista Mobile: Detalles individuales -->
-  <div class="date-range-mobile">
-    ${fechasData.detalles.map(d => `
-      <div class="date-detail-item">
-        <span class="date-day">${d.fecha}</span>
-        ${d.hora ? `<span class="date-time">${d.hora} HS ${d.desc ? `• ${d.desc.toUpperCase()}` : ''}</span>` : ''}
+document.getElementById('app').innerHTML = `
+  <div class="flyer-wrapper">
+    <!-- HERO SECTION -->
+    <section class="hero-section">
+      <div class="hero-bg">
+        <img src="${enc.flyerUrl}" alt="Flyer" onerror="this.src='https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=1920&q=80'">
       </div>
-    `).join('')}
-  </div>
-</div>
+      <div class="hero-overlay"></div>
+      
+      <!-- Bordes dorados curvos -->
+      <div class="gold-border top"></div>
+      <div class="gold-border bottom"></div>
+      
+      <div class="hero-content">
+        <!-- HEADER: Logo + Nombre -->
+        <div class="hero-header">
+          <div class="logo-container">
+            <img src="https://i.ibb.co/gbRGZWyN/ARVET.png" alt="Logo" id="event-logo">
+          </div>
+          <div class="title-group">
+            <div class="edicion-tag">Edición: ${year}</div>
+            <h1 class="event-name">${nombreSinYear}</h1>
+          </div>
+        </div>
+        
+        <!-- CENTER: Fechas -->
+        <div class="hero-center">
+          <!-- Vista PC: Rango grande -->
+          <div class="date-range-desktop">
+            <div class="date-main">${fechasData.rango}</div>
+            <div class="year-sub">${fechasData.year}</div>
+          </div>
+          
+          <!-- Vista Mobile: Detalles individuales -->
+          <div class="date-range-mobile">
+            ${fechasData.detalles.map(d => `
+              <div class="date-detail-item">
+                <span class="date-day">${d.fecha}</span>
+                ${d.hora ? `<span class="date-time">${d.hora} HS ${d.desc ? `• ${d.desc.toUpperCase()}` : ''}</span>` : ''}
               </div>
-            </section>
+            `).join('')}
+          </div>
+        </div>
+        
+        <!-- BOTTOM: Lugar + Tags (CUPO Y TIPO) -->
+        <div class="hero-bottom">
+          <div class="location-box">
+            <div class="location-text">${enc.lugar || 'Lugar por confirmar'}</div>
+          </div>
+          
+          <div class="tags-row">
+            ${enc.cupoMaximo ? `<span class="tag cupo">${enc.cupoMaximo} Equipos</span>` : ''}
+            ${tipos.map(t => `<span class="tag">${t}</span>`).join('')}
+          </div>
+        </div>
+      </div>
+    </section>
+
 
             <!-- INFO SECTION -->
             <section class="info-section">

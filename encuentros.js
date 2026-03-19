@@ -1353,7 +1353,6 @@ async function verDetalleEncuentro(encuentroId) {
 // ============================================
 // EDITAR ENCUENTRO
 // ============================================
-
 async function editarEncuentro(encuentroId) {
     try {
         const response = await fetch(`${API_URL}?action=getEncuentroById&id=${encuentroId}`);
@@ -1376,6 +1375,24 @@ async function editarEncuentro(encuentroId) {
             return;
         }
 
+        // Parsear datos JSON
+        let fechas = [];
+        let valores = [];
+        let tiposArray = [];
+        
+        try {
+            fechas = JSON.parse(enc.fechasJSON || '[]');
+            valores = JSON.parse(enc.valoresJSON || '[]');
+        } catch(e) {
+            console.error('Error parseando JSON:', e);
+        }
+        
+        // Separar tipos predefinidos de personalizados
+        const tiposPredefinidos = ['Veteranos +35', 'Veteranos +50'];
+        tiposArray = enc.tipo ? enc.tipo.split(', ') : [];
+        const tiposChecked = tiposArray.filter(t => tiposPredefinidos.includes(t));
+        const tiposOtros = tiposArray.filter(t => !tiposPredefinidos.includes(t));
+
         const modal = document.createElement('div');
         modal.className = 'modal-overlay active';
         modal.id = 'modalEditarEncuentro';
@@ -1390,12 +1407,7 @@ async function editarEncuentro(encuentroId) {
                 <form id="formEditarEncuentro" onsubmit="guardarEdicionEncuentro(event, '${encuentroId}')">
                     
                     <div class="form-group">
-                        <label>Nombre del encuentro *</label>
-                        <input type="text" id="editNombre" required value="${enc.nombre || ''}">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Flyer actual</label>
+                        <label>Flyer del encuentro</label>
                         <div id="editFlyerPreview" style="width: 100%; height: 200px; background: #f1f5f9; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; overflow: hidden;">
                             ${enc.flyerUrl ? `<img src="${enc.flyerUrl}" style="max-width: 100%; max-height: 100%; object-fit: contain;">` : '<span style="color: #94a3b8;">Sin flyer</span>'}
                         </div>
@@ -1407,22 +1419,116 @@ async function editarEncuentro(encuentroId) {
                     </div>
 
                     <div class="form-group">
-                        <label>Tipo de encuentro *</label>
-                        <input type="text" id="editTipo" required value="${enc.tipo || ''}" placeholder="Ej: Veteranos +35, Veteranos +50">
+                        <label>Nombre del encuentro *</label>
+                        <input type="text" id="editNombre" required value="${enc.nombre || ''}">
+                    </div>
+
+                    <!-- TIPO DE ENCUENTRO - MÚLTIPLE SELECCIÓN -->
+                    <div class="form-group">
+                        <label>Tipo de encuentro * (podés elegir varios)</label>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" name="editTipo" value="Veteranos +35" ${tiposChecked.includes('Veteranos +35') ? 'checked' : ''} style="width: 18px; height: 18px;">
+                                <span>Veteranos +35</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" name="editTipo" value="Veteranos +50" ${tiposChecked.includes('Veteranos +50') ? 'checked' : ''} style="width: 18px; height: 18px;">
+                                <span>Veteranos +50</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" id="editChkOtro" ${tiposOtros.length > 0 ? 'checked' : ''} style="width: 18px; height: 18px;" onchange="toggleEditOtrosTipos()">
+                                <span>Otro (agregar personalizados)</span>
+                            </label>
+                        </div>
+                        
+                        <div id="editContainerOtrosTipos" style="display: ${tiposOtros.length > 0 ? 'flex' : 'none'}; flex-direction: column; gap: 10px; margin-left: 26px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 2px solid #e2e8f0;">
+                            <div style="font-size: 12px; color: #64748b; margin-bottom: 5px;">Tipos personalizados:</div>
+                            ${tiposOtros.map((tipo, index) => `
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                    <input type="text" class="editOtro-tipo-input" value="${tipo}" placeholder="Tipo personalizado ${index + 1}" style="flex: 1;">
+                                    <button type="button" onclick="this.parentElement.remove()" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 16px;">✕</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <button type="button" onclick="agregarEditOtroTipo()" class="btn-secondary" style="width: 100%; margin-top: 10px; display: ${tiposOtros.length > 0 ? 'block' : 'none'};" id="editBtnAgregarOtroTipo">
+                            + Agregar otro tipo personalizado
+                        </button>
+                    </div>
+
+                    <!-- UBICACIÓN -->
+                    <div class="form-group">
+                        <label>Ubicación del encuentro *</label>
+                        <p style="color: #64748b; font-size: 12px; margin-bottom: 10px;">
+                            📍 Arrastrá el pin rojo para marcar exactamente dónde se juega
+                        </p>
+                        
+                        <div id="editMapaEncuentro" style="width: 100%; height: 300px; border-radius: 12px; margin-bottom: 15px; border: 2px solid #e2e8f0;"></div>
+                        
+                        <input type="hidden" id="editLat" value="${enc.lat || ''}">
+                        <input type="hidden" id="editLng" value="${enc.lng || ''}">
+                        <input type="hidden" id="editPaisId" value="${enc.paisId || ''}">
+                        <input type="hidden" id="editProvinciaId" value="${enc.provinciaId || ''}">
+                        <input type="hidden" id="editCiudadId" value="${enc.ciudadId || ''}">
+                        
+                        <label style="font-size: 12px; color: #64748b; margin-bottom: 5px;">Dirección completa *</label>
+                        <input type="text" id="editDireccion" required value="${enc.lugar || ''}" style="margin-bottom: 10px;">
                     </div>
 
                     <div class="form-group">
-                        <label>Ubicación *</label>
-                        <input type="text" id="editLugar" required value="${enc.lugar || ''}">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Cupo máximo *</label>
+                        <label>Cupo máximo de equipos *</label>
                         <input type="number" id="editCupo" min="2" max="50" required value="${enc.cupoMaximo || 8}">
                     </div>
 
                     <div class="form-group">
-                        <label>Descripción</label>
+                        <label>Fechas y horarios *</label>
+                        <div id="editContainerFechas" style="display: flex; flex-direction: column; gap: 15px;">
+                            ${fechas.map((f, index) => `
+                                <div class="edit-dia-item" style="background: #f8fafc; padding: 15px; border-radius: 12px; border: 2px solid #e2e8f0;">
+                                    <div style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
+                                        <input type="date" class="edit-dia-fecha" required value="${f.dia}" style="flex: 1;">
+                                        <button type="button" onclick="this.closest('.edit-dia-item').remove()" class="btn-rechazar" style="padding: 8px 12px; font-size: 12px;">✕</button>
+                                    </div>
+                                    <div class="edit-horarios-container" style="display: flex; flex-direction: column; gap: 8px; margin-left: 10px; padding-left: 15px; border-left: 3px solid #cbd5e1;">
+                                        ${f.horarios.map(h => `
+                                            <div style="display: flex; gap: 8px; align-items: center;">
+                                                <input type="time" class="edit-horario-hora" required value="${h.hora}" style="width: 100px;">
+                                                <input type="text" class="edit-horario-desc" value="${h.desc}" required style="flex: 1;">
+                                                <button type="button" onclick="this.parentElement.remove()" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 16px;">✕</button>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                    <button type="button" onclick="agregarEditHorario(this)" class="btn-secondary" style="margin-top: 10px; margin-left: 10px; font-size: 12px; padding: 6px 12px;">
+                                        + Agregar horario
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button type="button" onclick="agregarEditDia()" class="btn-secondary" style="margin-top: 15px; width: 100%;">
+                            + Agregar día
+                        </button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Valores / Opciones de inscripción *</label>
+                        <div id="editContainerValores" style="display: flex; flex-direction: column; gap: 10px;">
+                            ${valores.map(v => `
+                                <div style="display: flex; gap: 10px; align-items: center; background: #f8fafc; padding: 12px; border-radius: 10px; border: 2px solid #e2e8f0;">
+                                    <input type="text" class="edit-valor-titulo" value="${v.titulo}" required style="flex: 1;">
+                                    <input type="number" class="edit-valor-precio" value="${v.precio}" min="0" required style="width: 100px;">
+                                    <input type="text" class="edit-valor-desc" value="${v.desc || ''}" style="flex: 2;">
+                                    <button type="button" onclick="this.parentElement.remove()" class="btn-rechazar" style="padding: 6px 10px; font-size: 12px;">✕</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button type="button" onclick="agregarEditValor()" class="btn-secondary" style="margin-top: 15px; width: 100%;">
+                            + Agregar opción de valor
+                        </button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descripción general</label>
                         <textarea id="editDescripcion" rows="3">${enc.descripcion || ''}</textarea>
                     </div>
 
@@ -1440,7 +1546,10 @@ async function editarEncuentro(encuentroId) {
         
         document.body.appendChild(modal);
         
-        // Handler para subir nuevo flyer
+        // Inicializar mapa
+        setTimeout(() => initEditMapaEncuentro(enc.lat, enc.lng), 100);
+        
+        // Handler para flyer
         document.getElementById('editInputFlyer').addEventListener('change', async function() {
             const file = this.files[0];
             if (!file) return;
@@ -1484,22 +1593,209 @@ async function editarEncuentro(encuentroId) {
     }
 }
 
+// Funciones auxiliares para editar encuentro
+function toggleEditOtrosTipos() {
+    const chkOtro = document.getElementById('editChkOtro');
+    const container = document.getElementById('editContainerOtrosTipos');
+    const btnAgregar = document.getElementById('editBtnAgregarOtroTipo');
+    
+    if (chkOtro.checked) {
+        container.style.display = 'flex';
+        btnAgregar.style.display = 'block';
+        if (container.querySelectorAll('.editOtro-tipo-input').length === 0) {
+            agregarEditOtroTipo();
+        }
+    } else {
+        container.style.display = 'none';
+        btnAgregar.style.display = 'none';
+    }
+}
+
+function agregarEditOtroTipo() {
+    const container = document.getElementById('editContainerOtrosTipos');
+    const index = container.querySelectorAll('.editOtro-tipo-input').length + 1;
+    
+    const div = document.createElement('div');
+    div.style.cssText = 'display: flex; gap: 10px; align-items: center;';
+    div.innerHTML = `
+        <input type="text" class="editOtro-tipo-input" placeholder="Tipo personalizado ${index}" style="flex: 1;">
+        <button type="button" onclick="this.parentElement.remove()" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 16px;">✕</button>
+    `;
+    
+    container.appendChild(div);
+}
+
+function initEditMapaEncuentro(lat, lng) {
+    const defaultLat = lat ? parseFloat(lat) : -34.6037;
+    const defaultLng = lng ? parseFloat(lng) : -58.3816;
+    
+    const mapa = L.map('editMapaEncuentro').setView([defaultLat, defaultLng], 13);
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(mapa);
+    
+    const marker = L.marker([defaultLat, defaultLng], {
+        draggable: true,
+        icon: L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34]
+        })
+    }).addTo(mapa);
+    
+    marker.on('dragend', function() {
+        const pos = marker.getLatLng();
+        document.getElementById('editLat').value = pos.lat;
+        document.getElementById('editLng').value = pos.lng;
+    });
+    
+    mapa.on('click', function(e) {
+        marker.setLatLng(e.latlng);
+        document.getElementById('editLat').value = e.latlng.lat;
+        document.getElementById('editLng').value = e.latlng.lng;
+    });
+}
+
+function agregarEditDia() {
+    const container = document.getElementById('editContainerFechas');
+    
+    const diaDiv = document.createElement('div');
+    diaDiv.className = 'edit-dia-item';
+    diaDiv.style.cssText = 'background: #f8fafc; padding: 15px; border-radius: 12px; border: 2px solid #e2e8f0;';
+    diaDiv.innerHTML = `
+        <div style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
+            <input type="date" class="edit-dia-fecha" required style="flex: 1;">
+            <button type="button" onclick="this.closest('.edit-dia-item').remove()" class="btn-rechazar" style="padding: 8px 12px; font-size: 12px;">✕</button>
+        </div>
+        <div class="edit-horarios-container" style="display: flex; flex-direction: column; gap: 8px; margin-left: 10px; padding-left: 15px; border-left: 3px solid #cbd5e1;">
+        </div>
+        <button type="button" onclick="agregarEditHorario(this)" class="btn-secondary" style="margin-top: 10px; margin-left: 10px; font-size: 12px; padding: 6px 12px;">
+            + Agregar horario
+        </button>
+    `;
+    
+    container.appendChild(diaDiv);
+    agregarEditHorario(diaDiv.querySelector('button[onclick="agregarEditHorario(this)"]'));
+}
+
+function agregarEditHorario(btn) {
+    const horariosContainer = btn.previousElementSibling;
+    
+    const horarioDiv = document.createElement('div');
+    horarioDiv.style.cssText = 'display: flex; gap: 8px; align-items: center;';
+    horarioDiv.innerHTML = `
+        <input type="time" class="edit-horario-hora" required style="width: 100px;">
+        <input type="text" class="edit-horario-desc" placeholder="Descripción (ej: Acreditación)" required style="flex: 1;">
+        <button type="button" onclick="this.parentElement.remove()" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 16px;">✕</button>
+    `;
+    
+    horariosContainer.appendChild(horarioDiv);
+}
+
+function agregarEditValor() {
+    const container = document.getElementById('editContainerValores');
+    
+    const valorDiv = document.createElement('div');
+    valorDiv.style.cssText = 'display: flex; gap: 10px; align-items: center; background: #f8fafc; padding: 12px; border-radius: 10px; border: 2px solid #e2e8f0;';
+    valorDiv.innerHTML = `
+        <input type="text" class="edit-valor-titulo" placeholder="Título (ej: Completo)" required style="flex: 1;">
+        <input type="number" class="edit-valor-precio" placeholder="$" min="0" required style="width: 100px;">
+        <input type="text" class="edit-valor-desc" placeholder="Descripción opcional" style="flex: 2;">
+        <button type="button" onclick="this.parentElement.remove()" class="btn-rechazar" style="padding: 6px 10px; font-size: 12px;">✕</button>
+    `;
+    
+    container.appendChild(valorDiv);
+}
+
 async function guardarEdicionEncuentro(e, encuentroId) {
     e.preventDefault();
     
+    // Recolectar tipos seleccionados
+    const tiposSeleccionados = [];
+    document.querySelectorAll('input[name="editTipo"]:checked').forEach(cb => {
+        tiposSeleccionados.push(cb.value);
+    });
+    
+    const otrosInputs = document.querySelectorAll('.editOtro-tipo-input');
+    otrosInputs.forEach(input => {
+        if (input.value.trim()) {
+            tiposSeleccionados.push(input.value.trim());
+        }
+    });
+    
+    if (tiposSeleccionados.length === 0) {
+        mostrarMensajeEncuentros('Debes seleccionar al menos un tipo de encuentro', 'error');
+        return;
+    }
+    
+    // Recolectar fechas
+    const fechas = [];
+    document.querySelectorAll('.edit-dia-item').forEach(dia => {
+        const fechaInput = dia.querySelector('.edit-dia-fecha');
+        if (!fechaInput.value) return;
+        
+        const horarios = [];
+        dia.querySelectorAll('.edit-horarios-container > div').forEach(h => {
+            const hora = h.querySelector('.edit-horario-hora').value;
+            const desc = h.querySelector('.edit-horario-desc').value;
+            if (hora && desc) {
+                horarios.push({ hora, desc });
+            }
+        });
+        
+        fechas.push({
+            dia: fechaInput.value,
+            horarios: horarios
+        });
+    });
+    
+    if (fechas.length === 0) {
+        mostrarMensajeEncuentros('Debes agregar al menos una fecha', 'error');
+        return;
+    }
+    
+    // Recolectar valores
+    const valores = [];
+    document.querySelectorAll('#editContainerValores > div').forEach(v => {
+        const titulo = v.querySelector('.edit-valor-titulo').value;
+        const precio = v.querySelector('.edit-valor-precio').value;
+        const desc = v.querySelector('.edit-valor-desc').value;
+        if (titulo && precio) {
+            valores.push({
+                titulo,
+                precio: parseFloat(precio),
+                desc: desc || ''
+            });
+        }
+    });
+    
+    if (valores.length === 0) {
+        mostrarMensajeEncuentros('Debes agregar al menos una opción de valor', 'error');
+        return;
+    }
+    
     const usuario = obtenerUsuarioActual();
     
-    // Usar GET en lugar de POST
+    // Usar GET
     const params = new URLSearchParams({
         action: 'actualizarEncuentro',
         id: encuentroId,
         equipoId: usuario.equipoId,
         nombre: document.getElementById('editNombre').value,
-        tipo: document.getElementById('editTipo').value,
-        lugar: document.getElementById('editLugar').value,
+        flyerUrl: document.getElementById('editFlyerUrl').value,
+        tipo: tiposSeleccionados.join(', '),
+        lugar: document.getElementById('editDireccion').value,
+        lat: document.getElementById('editLat').value,
+        lng: document.getElementById('editLng').value,
+        paisId: document.getElementById('editPaisId').value,
+        provinciaId: document.getElementById('editProvinciaId').value,
+        ciudadId: document.getElementById('editCiudadId').value,
         cupoMaximo: document.getElementById('editCupo').value,
-        descripcion: document.getElementById('editDescripcion').value,
-        flyerUrl: document.getElementById('editFlyerUrl').value
+        fechasJSON: JSON.stringify(fechas),
+        valoresJSON: JSON.stringify(valores),
+        descripcion: document.getElementById('editDescripcion').value
     });
     
     const url = `${API_URL}?${params.toString()}`;

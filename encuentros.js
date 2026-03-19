@@ -819,183 +819,221 @@ function compartirEncuentro(id) {
 // ============================================
 
 async function renderizarInvitaciones() {
-    const container = document.getElementById('listaInvitaciones');
-    const empty = document.getElementById('emptyInvitaciones');
-    const badge = document.getElementById('badgeInvitaciones');
+  const container = document.getElementById('listaInvitaciones');
+  const empty = document.getElementById('emptyInvitaciones');
+  const badge = document.getElementById('badgeInvitaciones');
 
-    if (!container) return;
+  if (!container) return;
 
-    const usuario = obtenerUsuarioActual();
+  const usuario = obtenerUsuarioActual();
+  
+  try {
+    // Cargar ambas listas en paralelo
+    const [respuestaAceptados, respuestaPendientes] = await Promise.all([
+      fetch(`${API_URL}?action=getEncuentrosAceptados&equipoId=${usuario.equipoId}`).then(r => r.json()),
+      fetch(`${API_URL}?action=getEncuentrosParaInvitar&equipoId=${usuario.equipoId}`).then(r => r.json())
+    ]);
     
-    try {
-        const response = await fetch(`${API_URL}?action=getEncuentrosParaInvitar&equipoId=${usuario.equipoId}`);
-        const result = await response.json();
+    const aceptados = respuestaAceptados.success ? respuestaAceptados.data : [];
+    const todosPendientes = respuestaPendientes.success ? respuestaPendientes.data : [];
+    
+    // Filtrar pendientes: excluir los que ya aceptamos o rechazamos
+    const idsRespondidos = new Set();
+    
+    // Buscar también rechazados
+    const respuestasSheet = await fetch(`${API_URL}?action=getRespuestasEncuentro&encuentroId=todos`).then(r => r.json()).catch(() => ({data:[]}));
+    // No hay endpoint para "todos", así que filtramos local por ahora
+    
+    // Mejor: verificar uno por uno o cargar desde getEncuentrosAceptados que ya tenemos
+    // Por simplicidad, usamos los aceptados que ya cargamos y filtramos del otro listado
+    
+    const idsAceptados = new Set(aceptados.map(a => a.id));
+    const pendientes = todosPendientes.filter(p => !idsAceptados.has(p.id));
+    
+    // Actualizar badge (solo pendientes)
+    if (badge) {
+      if (pendientes.length > 0) {
+        badge.textContent = pendientes.length;
+        badge.style.display = 'inline';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    if (aceptados.length === 0 && pendientes.length === 0) {
+      container.innerHTML = '';
+      if (empty) empty.style.display = 'block';
+      return;
+    }
+
+    if (empty) empty.style.display = 'none';
+
+    // HTML de ACEPTADOS
+    const aceptadosHTML = aceptados.length > 0 ? `
+      <div style="margin-bottom: 30px;">
+        <h3 style="color: #059669; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+          <span style="width: 8px; height: 8px; background: #059669; border-radius: 50%;"></span>
+          Invitaciones aceptadas (${aceptados.length})
+        </h3>
+        ${aceptados.map(enc => generarCardEncuentro(enc, 'aceptado')).join('')}
+      </div>
+    ` : '';
+
+    // HTML de PENDIENTES
+    const pendientesHTML = pendientes.length > 0 ? `
+      <div>
+        <h3 style="color: #64748b; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+          <span style="width: 8px; height: 8px; background: #f59e0b; border-radius: 50%;"></span>
+          Invitaciones pendientes (${pendientes.length})
+        </h3>
+        ${pendientes.map(enc => generarCardEncuentro(enc, 'pendiente')).join('')}
+      </div>
+    ` : '';
+
+    container.innerHTML = aceptadosHTML + pendientesHTML;
         
-        if (!result.success) {
-            mostrarMensajeEncuentros('Error al cargar invitaciones', 'error');
-            return;
-        }
-        
-        const encuentros = result.data || [];
-        
-        if (badge) {
-            if (encuentros.length > 0) {
-                badge.textContent = encuentros.length;
-                badge.style.display = 'inline';
-            } else {
-                badge.style.display = 'none';
-            }
-        }
+  } catch (err) {
+    console.error('Error cargando invitaciones:', err);
+    mostrarMensajeEncuentros('Error de conexión', 'error');
+  }
+}
 
-        if (encuentros.length === 0) {
-            container.innerHTML = '';
-            if (empty) empty.style.display = 'block';
-            return;
-        }
+// Función auxiliar para generar el HTML de una card
+function generarCardEncuentro(enc, estado) {
+  let fechas = [];
+  let valores = [];
+  try {
+    fechas = JSON.parse(enc.fechasJSON || '[]');
+    valores = JSON.parse(enc.valoresJSON || '[]');
+  } catch(e) {
+    console.error('Error parseando JSON:', e);
+  }
+  
+  const fechasHTML = fechas.map(f => {
+    const horariosHTML = f.horarios.map(h => `
+      <span style="display: inline-block; background: #f1f5f9; padding: 2px 8px; border-radius: 4px; font-size: 0.85rem; margin-right: 5px;">
+        ${h.hora}hs - ${h.desc}
+      </span>
+    `).join('');
+    
+    return `
+      <div style="margin-bottom: 8px;">
+        <strong>📅 ${formatearFecha(f.dia)}</strong>
+        <div style="margin-top: 4px; margin-left: 24px;">
+          ${horariosHTML}
+        </div>
+      </div>
+    `;
+  }).join('');
 
-        if (empty) empty.style.display = 'none';
-
-        container.innerHTML = encuentros.map(enc => {
-            let fechas = [];
-            let valores = [];
-            try {
-                fechas = JSON.parse(enc.fechasJSON || '[]');
-                valores = JSON.parse(enc.valoresJSON || '[]');
-            } catch(e) {
-                console.error('Error parseando JSON:', e);
-            }
-            
-            // Generar HTML de todas las fechas y horarios
-            const fechasHTML = fechas.map(f => {
-                const horariosHTML = f.horarios.map(h => `
-                    <span style="display: inline-block; background: #f1f5f9; padding: 2px 8px; border-radius: 4px; font-size: 0.85rem; margin-right: 5px;">
-                        ${h.hora}hs - ${h.desc}
-                    </span>
-                `).join('');
-                
-                return `
-                    <div style="margin-bottom: 8px;">
-                        <strong>📅 ${formatearFecha(f.dia)}</strong>
-                        <div style="margin-top: 4px; margin-left: 24px;">
-                            ${horariosHTML}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            // Mapa miniatura si tiene coordenadas
-            const mapaHTML = (enc.lat && enc.lng) ? `
-                <div style="margin: 15px 0; border-radius: 8px; overflow: hidden; border: 2px solid #e2e8f0;">
-                    <iframe 
-                        width="100%" 
-                        height="150" 
-                        frameborder="0" 
-                        scrolling="no" 
-                        marginheight="0" 
-                        marginwidth="0" 
-                        src="https://www.openstreetmap.org/export/embed.html?bbox=${enc.lng-0.01}%2C${enc.lat-0.01}%2C${enc.lng+0.01}%2C${enc.lat+0.01}&layer=mapnik&marker=${enc.lat}%2C${enc.lng}" 
-                        style="border: 0;">
-                    </iframe>
-                    <div style="background: #f8fafc; padding: 8px 12px; font-size: 12px; display: flex; justify-content: space-between; align-items: center;">
-                        <span>📍 ${enc.direccion || 'Ubicación marcada'}</span>
-                        <a href="https://www.google.com/maps?q=${enc.lat},${enc.lng}" target="_blank" style="color: #4f46e5; text-decoration: none; font-weight: 500;">
-                            Abrir mapa →
-                        </a>
-                    </div>
-                </div>
-            ` : `<div style="color: #64748b; margin: 10px 0;">📍 ${enc.direccion || 'Sin ubicación'}</div>`;
-
-            return `
-                <div class="encuentro-card">
-    <div class="encuentro-header">
-                        <div>
-                            <div class="encuentro-titulo" style="font-size: 1.3rem; font-weight: 700; color: #1e293b; margin-bottom: 5px;">
-                                ${enc.nombre}
-                            </div>
-                            <span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #fef3c7; color: #92400e;">
-                                Invitación disponible
-                            </span>
-                            ${enc.tipo ? enc.tipo.split(', ').map(t => `
-                                <span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #e0e7ff; color: #3730a3; margin-left: 5px; margin-bottom: 5px;">
-                                    ${t}
-                                </span>
-                            `).join('') : '<span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #f1f5f9; color: #64748b; margin-left: 8px;">Sin tipo</span>'}
-                        </div>
-                        
-                        <!-- CIERRE del div del título ↑ y APERTURA del div derecho ↓ -->
-                        <div style="text-align: right; min-width: 80px; flex-shrink: 0;">
-    <div style="font-size: 1.5rem; font-weight: 800; color: #4f46e5;">
-        0/${enc.cupoMaximo}
+  const mapaHTML = (enc.lat && enc.lng) ? `
+    <div style="margin: 15px 0; border-radius: 8px; overflow: hidden; border: 2px solid #e2e8f0;">
+      <iframe 
+        width="100%" 
+        height="150" 
+        frameborder="0" 
+        scrolling="no" 
+        marginheight="0" 
+        marginwidth="0" 
+        src="https://www.openstreetmap.org/export/embed.html?bbox=${enc.lng-0.01}%2C${enc.lat-0.01}%2C${enc.lng+0.01}%2C${enc.lat+0.01}&layer=mapnik&marker=${enc.lat}%2C${enc.lng}" 
+        style="border: 0;">
+      </iframe>
+      <div style="background: #f8fafc; padding: 8px 12px; font-size: 12px; display: flex; justify-content: space-between; align-items: center;">
+        <span>📍 ${enc.lugar || 'Ubicación marcada'}</span>
+        <a href="https://www.google.com/maps?q=${enc.lat},${enc.lng}" target="_blank" style="color: #4f46e5; text-decoration: none; font-weight: 500;">
+          Abrir mapa →
+        </a>
+      </div>
     </div>
-    <div style="font-size: 0.8rem; color: #64748b; white-space: nowrap;">
-        ${enc.cupoMaximo} plazas
-    </div>
-    <div style="font-size: 0.75rem; color: #64748b; margin-top: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
-        Organiza
-    </div>
-    <div style="font-size: 0.9rem; color: #1e293b; font-weight: 600;">
-        ${enc.creadorNombre || 'Equipo desconocido'}
-    </div>
-</div>
-                    </div> <!-- ESTE es el cierre de encuentro-header -->
-                    
-                    <div class="encuentro-meta" style="margin-bottom: 15px; color: #64748b; font-size: 0.9rem;">
-                        ${fechasHTML}
-                       ${valores.length > 0 ? `<div style="margin-top: 5px;"><strong>💰 Valores:</strong><br>${valores.map(v => `• ${v.titulo}: $${parseFloat(v.precio).toLocaleString('es-AR')}${v.desc ? ` (${v.desc})` : ''}`).join('<br>')}</div>` : ''}
-                    </div>
+  ` : `<div style="color: #64748b; margin: 10px 0;">📍 ${enc.lugar || 'Sin ubicación'}</div>`;
 
-                    ${mapaHTML}
-
-                    ${enc.descripcion ? `<p style="color: #64748b; margin-bottom: 15px; line-height: 1.5;">${enc.descripcion}</p>` : ''}
-
-                    ${enc.flyerUrl ? `
-                        <div style="margin-bottom: 15px;">
-                            <img src="${enc.flyerUrl}" style="max-width: 300px; border-radius: 8px; object-fit: cover;" alt="Flyer">
-                        </div>
-                    ` : ''}
-                   ${enc.telefonoOrganizador ? `
-    <div style="display: inline-flex; flex-direction: column; align-items: center; margin-top: 10px;">
+  // Botones según estado
+  const botonesHTML = estado === 'aceptado' ? `
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+      <span style="display: inline-flex; align-items: center; gap: 6px; background: #d1fae5; color: #065f46; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 0.9rem;">
+        ✓ Aceptado
+      </span>
+      <button onclick="verDetalleEncuentro('${enc.id}')" class="btn-ver" style="padding: 8px 16px; border-radius: 6px; border: none; background: #e0e7ff; color: #3730a3; cursor: pointer; font-weight: 500;">
+        Ver detalle
+      </button>
+      ${enc.telefonoOrganizador ? `
         <a href="https://wa.me/${String(enc.telefonoOrganizador).replace(/[^0-9]/g, '')}" 
            target="_blank" 
-           style="display: inline-flex; align-items: center; gap: 6px; 
-                  background: #25D366; color: white; 
-                  padding: 8px 14px; 
-                  border-radius: 999px; 
-                  text-decoration: none; 
-                  font-weight: 600; 
-                  font-size: 0.9rem;">
-           
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="white">
-                <path d="M16 .4C7.2.4.4 7.2.4 16c0 2.8.7 5.5 2.1 7.9L.4 32l8.3-2.1c2.3 1.3 4.9 2 7.6 2 8.8 0 15.6-6.8 15.6-15.6S24.8.4 16 .4zm0 28.6c-2.4 0-4.7-.6-6.7-1.8l-.5-.3-4.9 1.2 1.3-4.8-.3-.5C3.6 20.7 3 18.4 3 16 3 8.8 8.8 3 16 3s13 5.8 13 13-5.8 13-13 13zm7.2-9.8c-.4-.2-2.3-1.1-2.6-1.2-.3-.1-.6-.2-.8.2-.2.4-.9 1.2-1.1 1.5-.2.3-.4.3-.7.1-.3-.2-1.3-.5-2.5-1.6-.9-.8-1.6-1.9-1.8-2.2-.2-.3 0-.5.2-.7.2-.2.4-.4.6-.6.2-.2.3-.4.4-.6.1-.2 0-.4 0-.6 0-.2-.8-2-1.1-2.7-.3-.7-.6-.6-.8-.6h-.7c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.1 3.1 1.3 3.3c.2.2 2.2 3.4 5.4 4.7.8.3 1.4.5 1.9.6.8.2 1.5.2 2 .1.6-.1 2.3-.9 2.6-1.8.3-.9.3-1.7.2-1.8-.1-.1-.4-.2-.8-.4z"/>
-            </svg>
-
-            WhatsApp
+           style="display: inline-flex; align-items: center; gap: 6px; background: #25D366; color: white; padding: 8px 14px; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 0.9rem;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32" fill="white">
+            <path d="M16 .4C7.2.4.4 7.2.4 16c0 2.8.7 5.5 2.1 7.9L.4 32l8.3-2.1c2.3 1.3 4.9 2 7.6 2 8.8 0 15.6-6.8 15.6-15.6S24.8.4 16 .4zm0 28.6c-2.4 0-4.7-.6-6.7-1.8l-.5-.3-4.9 1.2 1.3-4.8-.3-.5C3.6 20.7 3 18.4 3 16 3 8.8 8.8 3 16 3s13 5.8 13 13-5.8 13-13 13zm7.2-9.8c-.4-.2-2.3-1.1-2.6-1.2-.3-.1-.6-.2-.8.2-.2.4-.9 1.2-1.1 1.5-.2.3-.4.3-.7.1-.3-.2-1.3-.5-2.5-1.6-.9-.8-1.6-1.9-1.8-2.2-.2-.3 0-.5.2-.7.2-.2.4-.4.6-.6.2-.2.3-.4.4-.6.1-.2 0-.4 0-.6 0-.2-.8-2-1.1-2.7-.3-.7-.6-.6-.8-.6h-.7c-.2 0-.6.1-.9.4-.3.3-1.1 1.1-1.1 2.7s1.1 3.1 1.3 3.3c.2.2 2.2 3.4 5.4 4.7.8.3 1.4.5 1.9.6.8.2 1.5.2 2 .1.6-.1 2.3-.9 2.6-1.8.3-.9.3-1.7.2-1.8-.1-.1-.4-.2-.8-.4z"/>
+          </svg>
+          WhatsApp Organizador
         </a>
-        <span style="font-size: 0.75rem; color: #64748b; margin-top: 3px;">
-            Organizador
-        </span>
+      ` : ''}
     </div>
-` : ''}
+  ` : `
+    <div class="acciones-encuentro" style="display: flex; gap: 10px; flex-wrap: wrap;">
+      <button onclick="verDetalleEncuentro('${enc.id}')" class="btn-ver" style="padding: 8px 16px; border-radius: 6px; border: none; background: #e0e7ff; color: #3730a3; cursor: pointer; font-weight: 500;">
+        Ver detalle
+      </button>
+      <button onclick="aceptarInvitacion('${enc.id}')" class="btn-aceptar" style="padding: 8px 16px; border-radius: 6px; border: none; background: #4f46e5; color: white; cursor: pointer; font-weight: 500;">
+        Aceptar invitación
+      </button>
+      <button onclick="rechazarInvitacion('${enc.id}')" class="btn-rechazar" style="padding: 8px 16px; border-radius: 6px; border: none; background: #fee2e2; color: #991b1b; cursor: pointer; font-weight: 500;">
+        Rechazar
+      </button>
+    </div>
+  `;
 
-                    <div class="acciones-encuentro" style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button onclick="verDetalleEncuentro('${enc.id}')" class="btn-ver" style="padding: 8px 16px; border-radius: 6px; border: none; background: #e0e7ff; color: #3730a3; cursor: pointer; font-weight: 500;">
-                            Ver detalle
-                        </button>
-                        <button onclick="interesarEncuentro('${enc.id}')" class="btn-aceptar" style="padding: 8px 16px; border-radius: 6px; border: none; background: #4f46e5; color: white; cursor: pointer; font-weight: 500;">
-                            Me interesa
-                        </button>
-                        
-                       
+  const badgeEstado = estado === 'aceptado' ? 
+    `<span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #d1fae5; color: #065f46; margin-left: 5px;">Aceptado</span>` :
+    `<span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #fef3c7; color: #92400e; margin-left: 5px;">Invitación disponible</span>`;
 
-                    </div>
-                </div>
-            `;
-        }).join('');
+  return `
+    <div class="encuentro-card ${estado === 'aceptado' ? 'invitacion-aceptada' : 'invitacion-pendiente'}" style="${estado === 'aceptado' ? 'border-left: 4px solid #10b981;' : ''}">
+      <div class="encuentro-header">
+        <div>
+          <div class="encuentro-titulo" style="font-size: 1.3rem; font-weight: 700; color: #1e293b; margin-bottom: 5px;">
+            ${enc.nombre}
+          </div>
+          ${badgeEstado}
+          ${enc.tipo ? enc.tipo.split(', ').map(t => `
+            <span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #e0e7ff; color: #3730a3; margin-left: 5px; margin-bottom: 5px;">
+              ${t}
+            </span>
+          `).join('') : '<span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #f1f5f9; color: #64748b; margin-left: 8px;">Sin tipo</span>'}
+        </div>
         
-    } catch (err) {
-        console.error('Error cargando invitaciones:', err);
-        mostrarMensajeEncuentros('Error de conexión', 'error');
-    }
+        <div style="text-align: right; min-width: 80px; flex-shrink: 0;">
+          <div style="font-size: 1.5rem; font-weight: 800; color: #4f46e5;">
+            0/${enc.cupoMaximo}
+          </div>
+          <div style="font-size: 0.8rem; color: #64748b; white-space: nowrap;">
+            ${enc.cupoMaximo} plazas
+          </div>
+          <div style="font-size: 0.75rem; color: #64748b; margin-top: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
+            Organiza
+          </div>
+          <div style="font-size: 0.9rem; color: #1e293b; font-weight: 600;">
+            ${enc.creadorNombre || 'Equipo desconocido'}
+          </div>
+        </div>
+      </div>
+      
+      <div class="encuentro-meta" style="margin-bottom: 15px; color: #64748b; font-size: 0.9rem;">
+        ${fechasHTML}
+        ${valores.length > 0 ? `<div style="margin-top: 5px;"><strong>💰 Valores:</strong><br>${valores.map(v => `• ${v.titulo}: $${parseFloat(v.precio).toLocaleString('es-AR')}${v.desc ? ` (${v.desc})` : ''}`).join('<br>')}</div>` : ''}
+      </div>
+
+      ${mapaHTML}
+
+      ${enc.descripcion ? `<p style="color: #64748b; margin-bottom: 15px; line-height: 1.5;">${enc.descripcion}</p>` : ''}
+
+      ${enc.flyerUrl ? `
+        <div style="margin-bottom: 15px;">
+          <img src="${enc.flyerUrl}" style="max-width: 300px; border-radius: 8px; object-fit: cover;" alt="Flyer">
+        </div>
+      ` : ''}
+
+      ${botonesHTML}
+    </div>
+  `;
 }
 // ============================================
 // FUNCIONES DE ACCIÓN (ASYNC - USAN API)
@@ -1089,8 +1127,60 @@ function invitarEquipos(encuentroId) {
     mostrarMensajeEncuentros('Función de invitar equipos en desarrollo', 'info');
 }
 
-function interesarEncuentro(encuentroId) {
-    mostrarMensajeEncuentros('Interés registrado. El organizador será notificado.', 'success');
+async function aceptarInvitacion(encuentroId) {
+  const usuario = obtenerUsuarioActual();
+  
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'responderEncuentro',
+        encuentroId: encuentroId,
+        equipoId: usuario.equipoId,
+        estado: 'aceptado'
+      })
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      mostrarMensajeEncuentros('¡Invitación aceptada!', 'success');
+      setTimeout(() => renderizarInvitaciones(), 300);
+    } else {
+      mostrarMensajeEncuentros(result.error || 'Error al aceptar', 'error');
+    }
+  } catch (err) {
+    mostrarMensajeEncuentros('Error de conexión', 'error');
+  }
+}
+
+async function rechazarInvitacion(encuentroId) {
+  if (!confirm('¿Seguro que querés rechazar esta invitación?')) return;
+  
+  const usuario = obtenerUsuarioActual();
+  
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'responderEncuentro',
+        encuentroId: encuentroId,
+        equipoId: usuario.equipoId,
+        estado: 'rechazado'
+      })
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      mostrarMensajeEncuentros('Invitación rechazada', 'info');
+      setTimeout(() => renderizarInvitaciones(), 300);
+    }
+  } catch (err) {
+    mostrarMensajeEncuentros('Error de conexión', 'error');
+  }
 }
 
 // ============================================

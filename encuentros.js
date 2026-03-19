@@ -42,12 +42,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const encuentroId = params.get('encuentroId');
 
     if (encuentroId) {
-        // Verificamos si el usuario está logueado
         if (!usuarioLogueado()) {
-            // Mostrar preview pública
             mostrarPreviewEncuentro(encuentroId);
         } else {
-            // Usuario logueado: ver detalle completo
             console.log('Link detectado:', encuentroId);
             setTimeout(() => {
                 verDetalleEncuentro(encuentroId);
@@ -55,17 +52,41 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    setTimeout(() => {
-        const sectionEncuentros = document.getElementById('encuentros');
-        if (sectionEncuentros && sectionEncuentros.classList.contains('active')) {
-            showEncuentrosTab('creados');
-        }
-    }, 100);
-
     window.addEventListener('encuentrosTabChange', function(e) {
         if (e.detail === 'invitaciones') {
             cargarInvitaciones();
         }
+    });
+
+    // ============================================
+    // FIX: Renderizar cuando la sección se activa
+    // ============================================
+    
+    // Primera carga: intentar renderizar si ya está activo
+    setTimeout(() => {
+        const sectionEncuentros = document.getElementById('encuentros');
+        if (sectionEncuentros && sectionEncuentros.classList.contains('active')) {
+            renderizarMisEncuentros();
+        }
+    }, 100);
+
+    // Observar cambios para renderizar cuando se active la sección
+    const observer = new MutationObserver((mutations) => {
+        const sectionEncuentros = document.getElementById('encuentros');
+        if (sectionEncuentros && sectionEncuentros.classList.contains('active')) {
+            const container = document.getElementById('listaMisEncuentros');
+            // Solo si está vacío (no volver a renderizar si ya hay datos)
+            if (container && container.children.length === 0 && encuentrosData.misEncuentros.length === 0) {
+                console.log('Sección encuentros activada, renderizando...');
+                renderizarMisEncuentros();
+            }
+        }
+    });
+
+    observer.observe(document.body, {
+        attributes: true,
+        subtree: true,
+        attributeFilter: ['class']
     });
 });
 // ============================================

@@ -524,22 +524,25 @@
         min-height: auto;
     }
 
+   @media (max-width: 968px) {
     .hero-image-container {
-        min-height: auto;     /* ← SIN ALTURA FIJA */
+        min-height: auto;
         height: auto;
         position: relative;
-        display: flex;        /* ← AGREGAR */
-        align-items: flex-start; /* ← AGREGAR */
+        display: flex;
+        align-items: flex-start;
+        background-color: var(--blue-dark); /* Fondo oscuro por si hay espacio */
     }
     
     .hero-image {
-        position: relative;   /* ← CAMBIAR de absolute a relative */
-        height: auto;        /* ← ALTURA NATURAL */
-        max-height: 80vh;     /* ← LÍMITE MÁXIMO OPCIONAL */
+        position: relative;
+        height: auto;
         width: 100%;
-        object-fit: contain;   /* ← VER IMAGEN COMPLETA */
+        object-fit: contain;
         object-position: top;
+        display: block; /* Evita espacios raros */
     }
+}
 
         .image-overlay {
         background: linear-gradient(180deg, transparent 60%, var(--blue-dark) 100%);

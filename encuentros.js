@@ -1131,6 +1131,10 @@ function invitarEquipos(encuentroId) {
 
 async function aceptarInvitacion(encuentroId) {
   const usuario = obtenerUsuarioActual();
+  // DEBUG
+  console.log('API_URL:', typeof API_URL, API_URL);
+  console.log('usuario:', usuario);
+  console.log('encuentroId:', encuentroId);
   
   try {
     const response = await fetch(API_URL, {

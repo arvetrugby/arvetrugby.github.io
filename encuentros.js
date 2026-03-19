@@ -1,6 +1,6 @@
 let encuentroIdDesdeLink = null;
 // Arriba de todo en encuentros.js
-const API_URL = 'https://script.google.com/macros/s/AKfycbxE-UiI85pCcUYq5LqJjN7UU7aOtXsVV_7Hyag-hYgOT4LcjGhVQaDt6js9PEQQ6E9Z/exec'; // Misma URL que en app.js
+
 // ============================================
 // ARVET - SISTEMA DE ENCUENTROS/PARTIDOS
 // ============================================

@@ -1150,9 +1150,10 @@ async function aceptarInvitacion(encuentroId) {
     } else {
       mostrarMensajeEncuentros(result.error || 'Error al aceptar', 'error');
     }
-  } catch (err) {
-    mostrarMensajeEncuentros('Error de conexión', 'error');
-  }
+    } catch (err) {
+    console.error('Error completo:', err);
+    mostrarMensajeEncuentros('Error: ' + err.message, 'error');
+    }
 }
 
 async function rechazarInvitacion(encuentroId) {

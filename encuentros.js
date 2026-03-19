@@ -1095,31 +1095,36 @@ async function editarEncuentro(encuentroId) {
 }
 
 async function cancelarEncuentro(encuentroId) {
-    const encuentro = await obtenerEncuentroPorId(encuentroId);
-    if (!encuentro) {
-        mostrarMensajeEncuentros('Encuentro no encontrado', 'error');
+    if (!confirm('¿Seguro que querés cancelar este encuentro?\n\nEl encuentro seguirá visible pero marcado como cancelado.')) {
         return;
     }
-
-    const usuario = obtenerUsuarioActual();
-    if (encuentro.equipoCreadorId !== usuario.equipoId) {
-        mostrarMensajeEncuentros('Solo el creador puede cancelar', 'error');
-        return;
-    }
-
-    if (!confirm('¿Seguro que querés cancelar este encuentro? Se notificará a todos los equipos invitados.')) {
-        return;
-    }
-
-    encuentro.estado = 'cancelado';
-    const actualizado = await actualizarEncuentro(encuentro);
     
-    if (actualizado) {
-        mostrarMensajeEncuentros('Encuentro cancelado', 'info');
-        renderizarMisEncuentros();
+    const usuario = obtenerUsuarioActual();
+    
+    // Usar GET en lugar de POST
+    const params = new URLSearchParams({
+        action: 'cancelarEncuentro',
+        encuentroId: encuentroId,
+        equipoId: usuario.equipoId
+    });
+    
+    const url = `${API_URL}?${params.toString()}`;
+    
+    try {
+        const response = await fetch(url);
+        const result = await response.json();
+        
+        if (result.success) {
+            mostrarMensajeEncuentros('Encuentro cancelado', 'success');
+            renderizarMisEncuentros();
+        } else {
+            mostrarMensajeEncuentros(result.error || 'Error al cancelar', 'error');
+        }
+    } catch (err) {
+        console.error('Error:', err);
+        mostrarMensajeEncuentros('Error de conexión', 'error');
     }
 }
-
 async function verDetalleEncuentro(encuentroId) {
     const encuentro = await obtenerEncuentroPorId(encuentroId);
     if (!encuentro) {
@@ -1579,25 +1584,23 @@ async function guardarEdicionEncuentro(e, encuentroId) {
     
     const usuario = obtenerUsuarioActual();
     
-    const data = {
+    // Usar GET en lugar de POST
+    const params = new URLSearchParams({
         action: 'actualizarEncuentro',
         id: encuentroId,
         equipoId: usuario.equipoId,
         nombre: document.getElementById('editNombre').value,
-        flyerUrl: document.getElementById('editFlyerUrl').value,
         tipo: document.getElementById('editTipo').value,
         lugar: document.getElementById('editLugar').value,
-        cupoMaximo: parseInt(document.getElementById('editCupo').value),
-        descripcion: document.getElementById('editDescripcion').value
-    };
+        cupoMaximo: document.getElementById('editCupo').value,
+        descripcion: document.getElementById('editDescripcion').value,
+        flyerUrl: document.getElementById('editFlyerUrl').value
+    });
+    
+    const url = `${API_URL}?${params.toString()}`;
     
     try {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-        
+        const response = await fetch(url);
         const result = await response.json();
         
         if (result.success) {
@@ -1612,29 +1615,28 @@ async function guardarEdicionEncuentro(e, encuentroId) {
         mostrarMensajeEncuentros('Error de conexión', 'error');
     }
 }
-
 // ============================================
 // CANCELAR ENCUENTRO
 // ============================================
 
 async function cancelarEncuentro(encuentroId) {
-    if (!confirm('¿Seguro que querés cancelar este encuentro? Se notificará a todos los equipos.\n\nEl encuentro seguirá visible pero marcado como cancelado.')) {
+    if (!confirm('¿Seguro que querés cancelar este encuentro?\n\nEl encuentro seguirá visible pero marcado como cancelado.')) {
         return;
     }
     
     const usuario = obtenerUsuarioActual();
     
+    // Usar GET en lugar de POST
+    const params = new URLSearchParams({
+        action: 'cancelarEncuentro',
+        encuentroId: encuentroId,
+        equipoId: usuario.equipoId
+    });
+    
+    const url = `${API_URL}?${params.toString()}`;
+    
     try {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                action: 'cancelarEncuentro',
-                encuentroId: encuentroId,
-                equipoId: usuario.equipoId
-            })
-        });
-        
+        const response = await fetch(url);
         const result = await response.json();
         
         if (result.success) {
@@ -1648,7 +1650,6 @@ async function cancelarEncuentro(encuentroId) {
         mostrarMensajeEncuentros('Error de conexión', 'error');
     }
 }
-
 function compartirEncuentro(id) {
     const url = `https://arvetrugby.github.io/Arvet/preview.html?action=getEncuentroById&id=${id}`;
     navigator.clipboard.writeText(url)

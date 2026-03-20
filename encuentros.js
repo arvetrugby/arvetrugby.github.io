@@ -1587,22 +1587,12 @@ async function editarEncuentro(encuentroId) {
     }
 }
 
-// ============================================
-// GUARDAR EDITAR
-// ============================================
-
 async function guardarEdicionEncuentro(e, encuentroId) {
     e.preventDefault();
-    
-    console.log('=== DEBUG guardarEdicionEncuentro ===');
-    console.log('encuentroId:', encuentroId);
-    console.log('API_URL:', typeof API_URL, API_URL);
     
     // Validar ubicación
     const lat = document.getElementById('editLat')?.value;
     const lng = document.getElementById('editLng')?.value;
-    
-    console.log('lat:', lat, 'lng:', lng);
     
     if (!lat || !lng) {
         mostrarMensajeEncuentros('⚠️ Por favor marcá la ubicación en el mapa', 'error');
@@ -1614,14 +1604,9 @@ async function guardarEdicionEncuentro(e, encuentroId) {
     document.querySelectorAll('input[name="editTipo"]:checked').forEach(cb => {
         tiposSeleccionados.push(cb.value);
     });
-    
     document.querySelectorAll('.editOtro-tipo-input').forEach(input => {
-        if (input.value.trim()) {
-            tiposSeleccionados.push(input.value.trim());
-        }
+        if (input.value.trim()) tiposSeleccionados.push(input.value.trim());
     });
-    
-    console.log('tipos:', tiposSeleccionados);
     
     if (tiposSeleccionados.length === 0) {
         mostrarMensajeEncuentros('Debes seleccionar al menos un tipo de encuentro', 'error');
@@ -1638,18 +1623,11 @@ async function guardarEdicionEncuentro(e, encuentroId) {
         dia.querySelectorAll('.edit-horarios-container > div').forEach(h => {
             const hora = h.querySelector('.edit-horario-hora')?.value;
             const desc = h.querySelector('.edit-horario-desc')?.value;
-            if (hora && desc) {
-                horarios.push({ hora, desc });
-            }
+            if (hora && desc) horarios.push({ hora, desc });
         });
         
-        fechas.push({
-            dia: fechaInput.value,
-            horarios: horarios
-        });
+        fechas.push({ dia: fechaInput.value, horarios });
     });
-    
-    console.log('fechas:', fechas);
     
     if (fechas.length === 0) {
         mostrarMensajeEncuentros('Debes agregar al menos una fecha', 'error');
@@ -1662,41 +1640,26 @@ async function guardarEdicionEncuentro(e, encuentroId) {
         const titulo = v.querySelector('.edit-valor-titulo')?.value;
         const precio = v.querySelector('.edit-valor-precio')?.value;
         const desc = v.querySelector('.edit-valor-desc')?.value || '';
-        if (titulo && precio) {
-            valores.push({
-                titulo,
-                precio: parseFloat(precio),
-                desc: desc
-            });
-        }
+        if (titulo && precio) valores.push({ titulo, precio: parseFloat(precio), desc });
     });
-    
-    console.log('valores:', valores);
     
     if (valores.length === 0) {
         mostrarMensajeEncuentros('Debes agregar al menos una opción de valor', 'error');
         return;
     }
     
-    // Obtener usuario
     const usuario = obtenerUsuarioActual();
-    console.log('usuario:', usuario);
     
-    if (!usuario?.equipoId) {
-        mostrarMensajeEncuentros('Error: No hay usuario logueado', 'error');
-        return;
-    }
-    
-    // Preparar datos
-    const datosAEnviar = {
+    // ENVIAR POR GET (codificando los JSON)
+    const params = new URLSearchParams({
         action: 'actualizarEncuentro',
         id: encuentroId,
         equipoId: usuario.equipoId,
         nombre: document.getElementById('editNombre')?.value || '',
         flyerUrl: document.getElementById('editFlyerUrl')?.value || '',
-        fechasJSON: JSON.stringify(fechas),
-        valoresJSON: JSON.stringify(valores),
-        cupoMaximo: parseInt(document.getElementById('editCupo')?.value) || 8,
+        fechasJSON: encodeURIComponent(JSON.stringify(fechas)),
+        valoresJSON: encodeURIComponent(JSON.stringify(valores)),
+        cupoMaximo: document.getElementById('editCupo')?.value || 8,
         lugar: document.getElementById('editDireccion')?.value || '',
         lat: lat,
         lng: lng,
@@ -1705,30 +1668,12 @@ async function guardarEdicionEncuentro(e, encuentroId) {
         ciudadId: document.getElementById('editCiudadId')?.value || '',
         tipo: tiposSeleccionados.join(', '),
         descripcion: document.getElementById('editDescripcion')?.value || ''
-    };
+    });
     
-    console.log('Datos a enviar:', datosAEnviar);
-    console.log('JSON:', JSON.stringify(datosAEnviar));
-    
-    // ENVIAR
     try {
-        console.log('Iniciando fetch a:', API_URL);
-        
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(datosAEnviar)
-        });
-        
-        console.log('Response status:', response.status);
-        console.log('Response ok:', response.ok);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
+        const url = `${API_URL}?${params.toString()}`;
+        const response = await fetch(url);
         const result = await response.json();
-        console.log('Result:', result);
         
         if (result.success) {
             document.getElementById('modalEditarEncuentro')?.remove();
@@ -1738,10 +1683,8 @@ async function guardarEdicionEncuentro(e, encuentroId) {
             mostrarMensajeEncuentros(result.error || 'Error al actualizar', 'error');
         }
     } catch (err) {
-        console.error('Error completo:', err);
-        console.error('Error message:', err.message);
-        console.error('Error stack:', err.stack);
-        mostrarMensajeEncuentros('Error de conexión: ' + err.message, 'error');
+        console.error('Error:', err);
+        mostrarMensajeEncuentros('Error de conexión', 'error');
     }
 }
 // ============================================

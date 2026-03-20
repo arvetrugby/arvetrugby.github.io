@@ -576,10 +576,11 @@ function guardarEncuentro(e) {
             }
         });
         
-        fechas.push({
-            dia: fechaInput.value,
-            horarios: horarios
-        });
+        // Cambiar ESTO:
+fechas.push({
+    dia: fechaInput.value,  // ← Solo la fecha, sin hora
+    horarios: horarios
+});
     });
     
     if (fechas.length === 0) {
@@ -1113,12 +1114,21 @@ function obtenerUsuarioActual() {
     return stored ? JSON.parse(stored) : usuarioDefault;
 }
 function formatearFecha(fechaStr) {
-    const fecha = new Date(fechaStr);
-    return fecha.toLocaleDateString('es-AR', {
-        weekday: 'short',
-        day: 'numeric',
-        month: 'short'
-    });
+    // Siempre trabajar con strings, nunca con Date objects
+    const partes = fechaStr.split('T')[0].split('-'); // Quitar la hora si existe
+    const año = partes[0];
+    const mes = parseInt(partes[1]);
+    const dia = parseInt(partes[2]);
+    
+    const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+    const dias = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+    
+    // Crear fecha solo para obtener el día de la semana (en UTC)
+    const fechaUTC = new Date(Date.UTC(parseInt(año), mes - 1, dia));
+    const nombreDia = dias[fechaUTC.getUTCDay()];
+    const nombreMes = meses[mes - 1];
+    
+    return `${nombreDia} ${dia} ${nombreMes}`;
 }
 
 function cargarEncuentros() {
@@ -1626,7 +1636,11 @@ async function guardarEdicionEncuentro(e, encuentroId) {
             if (hora && desc) horarios.push({ hora, desc });
         });
         
-        fechas.push({ dia: fechaInput.value, horarios });
+        // Cambiar ESTO:
+fechas.push({
+    dia: fechaInput.value,  // ← Solo la fecha, sin hora
+    horarios: horarios
+});
     });
     
     if (fechas.length === 0) {

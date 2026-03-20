@@ -683,6 +683,43 @@
         text-align: center;
     }
 }
+
+    .encuentros-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.encuentro-thumb {
+    aspect-ratio: 4/5;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: #1e293b;
+}
+
+.encuentro-thumb:hover {
+    transform: scale(1.03);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.encuentro-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.encuentro-thumb-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+}
 </style>
 </head>
 <body>
@@ -902,14 +939,12 @@
 </section>
     
     <section id="partidos" class="partidos-section">
-        <div class="container">
-            <h2>PRÓXIMOS ENCUENTROS</h2>
-            <p>Próximamente vas a poder crear encuentro entre equipos y se van a visualizar en esta sección.</p>
-            <div id="partidosList" class="partidos-list">
-                <p style="margin-top:20px; opacity:0.8;">Por el momento no hay encuentros publicados.</p>
-            </div>
-        </div>
-    </section>
+    <div class="container">
+        <h2>PRÓXIMOS ENCUENTROS</h2>
+        <p>Click para ver detalles del encuentro.</p>
+        <div id="encuentrosGrid" class="encuentros-grid"></div>
+    </div>
+</section>
 
 
    <footer class="footer">
@@ -1033,6 +1068,38 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
     </script>
+    <script>
+const API_URL = "https://script.google.com/macros/s/AKfycbxE-UiI85pCcUYq5LqJjN7UU7aOtXsVV_7Hyag-hYgOT4LcjGhVQaDt6js9PEQQ6E9Z/exec";
+
+async function cargarEncuentros() {
+    const grid = document.getElementById('encuentrosGrid');
+    if (!grid) return;
+    
+    try {
+        const res = await fetch(`${API_URL}?action=getEncuentrosPublicos`);
+        const data = await res.json();
+        
+        if (!data.success || !data.data?.length) {
+            grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#64748b;">No hay encuentros publicados</p>';
+            return;
+        }
+        
+        grid.innerHTML = data.data.map(enc => `
+            <div class="encuentro-thumb" onclick="window.open('https://arvetrugby.github.io/Arvet/preview.html?action=getEncuentroById&id=${enc.id}', '_blank')">
+                ${enc.flyerUrl 
+                    ? `<img src="${enc.flyerUrl}" alt="${enc.nombre}" onerror="this.parentElement.innerHTML='<div class=\\'encuentro-thumb-fallback\\'>🏉</div>'">`
+                    : `<div class="encuentro-thumb-fallback">🏉</div>`
+                }
+            </div>
+        `).join('');
+        
+    } catch (err) {
+        grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#64748b;">Error al cargar encuentros</p>';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', cargarEncuentros);
+</script>
     <script src="js/app.js"></script>
 </body>
 </html>

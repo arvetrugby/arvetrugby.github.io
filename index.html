@@ -720,6 +720,128 @@
     font-size: 4rem;
     background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
 }
+    .encuentros-slider-wrapper {
+    position: relative;
+    margin-top: 30px;
+}
+
+.encuentros-slider {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding: 20px 10px;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE */
+}
+
+.encuentros-slider::-webkit-scrollbar {
+    display: none; /* Chrome */
+}
+
+.encuentro-slide {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    width: 280px;
+    max-height: 500px;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    background: #1e293b;
+    display: flex;
+    flex-direction: column;
+}
+
+.encuentro-slide:hover {
+    transform: scale(1.02);
+}
+
+/* La imagen se muestra COMPLETA, sin recortar */
+.encuentro-slide img {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    object-fit: contain;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    display: block;
+}
+
+/* Fallback si no hay imagen */
+.encuentro-slide-fallback {
+    width: 100%;
+    height: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+}
+
+/* Info abajo de la imagen */
+.encuentro-slide-info {
+    padding: 16px;
+    background: rgba(30, 41, 59, 0.95);
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.encuentro-slide-titulo {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 6px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.encuentro-slide-org {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+/* Botones de navegación */
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.slider-btn:hover {
+    background: rgba(56, 189, 248, 0.9);
+    border-color: #38bdf8;
+}
+
+.slider-btn.prev { left: -20px; }
+.slider-btn.next { right: -20px; }
+
+@media (max-width: 768px) {
+    .encuentro-slide {
+        width: 240px;
+    }
+    .slider-btn.prev { left: 0; }
+    .slider-btn.next { right: 0; }
+    .slider-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 1.2rem;
+    }
+}
 </style>
 </head>
 <body>
@@ -938,11 +1060,15 @@
     </div>
 </section>
     
-    <section id="partidos" class="partidos-section">
+   <section id="partidos" class="partidos-section">
     <div class="container">
         <h2>PRÓXIMOS ENCUENTROS</h2>
-        <p>Click para ver detalles del encuentro.</p>
-        <div id="encuentrosGrid" class="encuentros-grid"></div>
+        <p>Deslizá para ver los encuentros publicados.</p>
+        <div class="encuentros-slider-wrapper">
+            <button class="slider-btn prev" onclick="scrollEncuentros(-1)">‹</button>
+            <div id="encuentrosSlider" class="encuentros-slider"></div>
+            <button class="slider-btn next" onclick="scrollEncuentros(1)">›</button>
+        </div>
     </div>
 </section>
 
@@ -1070,36 +1196,84 @@ document.addEventListener('DOMContentLoaded', function() {
     </script>
 
     <script src="js/app.js"></script>
-    <script>
-
+<script>
 async function cargarEncuentros() {
-    const grid = document.getElementById('encuentrosGrid');
-    if (!grid) return;
+    const slider = document.getElementById('encuentrosSlider');
+    if (!slider) return;
     
     try {
         const res = await fetch(`${API_URL}?action=getEncuentrosPublicos`);
         const data = await res.json();
         
         if (!data.success || !data.data?.length) {
-            grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#64748b;">No hay encuentros publicados</p>';
+            slider.innerHTML = '<p style="color:#64748b;">No hay encuentros publicados</p>';
             return;
         }
         
-        grid.innerHTML = data.data.map(enc => `
-            <div class="encuentro-thumb" onclick="window.open('https://arvetrugby.github.io/Arvet/preview.html?action=getEncuentroById&id=${enc.id}', '_blank')">
+        slider.innerHTML = data.data.map(enc => `
+            <div class="encuentro-slide" onclick="window.open('https://arvetrugby.github.io/Arvet/preview.html?action=getEncuentroById&id=${enc.id}', '_blank')">
                 ${enc.flyerUrl 
-                    ? `<img src="${enc.flyerUrl}" alt="${enc.nombre}" onerror="this.parentElement.innerHTML='<div class=\\'encuentro-thumb-fallback\\'>🏉</div>'">`
-                    : `<div class="encuentro-thumb-fallback">🏉</div>`
+                    ? `<img src="${enc.flyerUrl}" alt="${enc.nombre}" loading="lazy" onerror="this.style.display='none'; this.parentElement.querySelector('.fallback').style.display='flex';">
+                       <div class="encuentro-slide-fallback fallback" style="display:none;">🏉</div>`
+                    : `<div class="encuentro-slide-fallback">🏉</div>`
                 }
+                <div class="encuentro-slide-info">
+                    <h4 class="encuentro-slide-titulo">${enc.nombre}</h4>
+                    <p class="encuentro-slide-org">Organiza: ${enc.creadorNombre || 'Equipo'}</p>
+                </div>
             </div>
         `).join('');
         
     } catch (err) {
-        grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#64748b;">Error al cargar encuentros</p>';
+        slider.innerHTML = '<p style="color:#64748b;">Error al cargar</p>';
     }
 }
 
-document.addEventListener('DOMContentLoaded', cargarEncuentros);
+function scrollEncuentros(direction) {
+    const slider = document.getElementById('encuentrosSlider');
+    const scrollAmount = 300;
+    slider.scrollBy({
+        left: direction * scrollAmount,
+        behavior: 'smooth'
+    });
+}
+
+// Drag to scroll con mouse
+let isDown = false;
+let startX;
+let scrollLeft;
+
+document.addEventListener('DOMContentLoaded', () => {
+    cargarEncuentros();
+    
+    const slider = document.getElementById('encuentrosSlider');
+    if (!slider) return;
+    
+    slider.addEventListener('mousedown', (e) => {
+        isDown = true;
+        slider.style.cursor = 'grabbing';
+        startX = e.pageX - slider.offsetLeft;
+        scrollLeft = slider.scrollLeft;
+    });
+    
+    slider.addEventListener('mouseleave', () => {
+        isDown = false;
+        slider.style.cursor = 'grab';
+    });
+    
+    slider.addEventListener('mouseup', () => {
+        isDown = false;
+        slider.style.cursor = 'grab';
+    });
+    
+    slider.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - slider.offsetLeft;
+        const walk = (x - startX) * 2;
+        slider.scrollLeft = scrollLeft - walk;
+    });
+});
 </script>
     
 </body>

@@ -684,106 +684,121 @@
     }
 }
 
-    .encuentros-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-    margin-top: 30px;
-}
-
-.encuentro-thumb {
-    aspect-ratio: 4/5;
-    border-radius: 12px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background: #1e293b;
-}
-
-.encuentro-thumb:hover {
-    transform: scale(1.03);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-}
-
-.encuentro-thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.encuentro-thumb-fallback {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 4rem;
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-}
-    .encuentros-slider-wrapper {
+ 
+/* Container con sombras a los costados - igual que equipos/países */
+.encuentros-slider-container {
     position: relative;
     margin-top: 30px;
 }
 
+.encuentros-slider-container::before,
+.encuentros-slider-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.encuentros-slider-container::before {
+    left: 0;
+    background: linear-gradient(to right, #0f172a 0%, transparent 100%);
+}
+
+.encuentros-slider-container::after {
+    right: 0;
+    background: linear-gradient(to left, #0f172a 0%, transparent 100%);
+}
+
+/* Slider horizontal - igual estilo que equipos-slider */
 .encuentros-slider {
     display: flex;
     gap: 20px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
-    padding: 20px 10px;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE */
+    padding: 20px 40px;
+    scrollbar-width: thin;
+    scrollbar-color: #38bdf8 #1e293b;
 }
 
+/* Webkit scrollbar */
 .encuentros-slider::-webkit-scrollbar {
-    display: none; /* Chrome */
+    height: 8px;
 }
 
+.encuentros-slider::-webkit-scrollbar-track {
+    background: #1e293b;
+    border-radius: 4px;
+}
+
+.encuentros-slider::-webkit-scrollbar-thumb {
+    background: #38bdf8;
+    border-radius: 4px;
+}
+
+/* Mobile: scrollbar nativo */
+@media (max-width: 768px) {
+    .encuentros-slider {
+        scrollbar-width: none;
+        padding: 20px;
+    }
+    
+    .encuentros-slider::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .encuentros-slider-container::before,
+    .encuentros-slider-container::after {
+        width: 50px;
+    }
+}
+
+/* Card de encuentro */
 .encuentro-slide {
     flex: 0 0 auto;
     scroll-snap-align: start;
-    width: 280px;
-    max-height: 500px;
+    width: 260px;
     border-radius: 16px;
     overflow: hidden;
     cursor: pointer;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     background: #1e293b;
-    display: flex;
-    flex-direction: column;
+    position: relative;
 }
 
 .encuentro-slide:hover {
-    transform: scale(1.02);
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
 
-/* La imagen se muestra COMPLETA, sin recortar */
+/* Imagen completa sin recortar */
 .encuentro-slide img {
     width: 100%;
     height: auto;
-    max-height: 400px;
+    max-height: 350px;
     object-fit: contain;
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     display: block;
 }
 
-/* Fallback si no hay imagen */
+/* Fallback */
 .encuentro-slide-fallback {
     width: 100%;
-    height: 350px;
+    height: 300px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 5rem;
+    font-size: 4rem;
     background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
 }
 
-/* Info abajo de la imagen */
+/* Info del encuentro */
 .encuentro-slide-info {
     padding: 16px;
     background: rgba(30, 41, 59, 0.95);
-    border-top: 1px solid rgba(255,255,255,0.1);
 }
 
 .encuentro-slide-titulo {
@@ -801,47 +816,6 @@
     color: #64748b;
 }
 
-/* Botones de navegación */
-.slider-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: rgba(15, 23, 42, 0.8);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: #fff;
-    font-size: 1.5rem;
-    cursor: pointer;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
-}
-
-.slider-btn:hover {
-    background: rgba(56, 189, 248, 0.9);
-    border-color: #38bdf8;
-}
-
-.slider-btn.prev { left: -20px; }
-.slider-btn.next { right: -20px; }
-
-@media (max-width: 768px) {
-    .encuentro-slide {
-        width: 240px;
-    }
-    .slider-btn.prev { left: 0; }
-    .slider-btn.next { right: 0; }
-    .slider-btn {
-        width: 36px;
-        height: 36px;
-        font-size: 1.2rem;
-    }
-}
 </style>
 </head>
 <body>
@@ -1064,10 +1038,8 @@
     <div class="container">
         <h2>PRÓXIMOS ENCUENTROS</h2>
         <p>Deslizá para ver los encuentros publicados.</p>
-        <div class="encuentros-slider-wrapper">
-            <button class="slider-btn prev" onclick="scrollEncuentros(-1)">‹</button>
+        <div class="encuentros-slider-container">
             <div id="encuentrosSlider" class="encuentros-slider"></div>
-            <button class="slider-btn next" onclick="scrollEncuentros(1)">›</button>
         </div>
     </div>
 </section>
@@ -1206,15 +1178,15 @@ async function cargarEncuentros() {
         const data = await res.json();
         
         if (!data.success || !data.data?.length) {
-            slider.innerHTML = '<p style="color:#64748b;">No hay encuentros publicados</p>';
+            slider.innerHTML = '<p style="color:#64748b; padding:40px;">No hay encuentros publicados</p>';
             return;
         }
         
         slider.innerHTML = data.data.map(enc => `
             <div class="encuentro-slide" onclick="window.open('https://arvetrugby.github.io/Arvet/preview.html?action=getEncuentroById&id=${enc.id}', '_blank')">
                 ${enc.flyerUrl 
-                    ? `<img src="${enc.flyerUrl}" alt="${enc.nombre}" loading="lazy" onerror="this.style.display='none'; this.parentElement.querySelector('.fallback').style.display='flex';">
-                       <div class="encuentro-slide-fallback fallback" style="display:none;">🏉</div>`
+                    ? `<img src="${enc.flyerUrl}" alt="${enc.nombre}" loading="lazy" onerror="this.style.display='none'; this.parentElement.querySelector('.encuentro-slide-fallback').style.display='flex';">
+                       <div class="encuentro-slide-fallback" style="display:none;">🏉</div>`
                     : `<div class="encuentro-slide-fallback">🏉</div>`
                 }
                 <div class="encuentro-slide-info">
@@ -1225,17 +1197,8 @@ async function cargarEncuentros() {
         `).join('');
         
     } catch (err) {
-        slider.innerHTML = '<p style="color:#64748b;">Error al cargar</p>';
+        slider.innerHTML = '<p style="color:#64748b; padding:40px;">Error al cargar encuentros</p>';
     }
-}
-
-function scrollEncuentros(direction) {
-    const slider = document.getElementById('encuentrosSlider');
-    const scrollAmount = 300;
-    slider.scrollBy({
-        left: direction * scrollAmount,
-        behavior: 'smooth'
-    });
 }
 
 // Drag to scroll con mouse

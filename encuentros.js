@@ -836,16 +836,18 @@ async function renderizarMisEncuentros() {
 
 async function compartirEncuentro(id) {
     try {
+        // Obtener datos del encuentro
         const response = await fetch(`${API_URL}?action=getEncuentroById&id=${id}`);
         const result = await response.json();
         
         if (!result.success || !result.data) {
-            alert('Error al cargar datos del encuentro');
+            mostrarMensajeEncuentros('Error al cargar datos del encuentro', 'error');
             return;
         }
         
         const enc = result.data;
         
+        // Parsear fechas
         let fechas = [];
         try {
             fechas = JSON.parse(enc.fechasJSON || '[]');
@@ -853,12 +855,14 @@ async function compartirEncuentro(id) {
             console.error('Error parseando fechas:', e);
         }
         
+        // Formatear fechas y horarios
         const fechasTexto = fechas.map(f => {
             const fechaFormateada = formatearFecha(f.dia);
             const horariosTexto = f.horarios.map(h => `   ${h.hora}hs - ${h.desc}`).join('\n');
             return `📅 ${fechaFormateada}\n${horariosTexto}`;
         }).join('\n\n');
         
+        // Construir el mensaje
         const linkEncuentro = `https://arvetrugby.github.io/Arvet/preview.html?action=getEncuentroById&id=${id}`;
         
         let mensaje = `🏉 *${enc.nombre}*\n\n`;
@@ -872,142 +876,20 @@ async function compartirEncuentro(id) {
         }
         
         if (enc.flyerUrl) {
-            mensaje += `\n🖼️ Flyer: ${enc.flyerUrl}\n`;
+            mensaje += `\n🖼️ ${enc.flyerUrl}\n`;
         }
         
-        mensaje += `\n🔗 Ver más: ${linkEncuentro}`;
+        mensaje += `\n🔗 ${linkEncuentro}`;
         
-        if (navigator.share) {
-            try {
-                if (enc.flyerUrl) {
-                    try {
-                        const imgResponse = await fetch(enc.flyerUrl);
-                        const imgBlob = await imgResponse.blob();
-                        const imgFile = new File([imgBlob], 'flyer.jpg', { type: imgBlob.type });
-                        
-                        await navigator.share({
-                            title: enc.nombre,
-                            text: mensaje,
-                            files: [imgFile]
-                        });
-                        return;
-                    } catch (imgErr) {
-                        console.log('No se pudo adjuntar imagen:', imgErr);
-                    }
-                }
-                
-                await navigator.share({
-                    title: enc.nombre,
-                    text: mensaje
-                });
-                return;
-                
-            } catch (shareErr) {
-                if (shareErr.name === 'AbortError') return;
-                console.log('Web Share API falló:', shareErr);
-            }
-        }
+        // Copiar al portapapeles
+        await navigator.clipboard.writeText(mensaje);
         
-        mostrarModalCompartirTexto(enc, mensaje, linkEncuentro);
+        mostrarMensajeEncuentros('✅ Mensaje copiado. Pegalo en WhatsApp!', 'success');
         
     } catch (err) {
         console.error('Error:', err);
-        alert('Error al preparar el encuentro');
+        mostrarMensajeEncuentros('Error al preparar el encuentro', 'error');
     }
-}
-
-function mostrarModalCompartirTexto(encuentro, mensaje, link) {
-    const modalExistente = document.getElementById('modalCompartir');
-    if (modalExistente) modalExistente.remove();
-    
-    const modal = document.createElement('div');
-    modal.id = 'modalCompartir';
-    modal.className = 'modal-overlay active';
-    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 99999; padding: 20px;';
-    
-    const mensajePreview = mensaje
-        .replace(/\n/g, '<br>')
-        .replace(/\*(.*?)\*/g, '<strong>$1</strong>');
-    
-    modal.innerHTML = `
-        <div style="background: white; border-radius: 16px; max-width: 420px; width: 100%; max-height: 90vh; overflow-y: auto; animation: slideUp 0.3s ease;">
-            <div style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); padding: 20px; border-radius: 16px 16px 0 0; position: relative;">
-                <h3 style="margin: 0; color: white; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
-                    <span>📤</span> Compartir encuentro
-                </h3>
-                <button onclick="document.getElementById('modalCompartir').remove()" 
-                        style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.2); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center;">×</button>
-            </div>
-            
-            <div style="padding: 20px; background: #f8fafc; margin: 20px; border-radius: 12px; border: 1px solid #e2e8f0;">
-                <div style="font-size: 0.75rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; font-weight: 600;">
-                    Vista previa del mensaje
-                </div>
-                <div style="color: #1e293b; font-size: 0.95rem; line-height: 1.5; font-family: system-ui, -apple-system, sans-serif; background: white; padding: 15px; border-radius: 8px; border-left: 3px solid #4f46e5;">
-                    ${mensajePreview}
-                </div>
-            </div>
-            
-            <div style="padding: 0 20px 20px 20px; display: flex; flex-direction: column; gap: 10px;">
-                <a href="https://wa.me/?text=${encodeURIComponent(mensaje)}" 
-                   target="_blank"
-                   style="background: #25D366; color: white; padding: 14px 20px; border-radius: 10px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 600; font-size: 1rem;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-                    </svg>
-                    Enviar por WhatsApp
-                </a>
-                
-                <button onclick="copiarMensajeCompartir('${encodeURIComponent(mensaje).replace(/'/g, "\\'")}')" 
-                        style="background: #4f46e5; color: white; padding: 14px 20px; border-radius: 10px; border: none; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 600; font-size: 1rem; cursor: pointer;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
-                    </svg>
-                    Copiar mensaje
-                </button>
-                
-                <a href="mailto:?subject=${encodeURIComponent(`Invitación: ${encuentro.nombre}`)}&body=${encodeURIComponent(mensaje)}" 
-                   style="background: #ea4335; color: white; padding: 14px 20px; border-radius: 10px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 600; font-size: 1rem;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-                    </svg>
-                    Enviar por Email
-                </a>
-                
-                <button onclick="copiarUrlCompartir('${link}')" 
-                        style="background: #f1f5f9; color: #475569; padding: 12px 20px; border-radius: 10px; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 500; font-size: 0.9rem; cursor: pointer;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-                    </svg>
-                    Solo copiar link
-                </button>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-    
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) modal.remove();
-    });
-}
-
-function copiarMensajeCompartir(mensajeEncoded) {
-    const mensaje = decodeURIComponent(mensajeEncoded);
-    navigator.clipboard.writeText(mensaje).then(() => {
-        alert('✅ Mensaje copiado. Pegalo en WhatsApp!');
-        document.getElementById('modalCompartir')?.remove();
-    }).catch(() => {
-        alert('Error al copiar');
-    });
-}
-
-function copiarUrlCompartir(url) {
-    navigator.clipboard.writeText(url).then(() => {
-        alert('✅ Link copiado');
-    });
 }
 // ============================================
 // RENDERIZAR INVITACIONES (encuentros de otros equipos)

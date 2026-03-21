@@ -1491,7 +1491,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 </script>
-    <script>
+ <script>
 function abrirModal(tipo) {
     const modal = document.getElementById("modalOverlay");
     const body = document.getElementById("modalBody");
@@ -1538,6 +1538,52 @@ function abrirModal(tipo) {
         `;
     }
 
+    if (tipo === "historias") {
+        contenido = `
+            <h3>Historias de equipos</h3>
+            <p>
+                Muy pronto vas a poder conocer historias reales de equipos de veteranos:
+                giras, terceros tiempos inolvidables y anécdotas que hacen único a este deporte.
+            </p>
+            <p style="opacity:.7;">🚧 Estamos trabajando en esta sección.</p>
+        `;
+    }
+
+    if (tipo === "blog") {
+        contenido = `
+            <h3>Blog</h3>
+            <p>
+                Contenido sobre organización de equipos, gestión y cultura del rugby veterano.
+            </p>
+            <p style="opacity:.7;">✍️ Próximamente disponible.</p>
+        `;
+    }
+
+    if (tipo === "faq") {
+        contenido = `
+            <h3>Preguntas Frecuentes</h3>
+
+            <p><strong>¿ARVET tiene costo?</strong><br>
+            No. La plataforma es gratuita para equipos y jugadores.</p>
+
+            <p><strong>¿Cómo creo un equipo?</strong><br>
+            Desde "Crear equipo", completás los datos y automáticamente tenés tu página.</p>
+
+            <p><strong>¿Los jugadores se registran solos?</strong><br>
+            Sí. Cada jugador puede sumarse y cargar sus datos.</p>
+
+            <p><strong>¿Puedo organizar partidos?</strong><br>
+            Sí. Publicás un encuentro y otros equipos pueden contactarte.</p>
+
+            <p><strong>¿Cómo me comunico con otros equipos?</strong><br>
+            Directamente por WhatsApp desde la plataforma.</p>
+
+            <p style="opacity:.7; margin-top:15px;">
+            ¿Tenés otra duda? Usá la sección de Ayuda 😉
+            </p>
+        `;
+    }
+
     body.innerHTML = contenido;
     modal.classList.add("active");
 }
@@ -1552,51 +1598,6 @@ document.getElementById("modalOverlay").addEventListener("click", function(e) {
         cerrarModal();
     }
 });
-        if (tipo === "historias") {
-    contenido = `
-        <h3>Historias de equipos</h3>
-        <p>
-            Muy pronto vas a poder conocer historias reales de equipos de veteranos:
-            giras, terceros tiempos inolvidables y anécdotas que hacen único a este deporte.
-        </p>
-        <p style="opacity:.7;">🚧 Estamos trabajando en esta sección.</p>
-    `;
-}
-
-if (tipo === "blog") {
-    contenido = `
-        <h3>Blog</h3>
-        <p>
-            Contenido sobre organización de equipos, gestión, experiencias y cultura del rugby veterano.
-        </p>
-        <p style="opacity:.7;">✍️ Próximamente disponible.</p>
-    `;
-}
-
-if (tipo === "faq") {
-    contenido = `
-        <h3>Preguntas Frecuentes</h3>
-
-        <p><strong>¿ARVET tiene costo?</strong><br>
-        No. La plataforma es gratuita para equipos y jugadores.</p>
-
-        <p><strong>¿Cómo creo un equipo?</strong><br>
-        Desde "Crear equipo", completás los datos y automáticamente tenés tu página.</p>
-
-        <p><strong>¿Los jugadores se registran solos?</strong><br>
-        Sí. Cada jugador puede sumarse y cargar sus datos.</p>
-
-        <p><strong>¿Puedo organizar partidos?</strong><br>
-        Sí. Publicás un encuentro y otros equipos pueden contactarte.</p>
-
-        <p><strong>¿Cómo me comunico con otros equipos?</strong><br>
-        Directamente por WhatsApp desde la plataforma.</p>
-
-        <p style="opacity:.7; margin-top:15px;">
-        ¿Tenés otra duda? Usá la sección de Ayuda 😉
-        </p>
-    `;
-}
 </script>
 </body>
 </html>

@@ -1366,12 +1366,8 @@ function contarEquiposDesdePaises() {
     let total = 0;
 
     elementos.forEach(el => {
-        // BONUS: limpia texto (ej: "12 equipos" → 12)
         const numero = parseInt(el.textContent.replace(/\D/g, ''));
-
-        if (!isNaN(numero)) {
-            total += numero;
-        }
+        if (!isNaN(numero)) total += numero;
     });
 
     const contador = document.getElementById("contadorEquipos");
@@ -1381,12 +1377,25 @@ function contarEquiposDesdePaises() {
     }
 }
 
-// ===== ESPERAR A QUE CARGUE TODO =====
-window.addEventListener("load", () => {
-    // pequeño delay para asegurar que cargarPaises terminó
-    setTimeout(() => {
-        contarEquiposDesdePaises();
-    }, 1200);
+// ===== OBSERVAR CUANDO SE CARGAN LOS PAISES =====
+document.addEventListener("DOMContentLoaded", () => {
+    const contenedor = document.getElementById("paisesGrid");
+
+    if (!contenedor) return;
+
+    const observer = new MutationObserver(() => {
+        const items = contenedor.querySelectorAll('.pais-equipos');
+
+        if (items.length > 0) {
+            contarEquiposDesdePaises();
+            observer.disconnect(); // 👈 solo corre una vez
+        }
+    });
+
+    observer.observe(contenedor, {
+        childList: true,
+        subtree: true
+    });
 });
 </script>
 </body>

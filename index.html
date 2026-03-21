@@ -1341,6 +1341,17 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>  
     <script>
+function iniciarContadorEquipos() {
+    const contador = document.getElementById("contadorEquipos");
+    if (!contador) return;
+
+    const totalEquipos = document.querySelectorAll('.equipo-card').length;
+
+    if (totalEquipos > 0) {
+        animarContador(contador, totalEquipos);
+    }
+}
+
 function animarContador(elemento, valorFinal, duracion = 1500) {
     let inicio = 0;
     const incremento = valorFinal / (duracion / 16);
@@ -1358,22 +1369,6 @@ function animarContador(elemento, valorFinal, duracion = 1500) {
 
     actualizar();
 }
-
-function iniciarContadorEquipos() {
-    const contador = document.getElementById("contadorEquipos");
-    if (!contador) return;
-
-    const totalEquipos = document.querySelectorAll('.equipo-card').length;
-
-    if (totalEquipos > 0) {
-        animarContador(contador, totalEquipos);
-    }
-}
-
-/* Esperar a que carguen los equipos */
-window.addEventListener("load", () => {
-    setTimeout(iniciarContadorEquipos, 800);
-});
 </script>
 </body>
 </html>

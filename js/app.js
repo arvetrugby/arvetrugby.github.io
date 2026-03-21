@@ -1106,17 +1106,24 @@ function initRegistroJugador() {
 
 const inputTelefono = document.querySelector("#telefono");
 
-window.iti = window.intlTelInput(inputTelefono, {
-    initialCountry: "auto",
-    nationalMode: false,
-    geoIpLookup: function(callback) {
-        fetch("https://ipapi.co/json")
-            .then(res => res.json())
-            .then(data => callback(data.country_code))
-            .catch(() => callback("ar"));
-    },
-    utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/utils.js"
-});
+// Solo crear si no existe (evitar pisar el de registro)
+if (!window.iti) {
+    window.iti = window.intlTelInput(inputTelefono, {
+        initialCountry: "auto",
+        nationalMode: false,
+        geoIpLookup: function(callback) {
+            fetch("https://ipapi.co/json")
+                .then(res => res.json())
+                .then(data => callback(data.country_code))
+                .catch(() => callback("ar"));
+        },
+        utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/utils.js"
+    });
+} else {
+    // Si ya existe, solo actualizar el input
+    window.iti.setInput(inputTelefono);
+}
+
     
     form.addEventListener('submit', async function(e) {
         e.preventDefault();

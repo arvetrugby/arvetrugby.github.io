@@ -927,6 +927,7 @@
       });
   }
 
+
 // ==========================
 // BOTON VOLVER (FUNCIONA SI O SI)
 // ==========================
@@ -945,37 +946,13 @@ document.addEventListener("click", function(e){
 
 
 // ==========================
-// BOTON PARTICIPAR
+// BOTON PARTICIPAR (VA A ADMIN)
 // ==========================
 document.addEventListener("click", function(e){
     if(e.target.id === "btnParticipar"){
-
-        const usuario = JSON.parse(localStorage.getItem("arvet_user"));
-
-        if(!usuario){
-            alert("Para participar necesitás tener un equipo creado.");
-            window.location.href = "registro.html";
-            return;
-        }
-
-        if(usuario.tipo === "equipo"){
-            inscribirEquipo(usuario);
-        } 
-        else if(usuario.tipo === "jugador"){
-            alert("Sos jugador. Tenés que unirte a un equipo para participar.");
-            window.location.href = "panel-jugador.html";
-        }
+        window.location.href = "https://arvetrugby.github.io/Arvet/admin.html";
     }
 });
-
-
-// ==========================
-// FUNCION INSCRIPCION
-// ==========================
-function inscribirEquipo(usuario){
-    alert("Equipo inscripto correctamente 🏉");
-    console.log(usuario);
-}
 </script>
 </body>
 </html>

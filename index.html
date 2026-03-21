@@ -892,6 +892,78 @@
         right: 16px;
     }
 }
+
+    /* ===== MODAL ===== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(4px);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+
+    z-index: 9999;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: #0f172a;
+    padding: 30px;
+    border-radius: 16px;
+    max-width: 500px;
+    width: 90%;
+    color: white;
+    position: relative;
+    text-align: center;
+}
+
+.modal-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    cursor: pointer;
+    font-size: 18px;
+    color: #94a3b8;
+}
+
+.modal-close:hover {
+    color: white;
+}
+
+.modal-content h3 {
+    margin-bottom: 15px;
+}
+
+.modal-content p {
+    color: #cbd5e1;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+/* BOTÓN WHATSAPP (sin icono como pediste) */
+.btn-whatsapp {
+    display: inline-block;
+    background: #25D366;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+}
 </style>
 </head>
 <body>
@@ -904,7 +976,7 @@
             <div class="nav-links">
                 <a href="#buscador">Buscar</a>
                 <a href="#paises">Países</a>
-                <a href="#partidos">Partidos</a>
+                <a href="#partidos">Encuentros</a>
                 <a href="login.html" class="btn-login">Login</a>
             </div>
         </div>
@@ -1144,21 +1216,25 @@
                 </div>
             </div>
             
-            <div class="footer-links">
-                <h4>Plataforma</h4>
-                <a href="#">Crear equipo</a>
-                <a href="#">Buscar equipos</a>
-                <a href="#">Próximos partidos</a>
-                <a href="#">Países</a>
-            </div>
+       <div class="footer-links">
+    <h4>Plataforma</h4>
+
+    <a href="login.html">Login</a>
+    <a href="registro.html">Crear equipo nuevo</a>
+
+    <a href="#buscador">Buscar equipos</a>
+    <a href="#partidos">Próximos encuentros</a>
+    <a href="#paises">Países</a>
+</div>
             
-            <div class="footer-links">
-                <h4>Soporte</h4>
-                <a href="#">Ayuda</a>
-                <a href="#">Contacto</a>
-                <a href="#">Términos y condiciones</a>
-                <a href="#">Privacidad</a>
-            </div>
+           <div class="footer-links">
+    <h4>Soporte</h4>
+
+    <a href="#" onclick="abrirModal('ayuda')">Ayuda</a>
+    <a href="#" onclick="abrirModal('contacto')">Contacto</a>
+    <a href="#" onclick="abrirModal('terminos')">Términos y condiciones</a>
+    <a href="#" onclick="abrirModal('privacidad')">Privacidad</a>
+</div>
             
             <div class="footer-links">
                 <h4>Comunidad</h4>
@@ -1178,6 +1254,12 @@
     <span class="fab-icon">+</span>
     <span class="fab-text">Sumate!</span>
 </a>
+    <div id="modalOverlay" class="modal-overlay">
+    <div class="modal-content">
+        <span class="modal-close" onclick="cerrarModal()">✕</span>
+        <div id="modalBody"></div>
+    </div>
+</div>
     <script>
         // Loading screen logic
         const logo = document.getElementById("loadingLogo");
@@ -1396,6 +1478,68 @@ document.addEventListener("DOMContentLoaded", () => {
         childList: true,
         subtree: true
     });
+});
+</script>
+    <script>
+function abrirModal(tipo) {
+    const modal = document.getElementById("modalOverlay");
+    const body = document.getElementById("modalBody");
+
+    let contenido = "";
+
+    if (tipo === "ayuda") {
+        contenido = `
+            <h3>Ayuda</h3>
+            <p>Para evacuar dudas contactate con el desarrollador vía WhatsApp.</p>
+            <a class="btn-whatsapp" href="https://wa.me/5493434477577" target="_blank">
+                WhatsApp +54 9 343 4477577
+            </a>
+        `;
+    }
+
+    if (tipo === "contacto") {
+        contenido = `
+            <h3>Contacto</h3>
+            <p>Contactate con el desarrollador vía WhatsApp.</p>
+            <a class="btn-whatsapp" href="https://wa.me/5493434477577" target="_blank">
+                WhatsApp +54 9 343 4477577
+            </a>
+        `;
+    }
+
+    if (tipo === "terminos") {
+        contenido = `
+            <h3>Términos y Condiciones</h3>
+            <p>
+                El uso de ARVET implica la aceptación de las normas de la plataforma.
+                Los equipos son responsables de la información que publican y del uso de los datos.
+            </p>
+        `;
+    }
+
+    if (tipo === "privacidad") {
+        contenido = `
+            <h3>Privacidad</h3>
+            <p>
+                ARVET protege la información de los usuarios.
+                No compartimos datos personales con terceros sin consentimiento.
+            </p>
+        `;
+    }
+
+    body.innerHTML = contenido;
+    modal.classList.add("active");
+}
+
+function cerrarModal() {
+    document.getElementById("modalOverlay").classList.remove("active");
+}
+
+// cerrar clickeando afuera
+document.getElementById("modalOverlay").addEventListener("click", function(e) {
+    if (e.target === this) {
+        cerrarModal();
+    }
 });
 </script>
 </body>

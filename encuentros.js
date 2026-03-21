@@ -832,65 +832,7 @@ async function renderizarMisEncuentros() {
 
 
 
-// COMPARTIR ENCUENTRO
 
-async function compartirEncuentro(id) {
-    try {
-        // Obtener datos del encuentro
-        const response = await fetch(`${API_URL}?action=getEncuentroById&id=${id}`);
-        const result = await response.json();
-        
-        if (!result.success || !result.data) {
-            mostrarMensajeEncuentros('Error al cargar datos del encuentro', 'error');
-            return;
-        }
-        
-        const enc = result.data;
-        
-        // Parsear fechas
-        let fechas = [];
-        try {
-            fechas = JSON.parse(enc.fechasJSON || '[]');
-        } catch(e) {
-            console.error('Error parseando fechas:', e);
-        }
-        
-        // Formatear fechas y horarios
-        const fechasTexto = fechas.map(f => {
-            const fechaFormateada = formatearFecha(f.dia);
-            const horariosTexto = f.horarios.map(h => `   ${h.hora}hs - ${h.desc}`).join('\n');
-            return `📅 ${fechaFormateada}\n${horariosTexto}`;
-        }).join('\n\n');
-        
-        // Construir el mensaje
-        const linkEncuentro = `https://arvetrugby.github.io/Arvet/preview.html?action=getEncuentroById&id=${id}`;
-        
-        let mensaje = `🏉 *${enc.nombre}*\n\n`;
-        mensaje += `${fechasTexto}\n\n`;
-        mensaje += `📍 ${enc.lugar || 'Ubicación a confirmar'}\n`;
-        mensaje += `👥 Cupo: ${enc.cupoMaximo} equipos\n`;
-        mensaje += `🏉 Organiza: ${enc.creadorNombre || 'Equipo organizador'}\n`;
-        
-        if (enc.descripcion) {
-            mensaje += `\n📝 ${enc.descripcion.substring(0, 100)}${enc.descripcion.length > 100 ? '...' : ''}\n`;
-        }
-        
-        if (enc.flyerUrl) {
-            mensaje += `\n🖼️ ${enc.flyerUrl}\n`;
-        }
-        
-        mensaje += `\n🔗 ${linkEncuentro}`;
-        
-        // Copiar al portapapeles
-        await navigator.clipboard.writeText(mensaje);
-        
-        mostrarMensajeEncuentros('✅ Mensaje copiado. Pegalo en WhatsApp!', 'success');
-        
-    } catch (err) {
-        console.error('Error:', err);
-        mostrarMensajeEncuentros('Error al preparar el encuentro', 'error');
-    }
-}
 // ============================================
 // RENDERIZAR INVITACIONES (encuentros de otros equipos)
 // ============================================
@@ -1986,8 +1928,59 @@ async function cancelarEncuentro(encuentroId) {
     }
 }
 function compartirEncuentro(id) {
-    const url = `https://arvetrugby.github.io/Arvet/preview.html?action=getEncuentroById&id=${id}`;
-    navigator.clipboard.writeText(url)
-        .then(() => mostrarMensajeEncuentros('Link copiado al portapapeles', 'success'))
-        .catch(err => mostrarMensajeEncuentros('No se pudo copiar el link', 'error'));
+    // Primero obtenemos los datos del encuentro
+    fetch(`${API_URL}?action=getEncuentroById&id=${id}`)
+        .then(response => response.json())
+        .then(result => {
+            if (!result.success || !result.data) {
+                mostrarMensajeEncuentros('Error al cargar datos del encuentro', 'error');
+                return;
+            }
+            
+            const enc = result.data;
+            
+            // Parsear fechas
+            let fechas = [];
+            try {
+                fechas = JSON.parse(enc.fechasJSON || '[]');
+            } catch(e) {
+                fechas = [];
+            }
+            
+            // Formatear fechas y horarios
+            const fechasTexto = fechas.map(f => {
+                const fechaFormateada = formatearFecha(f.dia);
+                const horariosTexto = f.horarios.map(h => `   ${h.hora}hs - ${h.desc}`).join('\n');
+                return `📅 ${fechaFormateada}\n${horariosTexto}`;
+            }).join('\n\n');
+            
+            // Construir el mensaje completo
+            const linkEncuentro = `https://arvetrugby.github.io/Arvet/preview.html?action=getEncuentroById&id=${id}`;
+            
+            let mensaje = `🏉 *${enc.nombre}*\n\n`;
+            mensaje += `${fechasTexto}\n\n`;
+            mensaje += `📍 ${enc.lugar || 'Ubicación a confirmar'}\n`;
+            mensaje += `👥 Cupo: ${enc.cupoMaximo} equipos\n`;
+            mensaje += `🏉 Organiza: ${enc.creadorNombre || 'Equipo organizador'}\n`;
+            
+            if (enc.descripcion) {
+                mensaje += `\n📝 ${enc.descripcion.substring(0, 100)}${enc.descripcion.length > 100 ? '...' : ''}\n`;
+            }
+            
+            if (enc.flyerUrl) {
+                mensaje += `\n🖼️ ${enc.flyerUrl}\n`;
+            }
+            
+            mensaje += `\n🔗 ${linkEncuentro}`;
+            
+            // Copiar al portapapeles
+            return navigator.clipboard.writeText(mensaje);
+        })
+        .then(() => {
+            mostrarMensajeEncuentros('✅ Mensaje copiado. Pegalo en WhatsApp!', 'success');
+        })
+        .catch(err => {
+            console.error('Error:', err);
+            mostrarMensajeEncuentros('No se pudo copiar el mensaje', 'error');
+        });
 }

@@ -1101,6 +1101,11 @@ async function aceptarInvitacion(encuentroId) {
     
     if (result.success) {
       mostrarMensajeEncuentros('¡Invitación aceptada!', 'success');
+        try {
+        await fetch(`${API_URL}?action=crearAsistenciasEquipo&encuentroId=${encuentroId}&equipoId=${usuario.equipoId}`);
+      } catch (err) {
+        console.error('Error creando asistencias:', err);
+        // No mostramos error al usuario porque la invitación ya se aceptó
       setTimeout(() => renderizarInvitaciones(), 300);
     } else {
       mostrarMensajeEncuentros(result.error || 'Error al aceptar', 'error');
@@ -1980,4 +1985,132 @@ function compartirEncuentro(id) {
             console.error('Error:', err);
             mostrarMensajeEncuentros('No se pudo copiar el mensaje', 'error');
         });
+}
+
+// ============================================
+// PANEL DE JUGADOR - ASISTENCIAS A ENCUENTROS
+// ============================================
+
+async function cargarEncuentrosParaJugador(equipoId, jugadorId, containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    try {
+        const response = await fetch(`${API_URL}?action=getEncuentrosParaJugador&equipoId=${equipoId}&jugadorId=${jugadorId}`);
+        const result = await response.json();
+        
+        if (!result.success || !result.data || result.data.length === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #64748b;">
+                    <div style="font-size: 3rem; margin-bottom: 15px;">🏉</div>
+                    <h3>No tenés encuentros pendientes</h3>
+                    <p>Cuando tu equipo acepte una invitación, aparecerá aquí.</p>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = result.data.map(enc => {
+            let fechas = [];
+            try {
+                fechas = JSON.parse(enc.fechasJSON || '[]');
+            } catch(e) { fechas = []; }
+            
+            const fechaPrincipal = fechas[0] ? formatearFecha(fechas[0].dia) : 'Fecha a confirmar';
+            const horarioPrincipal = fechas[0]?.horarios?.[0]?.hora || '';
+            
+            // Estado visual
+            let estadoHTML = '';
+            let botonesHTML = '';
+            
+            if (enc.miRespuesta === 'voy') {
+                estadoHTML = `<span style="background: #dcfce7; color: #166534; padding: 6px 16px; border-radius: 20px; font-weight: 600;">✓ VOY</span>`;
+                botonesHTML = `
+                    <button onclick="guardarAsistencia('${enc.id}', 'no_voy')" 
+                        style="flex: 1; padding: 12px; border: 2px solid #fee2e2; border-radius: 8px; background: white; color: #991b1b; font-weight: 600; cursor: pointer;">
+                        Cambiar a NO VOY
+                    </button>
+                `;
+            } else if (enc.miRespuesta === 'no_voy') {
+                estadoHTML = `<span style="background: #fee2e2; color: #991b1b; padding: 6px 16px; border-radius: 20px; font-weight: 600;">✕ NO VOY</span>`;
+                botonesHTML = `
+                    <button onclick="guardarAsistencia('${enc.id}', 'voy')" 
+                        style="flex: 1; padding: 12px; border: 2px solid #dcfce7; border-radius: 8px; background: white; color: #166534; font-weight: 600; cursor: pointer;">
+                        Cambiar a VOY
+                    </button>
+                `;
+            } else {
+                estadoHTML = `<span style="background: #fef3c7; color: #92400e; padding: 6px 16px; border-radius: 20px; font-weight: 600;">⏳ PENDIENTE</span>`;
+                botonesHTML = `
+                    <button onclick="guardarAsistencia('${enc.id}', 'voy')" 
+                        style="flex: 1; padding: 12px; border: none; border-radius: 8px; background: #16a34a; color: white; font-weight: 600; cursor: pointer;">
+                        ✓ VOY
+                    </button>
+                    <button onclick="guardarAsistencia('${enc.id}', 'no_voy')" 
+                        style="flex: 1; padding: 12px; border: none; border-radius: 8px; background: #dc2626; color: white; font-weight: 600; cursor: pointer;">
+                        ✕ NO VOY
+                    </button>
+                `;
+            }
+            
+            return `
+                <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px; border: 2px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                        <div>
+                            <h3 style="margin: 0 0 5px 0; color: #1e293b; font-size: 1.2rem;">${enc.nombre}</h3>
+                            <p style="margin: 0; color: #64748b; font-size: 0.9rem;">
+                                📅 ${fechaPrincipal} ${horarioPrincipal ? `• ${horarioPrincipal}hs` : ''}
+                            </p>
+                            <p style="margin: 5px 0 0 0; color: #64748b; font-size: 0.85rem;">
+                                Organiza: ${enc.creadorNombre}
+                            </p>
+                        </div>
+                        ${estadoHTML}
+                    </div>
+                    
+                    <div style="background: #f8fafc; border-radius: 8px; padding: 12px; margin-bottom: 15px;">
+                        <p style="margin: 0; color: #64748b; font-size: 0.9rem;">
+                            📍 ${enc.lugar || 'Ubicación a confirmar'}
+                        </p>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px;">
+                        ${botonesHTML}
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+    } catch (err) {
+        console.error('Error cargando encuentros del jugador:', err);
+        container.innerHTML = '<p style="color: #dc2626;">Error al cargar encuentros</p>';
+    }
+}
+
+async function guardarAsistencia(encuentroId, respuesta) {
+    const usuario = obtenerUsuarioActual();
+    
+    const params = new URLSearchParams({
+        action: 'guardarAsistenciaJugador',
+        encuentroId: encuentroId,
+        jugadorId: usuario.id,
+        jugadorNombre: usuario.nombre,
+        equipoId: usuario.equipoId,
+        respuesta: respuesta
+    });
+    
+    try {
+        const response = await fetch(`${API_URL}?${params.toString()}`);
+        const result = await response.json();
+        
+        if (result.success) {
+            mostrarMensajeEncuentros(`Confirmado: ${respuesta === 'voy' ? 'VOY ✓' : 'NO VOY ✕'}`, 'success');
+            // Recargar
+            cargarEncuentrosParaJugador(usuario.equipoId, usuario.id, 'panelJugadorEncuentros');
+        } else {
+            mostrarMensajeEncuentros(result.error || 'Error al guardar', 'error');
+        }
+    } catch (err) {
+        mostrarMensajeEncuentros('Error de conexión', 'error');
+    }
 }

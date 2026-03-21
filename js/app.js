@@ -737,11 +737,7 @@ window.iti = window.intlTelInput(inputTelefono, {
         }
     });
 }
-    // ==========================================
-// AVATAR - SELECCIONAR PREDEFINIDO
-// ==========================================
-
-function seleccionarAvatar(imgElement) {
+ function seleccionarAvatar(imgElement) {
     // Quitar borde de todas las opciones
     document.querySelectorAll('.avatar-option').forEach(img => {
         img.style.border = '2px solid transparent';
@@ -755,18 +751,30 @@ function seleccionarAvatar(imgElement) {
     
     // Actualizar preview
     const nuevaUrl = imgElement.src;
-    document.getElementById('avatarPreview').src = nuevaUrl;
+    const avatarPreview = document.getElementById('avatarPreview');
+    if (avatarPreview) {
+        avatarPreview.src = nuevaUrl;
+    }
     
-    // Guardar en hidden input
-    document.getElementById('avatarUrl').value = nuevaUrl;
+    // ✅ GUARDAR EN HIDDEN INPUT (solo si existe)
+    const avatarUrlInput = document.getElementById('avatarUrl');
+    if (avatarUrlInput) {
+        avatarUrlInput.value = nuevaUrl;
+    }
     
-    // Limpiar input de archivo si había uno
-    document.getElementById('avatarUpload').value = '';
-    document.getElementById('avatarNombreArchivo').style.display = 'none';
+    // Limpiar input de archivo (solo si existe)
+    const avatarUpload = document.getElementById('avatarUpload');
+    if (avatarUpload) {
+        avatarUpload.value = '';
+    }
+    
+    const avatarNombreArchivo = document.getElementById('avatarNombreArchivo');
+    if (avatarNombreArchivo) {
+        avatarNombreArchivo.style.display = 'none';
+    }
     
     console.log('Avatar seleccionado:', nuevaUrl);
 }
-
 // ==========================================
 // AVATAR - SUBIR FOTO PROPIA
 // ==========================================

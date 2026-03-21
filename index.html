@@ -1340,18 +1340,8 @@ document.addEventListener("DOMContentLoaded", function () {
     setTimeout(mostrarTexto, 2000);
 });
 </script>  
-    <script>
-function iniciarContadorEquipos() {
-    const contador = document.getElementById("contadorEquipos");
-    if (!contador) return;
-
-    const totalEquipos = document.querySelectorAll('.equipo-card').length;
-
-    if (totalEquipos > 0) {
-        animarContador(contador, totalEquipos);
-    }
-}
-
+<script>
+// ===== ANIMACIÓN DEL CONTADOR =====
 function animarContador(elemento, valorFinal, duracion = 1500) {
     let inicio = 0;
     const incremento = valorFinal / (duracion / 16);
@@ -1369,6 +1359,35 @@ function animarContador(elemento, valorFinal, duracion = 1500) {
 
     actualizar();
 }
+
+// ===== SUMAR EQUIPOS DESDE PAISES =====
+function contarEquiposDesdePaises() {
+    const elementos = document.querySelectorAll('.pais-equipos');
+    let total = 0;
+
+    elementos.forEach(el => {
+        // BONUS: limpia texto (ej: "12 equipos" → 12)
+        const numero = parseInt(el.textContent.replace(/\D/g, ''));
+
+        if (!isNaN(numero)) {
+            total += numero;
+        }
+    });
+
+    const contador = document.getElementById("contadorEquipos");
+
+    if (contador && total > 0) {
+        animarContador(contador, total, 1800);
+    }
+}
+
+// ===== ESPERAR A QUE CARGUE TODO =====
+window.addEventListener("load", () => {
+    // pequeño delay para asegurar que cargarPaises terminó
+    setTimeout(() => {
+        contarEquiposDesdePaises();
+    }, 1200);
+});
 </script>
 </body>
 </html>

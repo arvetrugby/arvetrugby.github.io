@@ -1103,6 +1103,7 @@ function initRegistroJugador() {
     const msg = document.getElementById('msg');
 
     // Inicializar selector internacional de teléfono
+
 const inputTelefono = document.querySelector("#telefono");
 
 const iti = window.intlTelInput(inputTelefono, {
@@ -2821,6 +2822,19 @@ async function obtenerDatosUbicacion(lat, lng) {
             const pais = address.country || '';
             
             console.log('Datos extraídos:', { pais, provincia, ciudad });
+
+            // 🔥 Sincronizar país con teléfono
+const mapPaisCodigo = {
+    'Argentina': 'ar',
+    'Uruguay': 'uy',
+    'Brasil': 'br',
+    'Chile': 'cl',
+    'Paraguay': 'py'
+};
+
+if (typeof iti !== "undefined" && mapPaisCodigo[pais]) {
+    iti.setCountry(mapPaisCodigo[pais]);
+}
             
             // Mostrar en pantalla
             document.getElementById('paisDisplay').value = pais;

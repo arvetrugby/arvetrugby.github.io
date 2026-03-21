@@ -811,6 +811,59 @@
     color: #64748b;
 }
 
+    /* ===== FAB CREAR EQUIPO ===== */
+#fabCrearEquipo {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #38bdf8, #2563eb);
+    color: white;
+    border-radius: 50px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    z-index: 999;
+    transition: all 0.3s ease;
+}
+
+/* Icono + */
+.fab-icon {
+    font-size: 20px;
+    line-height: 1;
+}
+
+/* Texto animado */
+.fab-text {
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 0;
+    opacity: 0;
+    transition: all 0.4s ease;
+}
+
+/* Cuando se expande */
+#fabCrearEquipo.expand .fab-text {
+    max-width: 100px;
+    opacity: 1;
+}
+
+/* Hover (desktop) */
+#fabCrearEquipo:hover {
+    transform: translateY(-3px) scale(1.05);
+}
+
+/* Mobile ajustes */
+@media (max-width: 768px) {
+    #fabCrearEquipo {
+        bottom: 16px;
+        right: 16px;
+    }
+}
 </style>
 </head>
 <body>
@@ -1091,7 +1144,10 @@
         </div>
     </div>
 </footer>
-
+<a href="registro.html" id="fabCrearEquipo">
+    <span class="fab-icon">+</span>
+    <span class="fab-text">Sumate!</span>
+</a>
     <script>
         // Loading screen logic
         const logo = document.getElementById("loadingLogo");
@@ -1235,7 +1291,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
-    
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const fab = document.getElementById("fabCrearEquipo");
+
+    function mostrarTexto() {
+        fab.classList.add("expand");
+
+        setTimeout(() => {
+            fab.classList.remove("expand");
+        }, 2500); // cuánto dura visible
+    }
+
+    // Mostrar cada X segundos
+    setInterval(mostrarTexto, 6000);
+
+    // Mostrar una vez al inicio (delay)
+    setTimeout(mostrarTexto, 2000);
+});
+</script>  
 </body>
 </html>
 

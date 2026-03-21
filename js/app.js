@@ -1142,7 +1142,7 @@ window.iti = window.intlTelInput(inputTelefono, {
     window.iti.setInput(inputTelefono);
 }
 
-    
+ }   
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         

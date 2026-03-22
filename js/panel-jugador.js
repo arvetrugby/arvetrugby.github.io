@@ -397,10 +397,35 @@ function ocultarLoader() {
     }, 300);
   }
 }
+    // ==========================================
+  // CARGAR ENCUENTROS DEL JUGADOR
+  // ==========================================
+
+  async function cargarEncuentrosJugador() {
+      const container = document.getElementById('panelJugadorEncuentros');
+      if (!container) return;
+      
+      // Verificar que sea jugador (no admin editando)
+      if (esAdminEditando) {
+          container.innerHTML = '<p style="color: #64748b;">Modo administrador: no se muestran encuentros</p>';
+          return;
+      }
+      
+      // Usar la función de encuentros.js si está disponible
+      if (typeof cargarEncuentrosParaJugador === 'function') {
+          await cargarEncuentrosParaJugador(user.equipoId, jugadorId, 'panelJugadorEncuentros');
+      } else {
+          container.innerHTML = '<p style="color: #64748b;">Cargando encuentros...</p>';
+      }
+  }
+
   // ==========================================
   // INICIAR
   // ==========================================
   
   await cargarPerfil();
   
-});
+  // Cargar encuentros
+  await cargarEncuentrosJugador();
+
+});  // ← CIERRE DEL DOMContentLoaded

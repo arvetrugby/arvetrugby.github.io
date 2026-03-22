@@ -589,9 +589,9 @@ async function guardarAsistencia(encuentroId, respuesta) {
             mostrarMensaje(`Confirmado: ${respuesta === 'voy' ? 'VOY ✓' : 'NO VOY ✕'}`, 'ok');
             
             // Recargar el panel
-            setTimeout(() => {
-                cargarEncuentrosJugador();
-            }, 300);
+             setTimeout(async () => {
+                await cargarEncuentrosJugador();
+            }, 800);
         } else {
             mostrarMensaje(result.error || 'Error al guardar', 'error');
         }

@@ -446,6 +446,7 @@ function ocultarLoader() {
       
       
             // Cargar encuentros donde el equipo fue invitado Y aceptó
+      // Cargar encuentros donde el equipo fue invitado Y aceptó
       if (typeof cargarEncuentrosParaJugador === 'function') {
           console.log('Llamando a cargarEncuentrosParaJugador...');
           await cargarEncuentrosParaJugador(user.equipoId, jugadorId, 'panelJugadorEncuentros');
@@ -464,7 +465,6 @@ function ocultarLoader() {
               console.log('Encuentros creador encontrados:', resultCreador.data.length);
               
               // Si ya hay contenido, agregamos un separador
-              const container = document.getElementById('panelJugadorEncuentros');
               const tieneContenido = container.innerHTML.trim() !== '' && !container.innerHTML.includes('No tenés encuentros');
               
               if (tieneContenido) {
@@ -486,7 +486,9 @@ function ocultarLoader() {
       } catch (err) {
           console.error('Error cargando encuentros creador:', err);
       }
-  // ==========================================
+  } // ← CIERRE de cargarEncuentrosJugador()
+
+// ==========================================
 // GENERAR CARD DE ENCUENTRO PARA PANEL JUGADOR
 // ==========================================
 function generarCardEncuentroPanel(enc, esCreador) {
@@ -565,6 +567,7 @@ function generarCardEncuentroPanel(enc, esCreador) {
         </div>
     `;
 }
+
   // ==========================================
   // INICIAR
   // ==========================================

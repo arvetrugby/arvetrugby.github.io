@@ -448,36 +448,42 @@ function ocultarLoader() {
           }
       }
       
-      let tieneContenido = false;
+            let tieneContenido = false;
+      let htmlAcumulado = '';
       
-      // 1. Cargar encuentros donde el equipo fue invitado Y aceptó
-      if (typeof cargarEncuentrosParaJugador === 'function') {
-          console.log('Llamando a cargarEncuentrosParaJugador...');
-          await cargarEncuentrosParaJugador(user.equipoId, jugadorId, 'panelJugadorEncuentros');
+      // 1. Cargar encuentros donde el equipo fue invitado Y aceptó (directamente, sin usar función externa)
+      try {
+          console.log('Cargando encuentros aceptados...');
+          const responseInvitados = await fetch(`${API_URL}?action=getEncuentrosParaJugador&equipoId=${user.equipoId}&jugadorId=${jugadorId}`);
+          const resultInvitados = await responseInvitados.json();
           
-          // Verificar si se cargó contenido
-          const htmlActual = container.innerHTML;
-          tieneContenido = htmlActual.trim() !== '' && 
-                          !htmlActual.includes('No tenés encuentros') &&
-                          !htmlActual.includes('Cargando encuentros');
-      } else {
-          console.log('❌ cargarEncuentrosParaJugador no es una función');
-          container.innerHTML = '<p style="color: #dc2626;">Error: función no disponible</p>';
-          return;
+          if (resultInvitados.success && resultInvitados.data && resultInvitados.data.length > 0) {
+              console.log('Encuentros aceptados encontrados:', resultInvitados.data.length);
+              
+              // Renderizar cada encuentro
+              for (const enc of resultInvitados.data) {
+                  htmlAcumulado += generarCardEncuentroPanel(enc, false); // false = no es creador
+              }
+              tieneContenido = true;
+          } else {
+              console.log('No hay encuentros aceptados');
+          }
+      } catch (err) {
+          console.error('Error cargando encuentros aceptados:', err);
       }
       
-      // 2. Cargar encuentros creados por este equipo (para que el creador vea sus propios encuentros)
+      // 2. Cargar encuentros creados por este equipo
       try {
-          console.log('Llamando a getEncuentrosCreadorParaJugador...');
+          console.log('Cargando encuentros creador...');
           const responseCreador = await fetch(`${API_URL}?action=getEncuentrosCreadorParaJugador&equipoId=${user.equipoId}&jugadorId=${jugadorId}`);
           const resultCreador = await responseCreador.json();
           
           if (resultCreador.success && resultCreador.data && resultCreador.data.length > 0) {
               console.log('Encuentros creador encontrados:', resultCreador.data.length);
               
-              // Agregar separador si ya hay contenido
+              // Agregar separador si ya hay contenido de invitaciones
               if (tieneContenido) {
-                  container.innerHTML += `
+                  htmlAcumulado += `
                       <div style="margin: 30px 0 20px 0; border-top: 2px solid #e2e8f0; padding-top: 20px;">
                           <h3 style="color: #4f46e5; font-size: 1rem; margin: 0;">🏆 Encuentros que organizo</h3>
                       </div>
@@ -486,19 +492,21 @@ function ocultarLoader() {
               
               // Renderizar cada encuentro creado
               for (const enc of resultCreador.data) {
-                  const cardHTML = generarCardEncuentroPanel(enc, true);
-                  container.innerHTML += cardHTML;
+                  htmlAcumulado += generarCardEncuentroPanel(enc, true); // true = es creador
               }
+              tieneContenido = true;
           } else {
-              console.log('No hay encuentros creador o error:', resultCreador);
+              console.log('No hay encuentros creador');
           }
       } catch (err) {
           console.error('Error cargando encuentros creador:', err);
       }
       
-      // Si después de todo sigue vacío, mostrar mensaje
-      const htmlFinal = container.innerHTML;
-      if (htmlFinal.includes('Cargando encuentros') || htmlFinal.trim() === '') {
+      // 3. Insertar todo el HTML de una vez
+      if (tieneContenido) {
+          container.innerHTML = htmlAcumulado;
+      } else {
+          // Solo si no hay nada, mostrar mensaje vacío
           container.innerHTML = `
               <div style="text-align: center; padding: 40px; color: #64748b;">
                   <div style="font-size: 3rem; margin-bottom: 15px;">🏉</div>
@@ -507,7 +515,6 @@ function ocultarLoader() {
               </div>
           `;
       }
-  }
 // ==========================================
 // GENERAR CARD DE ENCUENTRO PARA PANEL JUGADOR
 // ==========================================

@@ -709,7 +709,7 @@ async function renderizarMisEncuentros() {
                 console.error('Error parseando JSON:', e);
             }
             
-            const equiposConfirmados = 1;
+            const equiposConfirmados = enc.equiposAceptados || 1;
             const plazasLibres = enc.cupoMaximo - equiposConfirmados;
             
             const fechasHTML = fechas.map(f => {
@@ -1046,8 +1046,8 @@ function generarCardEncuentro(enc, estado) {
         </div>
         
         <div style="text-align: right; min-width: 80px; flex-shrink: 0;">
-          <div style="font-size: 1.5rem; font-weight: 800; color: #4f46e5;">
-            0/${enc.cupoMaximo}
+        <div style="font-size: 1.5rem; font-weight: 800; color: #4f46e5;">
+            ${enc.equiposAceptados || 1}/${enc.cupoMaximo}
           </div>
           <div style="font-size: 0.8rem; color: #64748b; white-space: nowrap;">
             ${enc.cupoMaximo} plazas

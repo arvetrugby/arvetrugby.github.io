@@ -1247,7 +1247,7 @@ async function verDetalleEncuentro(encuentroId) {
             `;
         }).join('');
 
-        / Lista de aceptados (incluye al creador automáticamente)
+        // Lista de aceptados (incluye al creador automáticamente)
 const listaAceptados = detalle.aceptados.length > 0 ? detalle.aceptados.map(eq => `
     <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: ${eq.esCreador ? '#e0e7ff' : '#f0fdf4'}; border-radius: 8px; border-left: 4px solid ${eq.esCreador ? '#4f46e5' : '#22c55e'};">
         <img src="${eq.logoUrl || 'https://i.ibb.co/Y7BMDcjt/logo-generico.png'}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">

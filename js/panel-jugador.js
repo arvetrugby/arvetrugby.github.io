@@ -444,11 +444,15 @@ function ocultarLoader() {
           }
       }
       
-      // Tanto jugadores como admins (del mismo equipo) ven los encuentros
-           // Cargar encuentros donde el equipo fue invitado Y aceptó
+      
+            // Cargar encuentros donde el equipo fue invitado Y aceptó
       if (typeof cargarEncuentrosParaJugador === 'function') {
           console.log('Llamando a cargarEncuentrosParaJugador...');
           await cargarEncuentrosParaJugador(user.equipoId, jugadorId, 'panelJugadorEncuentros');
+      } else {
+          console.log('❌ cargarEncuentrosParaJugador no es una función');
+          container.innerHTML = '<p style="color: #dc2626;">Error: función no disponible</p>';
+          return; // Salimos si no hay función
       }
       
       // 🔥 NUEVO: Cargar encuentros creados por este equipo (para que el creador vea sus propios encuentros)
@@ -481,12 +485,7 @@ function ocultarLoader() {
           }
       } catch (err) {
           console.error('Error cargando encuentros creador:', err);
-      } else {
-          console.log('❌ cargarEncuentrosParaJugador no es una función');
-          container.innerHTML = '<p style="color: #dc2626;">Error: función no disponible</p>';
       }
-  }
-
   // ==========================================
 // GENERAR CARD DE ENCUENTRO PARA PANEL JUGADOR
 // ==========================================

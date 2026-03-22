@@ -2196,12 +2196,21 @@ async function guardarAsistencia(encuentroId, respuesta) {
         
         if (result.success) {
             mostrarMensajeEncuentros(`Confirmado: ${respuesta === 'voy' ? 'VOY ✓' : 'NO VOY ✕'}`, 'success');
-            // Recargar
-            cargarEncuentrosParaJugador(usuario.equipoId, usuario.id, 'panelJugadorEncuentros');
+            
+            // 🔥 RECARGAR el panel de encuentros del jugador
+            // Buscar el contenedor específico del panel del jugador
+            const panelContainer = document.getElementById('panelJugadorEncuentros');
+            if (panelContainer && typeof cargarEncuentrosParaJugador === 'function') {
+                // Esperar un momento para que el backend procese
+                setTimeout(() => {
+                    cargarEncuentrosParaJugador(usuario.equipoId, usuario.id, 'panelJugadorEncuentros');
+                }, 300);
+            }
         } else {
             mostrarMensajeEncuentros(result.error || 'Error al guardar', 'error');
         }
     } catch (err) {
+        console.error('Error:', err);
         mostrarMensajeEncuentros('Error de conexión', 'error');
     }
 }

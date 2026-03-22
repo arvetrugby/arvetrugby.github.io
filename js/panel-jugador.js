@@ -415,7 +415,7 @@ function ocultarLoader() {
       console.log('jugadorId:', jugadorId);
       
       // SIEMPRE limpiar primero para evitar duplicados
-      container.innerHTML = '<p style="color: #64748b; text-align: center; padding: 20px;">⏳ Cargando encuentros...</p>';
+      container.innerHTML = '<p style="color: #64748b; text-align: center; padding: 20px;"> Cargando encuentros...</p>';
       
       // Si es admin editando, verificar que el jugador sea de su mismo equipo
       if (esAdminEditando) {

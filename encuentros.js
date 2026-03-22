@@ -1206,7 +1206,6 @@ function cerrarModalEncuentro() {
 // ============================================
 // VER DETALLE CON LISTADO DE EQUIPOS
 // ============================================
-
 async function verDetalleEncuentro(encuentroId) {
     try {
         const [respEncuentro, respDetalle] = await Promise.all([
@@ -1289,6 +1288,74 @@ async function verDetalleEncuentro(encuentroId) {
             </div>
         `).join('') : '<p style="color: #64748b; font-style: italic;">No hay equipos pendientes</p>';
 
+        // Obtener asistencias de jugadores
+        let asistenciasHTML = '';
+        try {
+            const respAsistencias = await fetch(`${API_URL}?action=getAsistenciasEncuentro&encuentroId=${encuentroId}`);
+            const asistenciasData = await respAsistencias.json();
+            
+            if (asistenciasData.success && asistenciasData.data && asistenciasData.data.length > 0) {
+                asistenciasHTML = `
+                    <div style="margin-top: 30px; border-top: 2px solid #e2e8f0; padding-top: 20px;">
+                        <h3 style="color: #1e293b; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                            <span>📋</span> Confirmación de jugadores
+                            <button onclick="descargarAsistenciasCSV('${encuentroId}')" 
+                                style="margin-left: auto; padding: 8px 16px; background: #4f46e5; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">
+                                📥 Descargar CSV
+                            </button>
+                        </h3>
+                        
+                        ${asistenciasData.data.map(eq => {
+                            const voy = eq.jugadores.filter(j => j.respuesta === 'voy');
+                            const noVoy = eq.jugadores.filter(j => j.respuesta === 'no_voy');
+                            const pendiente = eq.jugadores.filter(j => !j.respuesta || j.respuesta === 'pendiente');
+                            
+                            return `
+                                <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 2px solid #e2e8f0;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                        <h4 style="margin: 0; color: #1e293b;">${eq.equipoNombre}</h4>
+                                        <div style="display: flex; gap: 15px; font-size: 0.9rem;">
+                                            <span style="color: #16a34a; font-weight: 600;">✓ ${voy.length} VOY</span>
+                                            <span style="color: #dc2626; font-weight: 600;">✕ ${noVoy.length} NO VOY</span>
+                                            <span style="color: #64748b;">⏳ ${pendiente.length} pendientes</span>
+                                        </div>
+                                    </div>
+                                    
+                                    ${voy.length > 0 ? `
+                                        <div style="margin-bottom: 15px;">
+                                            <h5 style="margin: 0 0 10px 0; color: #16a34a; font-size: 0.85rem;">Van:</h5>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                                ${voy.map(j => `
+                                                    <span style="padding: 6px 12px; background: #dcfce7; border-radius: 20px; font-size: 0.85rem; color: #166534;">
+                                                        ${j.jugadorNombre}
+                                                    </span>
+                                                `).join('')}
+                                            </div>
+                                        </div>
+                                    ` : ''}
+                                    
+                                    ${noVoy.length > 0 ? `
+                                        <div style="margin-bottom: 15px;">
+                                            <h5 style="margin: 0 0 10px 0; color: #dc2626; font-size: 0.85rem;">No van:</h5>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                                ${noVoy.map(j => `
+                                                    <span style="padding: 6px 12px; background: #fee2e2; border-radius: 20px; font-size: 0.85rem; color: #991b1b;">
+                                                        ${j.jugadorNombre}
+                                                    </span>
+                                                `).join('')}
+                                            </div>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            }
+        } catch (err) {
+            console.error('Error cargando asistencias:', err);
+        }
+
         const modal = document.createElement('div');
         modal.className = 'modal-overlay active';
         modal.id = 'modalDetalleEncuentro';
@@ -1366,7 +1433,6 @@ async function verDetalleEncuentro(encuentroId) {
                             </span>
                         </h3>
                         
-                        <!-- ACEPTADOS -->
                         <div style="margin-bottom: 25px;">
                             <h4 style="color: #166534; font-size: 0.9rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
                                 <span style="width: 8px; height: 8px; background: #22c55e; border-radius: 50%;"></span>
@@ -1377,7 +1443,6 @@ async function verDetalleEncuentro(encuentroId) {
                             </div>
                         </div>
 
-                        <!-- RECHAZADOS -->
                         <div style="margin-bottom: 25px;">
                             <h4 style="color: #991b1b; font-size: 0.9rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
                                 <span style="width: 8px; height: 8px; background: #ef4444; border-radius: 50%;"></span>
@@ -1388,7 +1453,6 @@ async function verDetalleEncuentro(encuentroId) {
                             </div>
                         </div>
 
-                        <!-- PENDIENTES -->
                         <div>
                             <h4 style="color: #92400e; font-size: 0.9rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
                                 <span style="width: 8px; height: 8px; background: #f59e0b; border-radius: 50%;"></span>
@@ -1399,74 +1463,8 @@ async function verDetalleEncuentro(encuentroId) {
                             </div>
                         </div>
                     </div>
-                    // Obtener asistencias si es creador o admin
-let asistenciasHTML = '';
-try {
-    const respAsistencias = await fetch(`${API_URL}?action=getAsistenciasEncuentro&encuentroId=${enc.id}`);
-    const asistenciasData = await respAsistencias.json();
-    
-    if (asistenciasData.success && asistenciasData.data.length > 0) {
-        asistenciasHTML = `
-            <div style="margin-top: 30px; border-top: 2px solid #e2e8f0; padding-top: 20px;">
-                <h3 style="color: #1e293b; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
-                    <span>📋</span> Confirmación de jugadores
-                    <button onclick="descargarAsistenciasCSV('${enc.id}')" 
-                        style="margin-left: auto; padding: 8px 16px; background: #4f46e5; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">
-                        📥 Descargar CSV
-                    </button>
-                </h3>
-                
-                ${asistenciasData.data.map(eq => {
-                    const voy = eq.jugadores.filter(j => j.respuesta === 'voy');
-                    const noVoy = eq.jugadores.filter(j => j.respuesta === 'no_voy');
-                    const pendiente = eq.jugadores.filter(j => !j.respuesta || j.respuesta === 'pendiente');
                     
-                    return `
-                        <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 2px solid #e2e8f0;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                                <h4 style="margin: 0; color: #1e293b;">${eq.equipoNombre}</h4>
-                                <div style="display: flex; gap: 15px; font-size: 0.9rem;">
-                                    <span style="color: #16a34a; font-weight: 600;">✓ ${voy.length} VOY</span>
-                                    <span style="color: #dc2626; font-weight: 600;">✕ ${noVoy.length} NO VOY</span>
-                                    <span style="color: #64748b;">⏳ ${pendiente.length} pendientes</span>
-                                </div>
-                            </div>
-                            
-                            ${voy.length > 0 ? `
-                                <div style="margin-bottom: 15px;">
-                                    <h5 style="margin: 0 0 10px 0; color: #16a34a; font-size: 0.85rem;">Van:</h5>
-                                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                                        ${voy.map(j => `
-                                            <span style="padding: 6px 12px; background: #dcfce7; border-radius: 20px; font-size: 0.85rem; color: #166534;">
-                                                ${j.jugadorNombre}
-                                            </span>
-                                        `).join('')}
-                                    </div>
-                                </div>
-                            ` : ''}
-                            
-                            ${noVoy.length > 0 ? `
-                                <div style="margin-bottom: 15px;">
-                                    <h5 style="margin: 0 0 10px 0; color: #dc2626; font-size: 0.85rem;">No van:</h5>
-                                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                                        ${noVoy.map(j => `
-                                            <span style="padding: 6px 12px; background: #fee2e2; border-radius: 20px; font-size: 0.85rem; color: #991b1b;">
-                                                ${j.jugadorNombre}
-                                            </span>
-                                        `).join('')}
-                                    </div>
-                                </div>
-                            ` : ''}
-                        </div>
-                    `;
-                }).join('')}
-            </div>
-        `;
-    }
-} catch (err) {
-    console.error('Error cargando asistencias:', err);
-}
-
+                    ${asistenciasHTML}
                 </div>
             </div>
         `;

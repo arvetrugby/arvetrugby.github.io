@@ -402,7 +402,7 @@ function ocultarLoader() {
      // ==========================================
   // CARGAR ENCUENTROS DEL JUGADOR
   // ==========================================
-  window.cargarEncuentrosJugador = async function() {
+  async function cargarEncuentrosJugador() {
       const container = document.getElementById('panelJugadorEncuentros');
       if (!container) {
           console.log('❌ No existe el contenedor panelJugadorEncuentros');
@@ -612,15 +612,14 @@ async function guardarAsistencia(encuentroId, respuesta) {
         const response = await fetch(`${API_URL}?${params.toString()}`);
         const result = await response.json();
         
-        if (result.success) {
+         if (result.success) {
             mostrarMensaje(`Confirmado: ${respuesta === 'voy' ? 'VOY ✓' : 'NO VOY ✕'}`, 'ok');
             
-            // Recargar el panel
-                         setTimeout(async () => {
-                console.log('Recargando encuentros...');
-                await window.cargarEncuentrosJugador();
-                console.log('Recarga completada');
-            }, 1500);
+            // Recargar la página completa después de 1 segundo
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        }
         } else {
             mostrarMensaje(result.error || 'Error al guardar', 'error');
         }

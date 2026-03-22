@@ -1393,6 +1393,74 @@ async function verDetalleEncuentro(encuentroId) {
                             </div>
                         </div>
                     </div>
+                    // Obtener asistencias si es creador o admin
+let asistenciasHTML = '';
+try {
+    const respAsistencias = await fetch(`${API_URL}?action=getAsistenciasEncuentro&encuentroId=${enc.id}`);
+    const asistenciasData = await respAsistencias.json();
+    
+    if (asistenciasData.success && asistenciasData.data.length > 0) {
+        asistenciasHTML = `
+            <div style="margin-top: 30px; border-top: 2px solid #e2e8f0; padding-top: 20px;">
+                <h3 style="color: #1e293b; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    <span>📋</span> Confirmación de jugadores
+                    <button onclick="descargarAsistenciasCSV('${enc.id}')" 
+                        style="margin-left: auto; padding: 8px 16px; background: #4f46e5; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">
+                        📥 Descargar CSV
+                    </button>
+                </h3>
+                
+                ${asistenciasData.data.map(eq => {
+                    const voy = eq.jugadores.filter(j => j.respuesta === 'voy');
+                    const noVoy = eq.jugadores.filter(j => j.respuesta === 'no_voy');
+                    const pendiente = eq.jugadores.filter(j => !j.respuesta || j.respuesta === 'pendiente');
+                    
+                    return `
+                        <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 2px solid #e2e8f0;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <h4 style="margin: 0; color: #1e293b;">${eq.equipoNombre}</h4>
+                                <div style="display: flex; gap: 15px; font-size: 0.9rem;">
+                                    <span style="color: #16a34a; font-weight: 600;">✓ ${voy.length} VOY</span>
+                                    <span style="color: #dc2626; font-weight: 600;">✕ ${noVoy.length} NO VOY</span>
+                                    <span style="color: #64748b;">⏳ ${pendiente.length} pendientes</span>
+                                </div>
+                            </div>
+                            
+                            ${voy.length > 0 ? `
+                                <div style="margin-bottom: 15px;">
+                                    <h5 style="margin: 0 0 10px 0; color: #16a34a; font-size: 0.85rem;">Van:</h5>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                        ${voy.map(j => `
+                                            <span style="padding: 6px 12px; background: #dcfce7; border-radius: 20px; font-size: 0.85rem; color: #166534;">
+                                                ${j.jugadorNombre}
+                                            </span>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            ` : ''}
+                            
+                            ${noVoy.length > 0 ? `
+                                <div style="margin-bottom: 15px;">
+                                    <h5 style="margin: 0 0 10px 0; color: #dc2626; font-size: 0.85rem;">No van:</h5>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                        ${noVoy.map(j => `
+                                            <span style="padding: 6px 12px; background: #fee2e2; border-radius: 20px; font-size: 0.85rem; color: #991b1b;">
+                                                ${j.jugadorNombre}
+                                            </span>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
+} catch (err) {
+    console.error('Error cargando asistencias:', err);
+}
+
                 </div>
             </div>
         `;
@@ -1404,7 +1472,26 @@ async function verDetalleEncuentro(encuentroId) {
         mostrarMensajeEncuentros('Error al cargar detalle del encuentro', 'error');
     }
 }
-
+function descargarAsistenciasCSV(encuentroId) {
+    fetch(`${API_URL}?action=getAsistenciasEncuentro&encuentroId=${encuentroId}`)
+        .then(r => r.json())
+        .then(result => {
+            if (!result.success) return;
+            
+            let csv = 'Equipo,Jugador,Respuesta,Fecha\n';
+            result.data.forEach(eq => {
+                eq.jugadores.forEach(j => {
+                    csv += `"${eq.equipoNombre}","${j.jugadorNombre}","${j.respuesta || 'pendiente'}","${j.fechaRespuesta || ''}"\n`;
+                });
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `asistencias_${encuentroId}.csv`;
+            link.click();
+        });
+}
 // ============================================
 // EDITAR ENCUENTRO
 // ============================================

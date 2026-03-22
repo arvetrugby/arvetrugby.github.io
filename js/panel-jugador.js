@@ -398,7 +398,7 @@ function ocultarLoader() {
   }
 }
    
-    // ==========================================
+  // ==========================================
   // CARGAR ENCUENTROS DEL JUGADOR
   // ==========================================
   async function cargarEncuentrosJugador() {
@@ -410,16 +410,41 @@ function ocultarLoader() {
       
       console.log('✅ Contenedor encontrado');
       console.log('esAdminEditando:', esAdminEditando);
-      console.log('user:', user);
-      console.log('typeof cargarEncuentrosParaJugador:', typeof cargarEncuentrosParaJugador);
+      console.log('user.equipoId:', user?.equipoId);
+      console.log('jugadorId:', jugadorId);
       
-      // Admin editando otro jugador - no mostrar encuentros
+      // Si es admin editando, verificar que el jugador sea de su mismo equipo
       if (esAdminEditando) {
-          container.innerHTML = '<p style="color: #64748b;">Modo administrador editando otro jugador</p>';
-          return;
+          // Obtener datos del jugador que está editando para verificar el equipo
+          try {
+              const response = await fetch(`${API_URL}?action=getJugadorById&id=${jugadorId}`);
+              const data = await response.json();
+              
+              if (!data.success) {
+                  container.innerHTML = '<p style="color: #64748b;">Error cargando datos del jugador</p>';
+                  return;
+              }
+              
+              const jugador = data.data;
+              console.log('Jugador editado - equipoId:', jugador.equipoId);
+              
+              // Si el jugador NO es del mismo equipo del admin, no mostrar encuentros
+              if (jugador.equipoId !== user.equipoId) {
+                  container.innerHTML = '<p style="color: #64748b;">Jugador de otro equipo - No se muestran encuentros</p>';
+                  return;
+              }
+              
+              // Si es del mismo equipo, SÍ mostrar encuentros (continuar abajo)
+              console.log('✅ Jugador del mismo equipo, mostrando encuentros');
+              
+          } catch (err) {
+              console.error('Error verificando equipo del jugador:', err);
+              container.innerHTML = '<p style="color: #64748b;">Error de conexión</p>';
+              return;
+          }
       }
       
-      // Tanto jugadores como admins ven los encuentros de su equipo
+      // Tanto jugadores como admins (del mismo equipo) ven los encuentros
       if (typeof cargarEncuentrosParaJugador === 'function') {
           console.log('Llamando a cargarEncuentrosParaJugador...');
           await cargarEncuentrosParaJugador(user.equipoId, jugadorId, 'panelJugadorEncuentros');
@@ -428,8 +453,6 @@ function ocultarLoader() {
           container.innerHTML = '<p style="color: #dc2626;">Error: función no disponible</p>';
       }
   }
-
-
   // ==========================================
   // INICIAR
   // ==========================================

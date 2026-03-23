@@ -599,9 +599,10 @@ function generarCardEncuentroPanel(enc, esCreador) {
     `;
 }
 // ==========================================
-// GUARDAR ASISTENCIA - CORREGIDO PARA CREADORES
+// GUARDAR ASISTENCIA - SIMPLE Y DIRECTO
 // ==========================================
 async function guardarAsistencia(encuentroId, respuesta) {
+    // 1. Guardar
     const params = new URLSearchParams({
         action: 'guardarAsistenciaJugador',
         encuentroId: encuentroId,
@@ -612,24 +613,55 @@ async function guardarAsistencia(encuentroId, respuesta) {
     });
     
     try {
-        mostrarMensaje('⏳ Guardando...', 'ok');
+        mostrarMensaje('Guardando...', 'ok');
+        await fetch(`${API_URL}?${params.toString()}`);
         
-        const response = await fetch(`${API_URL}?${params.toString()}`);
-        const result = await response.json();
+        // 2. ACTUALIZAR SOLO ESE CARD (no recargar todo)
+        actualizarCardAsistencia(encuentroId, respuesta);
+        mostrarMensaje('✅ ' + (respuesta === 'voy' ? 'VOY' : 'NO VOY'), 'ok');
         
-        if (result.success) {
-            mostrarMensaje(`✅ Confirmado`, 'ok');
-            
-            // 🔥 SOLUCIÓN SIMPLE: Esperar 1.5 segundos y recargar TODO
-            setTimeout(() => {
-                location.reload(); // Recarga la página completa
-            }, 1500);
-            
-        } else {
-            mostrarMensaje('Error al guardar', 'error');
-        }
     } catch (err) {
-        mostrarMensaje('Error de conexión', 'error');
+        mostrarMensaje('Error', 'error');
+    }
+}
+
+// ==========================================
+// ACTUALIZAR SOLO EL CARD QUE CAMBIÓ
+// ==========================================
+function actualizarCardAsistencia(encuentroId, respuesta) {
+    // Buscar el card por el onclick (hack simple)
+    const buttons = document.querySelectorAll(`button[onclick*="${encuentroId}"]`);
+    if (!buttons.length) return;
+    
+    // Encontrar el contenedor del card (subir 3 niveles en el DOM)
+    let card = buttons[0];
+    for (let i = 0; i < 3; i++) {
+        card = card.parentElement;
+        if (!card) return;
+    }
+    
+    // Determinar nuevo HTML según respuesta
+    let estadoHTML = '';
+    let botonesHTML = '';
+    
+    if (respuesta === 'voy') {
+        estadoHTML = `<span style="background: #dcfce7; color: #166534; padding: 6px 16px; border-radius: 20px; font-weight: 600;">✓ VOY</span>`;
+        botonesHTML = `<button onclick="guardarAsistencia('${encuentroId}', 'no_voy')" style="flex: 1; padding: 12px; border: 2px solid #fee2e2; border-radius: 8px; background: white; color: #991b1b; font-weight: 600; cursor: pointer;">Cambiar a NO VOY</button>`;
+    } else {
+        estadoHTML = `<span style="background: #fee2e2; color: #991b1b; padding: 6px 16px; border-radius: 20px; font-weight: 600;">✕ NO VOY</span>`;
+        botonesHTML = `<button onclick="guardarAsistencia('${encuentroId}', 'voy')" style="flex: 1; padding: 12px; border: 2px solid #dcfce7; border-radius: 8px; background: white; color: #166534; font-weight: 600; cursor: pointer;">Cambiar a VOY</button>`;
+    }
+    
+    // Actualizar solo el estado y los botones (sin tocar el resto)
+    const estadoDiv = card.querySelector('div[style*="justify-content: space-between"]');
+    if (estadoDiv) {
+        const badge = estadoDiv.querySelector('span[style*="border-radius: 20px"]');
+        if (badge) badge.outerHTML = estadoHTML;
+    }
+    
+    const botonesDiv = card.querySelector('div[style*="display: flex; gap: 10px"]');
+    if (botonesDiv) {
+        botonesDiv.innerHTML = botonesHTML;
     }
 }
   // ==========================================

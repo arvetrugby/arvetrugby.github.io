@@ -349,7 +349,7 @@ function initIndex() {
         if (progress > 30 && progress < 60) {
             loadingText.textContent = 'Preparando el scrum...';
         } else if (progress > 60) {
-            loadingText.textContent = 'Poniendo la cerveza en hielo...';
+            loadingText.textContent = 'La cerveza va en hielo...';
         }
     }, 200);
     
@@ -357,7 +357,7 @@ function initIndex() {
     setTimeout(() => {
         clearInterval(progressInterval);
         progressBar.style.width = '100%';
-        loadingText.textContent = 'Inflando la pelota...¡Listo!';
+        loadingText.textContent = '...¡Listo!';
         
         setTimeout(() => {
             loadingScreen.classList.add('loading-hidden');

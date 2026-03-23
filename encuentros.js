@@ -938,6 +938,10 @@ function generarCardEncuentro(enc, estado) {
   } catch(e) {
     console.error('Error parseando JSON:', e);
   }
+  // ← AGREGAR ESTA LÍNEA (definir borderStyle)
+  const borderStyle = estado === 'aceptado' ? 'border-left: 4px solid #10b981;' : 
+                      estado === 'rechazado' ? 'border-left: 4px solid #ef4444; opacity: 0.85;' : 
+                      '';
   
   const fechasHTML = fechas.map(f => {
     const horariosHTML = f.horarios.map(h => `

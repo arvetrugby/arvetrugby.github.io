@@ -1367,7 +1367,7 @@ async function cargarEncuentros() {
         }
         
         slider.innerHTML = data.data.map(enc => `
-            <div class="encuentro-slide" onclick="window.open('https://arvetrugby.github.io/Arvet/preview.html?action=getEncuentroById&id=${enc.id}', '_blank')">
+            <div class="encuentro-slide" onclick="window.open('https://arvetrugby.com/preview.html?action=getEncuentroById&id=${enc.id}', '_blank')">
                 ${enc.flyerUrl 
                     ? `<img src="${enc.flyerUrl}" alt="${enc.nombre}" loading="lazy" onerror="this.style.display='none'; this.parentElement.querySelector('.encuentro-slide-fallback').style.display='flex';">
                        <div class="encuentro-slide-fallback" style="display:none;">🏉</div>`

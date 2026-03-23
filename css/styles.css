@@ -333,7 +333,7 @@ h1, h2, h3 {
 .search-box input {
   flex: 1;
   padding: 14px 20px;
-  border: none;
+  border: 1px solid #ffffff;
   border-radius: 30px;
   font-size: 15px;
   outline: none;

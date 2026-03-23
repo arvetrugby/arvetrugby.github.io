@@ -1209,6 +1209,12 @@ function cerrarModalEncuentro() {
 // VER DETALLE CON LISTADO DE EQUIPOS
 // ============================================
 async function verDetalleEncuentro(encuentroId) {
+    // DIAGNÓSTICO: Ver si ya existe un modal
+    const modalExistente = document.getElementById('modalDetalleEncuentro');
+    if (modalExistente) {
+        console.log('⚠️ Ya existe un modal, eliminando primero');
+        modalExistente.remove();
+    }
     try {
         const [respEncuentro, respDetalle] = await Promise.all([
             fetch(`${API_URL}?action=getEncuentroById&id=${encuentroId}`).then(r => r.json()),

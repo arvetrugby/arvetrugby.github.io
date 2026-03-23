@@ -1020,68 +1020,77 @@ function generarCardEncuentro(enc, estado) {
     </div>
   `;
 
-  // Badge según estado
-  const badgeEstado = estado === 'aceptado' ? 
-    `<span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #d1fae5; color: #065f46; margin-left: 5px;">Aceptado</span>` :
-    estado === 'rechazado' ?
-    `<span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #fee2e2; color: #991b1b; margin-left: 5px;">Rechazado</span>` :
-    `<span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #fef3c7; color: #92400e; margin-left: 5px;">Invitación disponible</span>`;
-
-  // Borde según estado
-  const borderStyle = estado === 'aceptado' ? 'border-left: 4px solid #10b981;' : 
-                      estado === 'rechazado' ? 'border-left: 4px solid #ef4444; opacity: 0.85;' : 
-                      '';
-
+ // Badge según estado
+const badgeEstado = estado === 'aceptado' ? 
+  `<span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #d1fae5; color: #065f46; margin-left: 5px;">Aceptado</span>` :
+  estado === 'rechazado' ?
+  `<span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #fee2e2; color: #991b1b; margin-left: 5px;">Rechazado</span>` :
+  `<span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #fef3c7; color: #92400e; margin-left: 5px;">Invitación disponible</span>`;
   return `
-    <div class="encuentro-card ${estado === 'aceptado' ? 'invitacion-aceptada' : estado === 'rechazado' ? 'invitacion-rechazada' : 'invitacion-pendiente'}" style="${borderStyle}">
-      <div class="encuentro-header">
-        <div>
-          <div class="encuentro-titulo" style="font-size: 1.3rem; font-weight: 700; color: #1e293b; margin-bottom: 5px;">
+  <div class="encuentro-card ${estado === 'aceptado' ? 'invitacion-aceptada' : estado === 'rechazado' ? 'invitacion-rechazada' : 'invitacion-pendiente'}" style="${borderStyle}">
+    <div class="encuentro-header" style="flex-direction: column; align-items: flex-start; gap: 12px;">
+      
+      <!-- Fila superior: Título y badges -->
+      <div style="display: flex; justify-content: space-between; width: 100%; align-items: start; gap: 10px;">
+        <div style="flex: 1; min-width: 0;">
+          <div class="encuentro-titulo" style="font-size: 1.3rem; font-weight: 700; color: #1e293b; margin-bottom: 8px; line-height: 1.2;">
             ${enc.nombre}
           </div>
-          ${badgeEstado}
-          ${enc.tipo ? enc.tipo.split(', ').map(t => `
-            <span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #e0e7ff; color: #3730a3; margin-left: 5px; margin-bottom: 5px;">
-              ${t}
-            </span>
-          `).join('') : '<span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #f1f5f9; color: #64748b; margin-left: 8px;">Sin tipo</span>'}
+          <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center;">
+            ${badgeEstado}
+            ${enc.tipo ? enc.tipo.split(', ').map(t => `
+              <span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #e0e7ff; color: #3730a3;">
+                ${t}
+              </span>
+            `).join('') : '<span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #f1f5f9; color: #64748b;">Sin tipo</span>'}
+          </div>
         </div>
         
+        <!-- Cupo a la derecha -->
         <div style="text-align: right; min-width: 80px; flex-shrink: 0;">
-        <div style="font-size: 1.5rem; font-weight: 800; color: #4f46e5;">
+          <div style="font-size: 1.5rem; font-weight: 800; color: #4f46e5;">
             ${enc.equiposAceptados || 1}/${enc.cupoMaximo}
           </div>
           <div style="font-size: 0.8rem; color: #64748b; white-space: nowrap;">
             ${enc.cupoMaximo} plazas
           </div>
-          <div style="font-size: 0.75rem; color: #64748b; margin-top: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
+        </div>
+      </div>
+
+      <!-- Organizador: ABAJO con recuadro destacado -->
+      <div style="width: 100%; margin-top: 8px;">
+        <div style="display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border: 2px solid #cbd5e1; border-radius: 12px; padding: 10px 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+          <span style="font-size: 0.8rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">
             Organiza
-          </div>
-          <div style="font-size: 0.9rem; color: #1e293b; font-weight: 600;">
+          </span>
+          <span style="width: 1px; height: 16px; background: #cbd5e1;"></span>
+          <span style="font-size: 0.95rem; color: #1e293b; font-weight: 700;">
             ${enc.creadorNombre || 'Equipo desconocido'}
-          </div>
+          </span>
         </div>
       </div>
-      
-      <div class="encuentro-meta" style="margin-bottom: 15px; color: #64748b; font-size: 0.9rem;">
-        ${fechasHTML}
-        ${valores.length > 0 ? `<div style="margin-top: 5px;"><strong>💰 Valores:</strong><br>${valores.map(v => `• ${v.titulo}: $${parseFloat(v.precio).toLocaleString('es-AR')}${v.desc ? ` (${v.desc})` : ''}`).join('<br>')}</div>` : ''}
-      </div>
 
-      ${mapaHTML}
-
-      ${enc.descripcion ? `<p style="color: #64748b; margin-bottom: 15px; line-height: 1.5;">${enc.descripcion}</p>` : ''}
-
-      ${enc.flyerUrl ? `
-        <div style="margin-bottom: 15px;">
-          <img src="${enc.flyerUrl}" style="max-width: 300px; border-radius: 8px; object-fit: cover;" alt="Flyer">
-        </div>
-      ` : ''}
-
-      ${botonesHTML}
     </div>
-  `;
-}
+    
+    <div class="encuentro-meta" style="margin-bottom: 15px; color: #64748b; font-size: 0.9rem;">
+      ${fechasHTML}
+      ${valores.length > 0 ? `<div style="margin-top: 5px;"><strong>💰 Valores:</strong><br>${valores.map(v => `• ${v.titulo}: $${parseFloat(v.precio).toLocaleString('es-AR')}${v.desc ? ` (${v.desc})` : ''}`).join('<br>')}</div>` : ''}
+    </div>
+
+    ${mapaHTML}
+
+    ${enc.descripcion ? `<p style="color: #64748b; margin-bottom: 15px; line-height: 1.5;">${enc.descripcion}</p>` : ''}
+
+    ${enc.flyerUrl ? `
+      <div style="margin-bottom: 15px;">
+        <img src="${enc.flyerUrl}" style="max-width: 300px; border-radius: 8px; object-fit: cover;" alt="Flyer">
+      </div>
+    ` : ''}
+
+    ${botonesHTML}
+  </div>
+`;
+    }
 async function aceptarInvitacion(encuentroId) {
   const usuario = obtenerUsuarioActual();
   

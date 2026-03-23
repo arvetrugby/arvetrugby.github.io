@@ -1,5 +1,5 @@
 let encuentroIdDesdeLink = null;
-let cacheInvitaciones = null;
+
 // ============================================
 // ARVET - SISTEMA DE ENCUENTROS/PARTIDOS
 // ============================================
@@ -837,11 +837,7 @@ async function renderizarMisEncuentros() {
 // ============================================
 
 async function renderizarInvitaciones() {
-     if (cacheInvitaciones) {
-        console.log('Usando cache invitaciones');
-        mostrarInvitacionesHTML(cacheInvitaciones);
-        return;
-    }
+     
   const container = document.getElementById('listaInvitaciones');
   const empty = document.getElementById('emptyInvitaciones');
   const badge = document.getElementById('badgeInvitaciones');
@@ -924,8 +920,7 @@ async function renderizarInvitaciones() {
     // Orden: Aceptados → Rechazados → Pendientes
     container.innerHTML = aceptadosHTML + rechazadosHTML + pendientesHTML;
 
-       // GUARDAR EN CACHE
-        cacheInvitaciones = { aceptados, rechazados, pendientes };
+      
       
   } catch (err) {
     console.error('Error cargando invitaciones:', err);

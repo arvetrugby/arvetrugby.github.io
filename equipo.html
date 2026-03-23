@@ -658,18 +658,15 @@ box-shadow:0 8px 24px rgba(0,0,0,0.08);
     </script>
    
 <script>
-    // Cargar próximos partidos al iniciar la página
-    document.addEventListener('DOMContentLoaded', function() {
-        if (typeof cargarProximosPartidosEquipo === 'function') {
-            cargarProximosPartidosEquipo();
-        } else {
-            setTimeout(() => {
-                if (typeof cargarProximosPartidosEquipo === 'function') {
-                    cargarProximosPartidosEquipo();
-                }
-            }, 500);
-        }
-    });
+   document.addEventListener('DOMContentLoaded', function() {
+    // Cargar partidos del equipo (función existente)
+    if (typeof cargarProximosPartidosEquipo === 'function') {
+        cargarProximosPartidosEquipo();
+    }
+    
+    // NUEVO: Cargar flyers públicos
+    cargarFlyersEncuentrosPublicos('galeriaFlyers');
+});
 </script>
 </body>
 </html>

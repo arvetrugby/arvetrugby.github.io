@@ -512,6 +512,21 @@ color:white;
         </div>
     </header>
 
+<!-- LOADER GLOBAL -->
+<div id="loaderGlobal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 999999; align-items: center; justify-content: center; flex-direction: column; backdrop-filter: blur(4px);">
+    <div style="width: 60px; height: 60px; border: 5px solid #e2e8f0; border-top-color: #4f46e5; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+    <p id="loaderGlobalTexto" style="margin-top: 20px; color: #4f46e5; font-size: 1.1rem; font-weight: 600;">Procesando...</p>
+</div>
+
+<style>
+@keyframes spin { 
+    to { transform: rotate(360deg); } 
+}
+#loaderGlobal {
+    transition: opacity 0.3s ease;
+}
+</style>
+    
     <!-- Menú lateral -->
     <nav class="admin-nav" id="adminNav">
         
@@ -777,6 +792,107 @@ color:white;
     <script src="js/app.js"></script>
     <script src="encuentros.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
+<script>
+// ============================================
+// LOADER GLOBAL - Funciona en toda la app
+// ============================================
+
+function mostrarLoaderGlobal(mensaje = 'Procesando...') {
+    const loader = document.getElementById('loaderGlobal');
+    const texto = document.getElementById('loaderGlobalTexto');
+    if (loader) {
+        loader.style.display = 'flex';
+        loader.style.opacity = '1';
+        if (texto) texto.textContent = mensaje;
+    }
+}
+
+function ocultarLoaderGlobal() {
+    const loader = document.getElementById('loaderGlobal');
+    if (loader) {
+        loader.style.opacity = '0';
+        setTimeout(() => {
+            loader.style.display = 'none';
+        }, 300);
+    }
+}
+
+// Interceptar clicks en botones de acción
+function initLoaderGlobal() {
+    // Textos que indican acción (agregá los que necesites)
+    const textosAccion = [
+        'voy', 'no voy', 'no_voy', 
+        'aceptar', 'rechazar', 
+        'cancelar', 'guardar', 'crear', 'actualizar', 'editar', 
+        'confirmar', 'enviar', 'subir', 'eliminar', 'borrar',
+        'responder', 'confirmar asistencia', 'cambiar'
+    ];
+    
+    // Funciones onclick que indican acción
+    const funcionesAccion = [
+        'guardarasistencia', 'aceptarinvitacion', 'rechazarinvitacion',
+        'cancelarencuentro', 'guardarencuentro', 'admincambiarasistencia',
+        'guardaredicionencuentro', 'subirflyer', 'updatepassword',
+        'asignarrolcomision', 'updateestadojugador', 'deletejugador'
+    ];
+    
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('button, a, [onclick], input[type="submit"]');
+        if (!btn) return;
+        
+        // Obtener texto del botón
+        const texto = btn.textContent?.toLowerCase().trim() || '';
+        const onclick = btn.getAttribute('onclick')?.toLowerCase() || '';
+        
+        // Verificar si es acción por texto
+        const esAccionTexto = textosAccion.some(t => texto.includes(t));
+        
+        // Verificar si es acción por función onclick
+        const esAccionFuncion = funcionesAccion.some(f => onclick.includes(f));
+        
+        // Excluir botones de cierre/cancelar
+        const esCancelar = 
+            texto.includes('cerrar') || 
+            texto.includes('×') || 
+            texto.includes('cancelar') || 
+            texto === 'no' ||
+            onclick.includes('cerrar') || 
+            onclick.includes('remove') ||
+            onclick.includes('cancelar') ||
+            btn.classList.contains('btn-cerrar') ||
+            btn.classList.contains('no-loader');
+        
+        if ((esAccionTexto || esAccionFuncion) && !esCancelar) {
+            mostrarLoaderGlobal();
+        }
+    });
+    
+    // Interceptar todos los fetch para ocultar loader
+    const originalFetch = window.fetch;
+    window.fetch = function(...args) {
+        return originalFetch.apply(this, args)
+            .then(response => {
+                // Pequeña demora para que se vea el éxito
+                setTimeout(ocultarLoaderGlobal, 400);
+                return response;
+            })
+            .catch(error => {
+                ocultarLoaderGlobal();
+                throw error;
+            });
+    };
+    
+    // También ocultar en errores de red
+    window.addEventListener('error', ocultarLoaderGlobal);
+}
+
+// Inicializar cuando carga el DOM
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLoaderGlobal);
+} else {
+    initLoaderGlobal();
+}
+</script>
 
 </body>
 </html>

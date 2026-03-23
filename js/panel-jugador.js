@@ -408,16 +408,19 @@ function ocultarLoader() {
 // ==========================================
     
 window.cargarEncuentrosJugador = async function() {
+  
     const container = document.getElementById('panelJugadorEncuentros');
     if (!container) {
         console.log('❌ No existe el contenedor panelJugadorEncuentros');
         return;
     }
     
-    console.log('🚀 Iniciando carga de encuentros...');
-    console.log('esAdminEditando:', esAdminEditando);
+   console.log('🔍 CARGAR ENCUENTROS - DEBUG');
+    console.log('user:', user);
     console.log('user.equipoId:', user?.equipoId);
     console.log('jugadorId:', jugadorId);
+    console.log('esAdminEditando:', esAdminEditando);
+    console.log('adminEditId:', adminEditId);
     
     // SIEMPRE limpiar primero para evitar duplicados
     container.innerHTML = '<p style="color: #64748b; text-align: center; padding: 20px;"> Cargando encuentros...</p>';

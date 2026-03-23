@@ -596,7 +596,7 @@ function generarCardEncuentroPanel(enc, esCreador) {
     `;
 }
 // ==========================================
-// GUARDAR ASISTENCIA (copiado de encuentros.js para funcionar en panel)
+// GUARDAR ASISTENCIA - OPTIMIZADO
 // ==========================================
 async function guardarAsistencia(encuentroId, respuesta) {
     // Usar la variable user que ya está definida en el scope
@@ -613,16 +613,34 @@ async function guardarAsistencia(encuentroId, respuesta) {
         const response = await fetch(`${API_URL}?${params.toString()}`);
         const result = await response.json();
         
-         if (result.success) {
+        if (result.success) {
             mostrarMensaje(`Confirmado: ${respuesta === 'voy' ? 'VOY ✓' : 'NO VOY ✕'}`, 'ok');
             
-            // Recargar la página completa después de 1 segundo
+            // 🔥 OPTIMIZACIÓN: Recarga rápida similar a invitaciones
             setTimeout(async () => {
                 console.log('Recargando encuentros...');
-                await window.cargarEncuentrosJugador();
+                
+                // Si es admin editando, recargar solo si el jugador es de su equipo
+                if (esAdminEditando) {
+                    // Verificar que el jugador sea del mismo equipo antes de recargar
+                    try {
+                        const responseJug = await fetch(`${API_URL}?action=getJugadorById&id=${jugadorId}`);
+                        const dataJug = await responseJug.json();
+                        
+                        if (dataJug.success && dataJug.data.equipoId === user.equipoId) {
+                            await window.cargarEncuentrosJugador();
+                        }
+                    } catch (err) {
+                        console.error('Error verificando equipo:', err);
+                    }
+                } else {
+                    // Jugador normal: recarga directa
+                    await window.cargarEncuentrosJugador();
+                }
+                
                 console.log('Recarga completada');
-            }, 1500);
-        
+            }, 500); // Reducido de 1500ms a 500ms
+            
         } else {
             mostrarMensaje(result.error || 'Error al guardar', 'error');
         }

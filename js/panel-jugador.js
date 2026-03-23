@@ -604,7 +604,7 @@ function generarCardEncuentroPanel(enc, esCreador) {
 // ==========================================
 // GUARDAR ASISTENCIA - SIMPLE Y DIRECTO
 // ==========================================
-async function guardarAsistencia(encuentroId, respuesta) {
+window.guardarAsistencia = async function(encuentroId, respuesta) {
     console.log('🔴 GUARDAR ASISTENCIA - INICIO');
     console.log('encuentroId:', encuentroId);
     console.log('respuesta:', respuesta);

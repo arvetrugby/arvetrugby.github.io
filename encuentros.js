@@ -2124,7 +2124,7 @@ function compartirEncuentro(id) {
             }).join('\n\n');
             
             // Construir el mensaje completo
-            const linkEncuentro = `https://arvetrugby.github.io/Arvet/preview.html?action=getEncuentroById&id=${id}`;
+            const linkEncuentro = `https://arvetrugby.com/preview.html?action=getEncuentroById&id=${id}`;
             
             let mensaje = `🏉 *${enc.nombre}*\n\n`;
             mensaje += `${fechasTexto}\n\n`;

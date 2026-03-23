@@ -1415,7 +1415,7 @@ if (esCreador) {
                 <div style="display: flex; align-items: center; gap: 12px; padding: 15px; background: ${j.respuesta === 'voy' ? '#dcfce7' : j.respuesta === 'no_voy' ? '#fee2e2' : '#fef3c7'}; border-radius: 10px; border-left: 4px solid ${j.respuesta === 'voy' ? '#16a34a' : j.respuesta === 'no_voy' ? '#dc2626' : '#f59e0b'}; flex-wrap: wrap;">
                   
                   <!-- Info del jugador -->
-                  <div style="flex: 1; min-width: 200px;">
+                  <div style="flex: 1; min-width: 150px;">
                     <div style="font-weight: 600; color: #1e293b; font-size: 0.95rem; word-break: break-word;">${j.nombreCompleto}</div>
                     <div style="font-size: 0.8rem; color: #64748b; margin-top: 4px; display: flex; flex-wrap: wrap; gap: 8px;">
                       ${j.dni ? `<span>DNI: ${j.dni}</span>` : ''}

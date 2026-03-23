@@ -2351,68 +2351,40 @@ function descargarAsistenciasCompletasCSV(encuentroId) {
     });
 }
 // ============================================
-// PRÓXIMOS PARTIDOS - SOLO FLYERS (ULTRA SIMPLE)
+// FLYERS PÚBLICOS - ULTRA SIMPLE
 // ============================================
 
 async function cargarProximosPartidosEquipo() {
     const container = document.getElementById('partidosEquipoList');
     if (!container) return;
-    
-    const usuario = obtenerUsuarioActual();
-    if (!usuario?.equipoId) {
-        container.innerHTML = '<p style="text-align:center;color:#64748b;">Iniciá sesión para ver partidos</p>';
-        return;
-    }
-    
+
     try {
-        // Cargar creados + aceptados
-        const [respCreados, respAceptados] = await Promise.all([
-            fetch(`${API_URL}?action=getEncuentros&equipoId=${usuario.equipoId}`).then(r => r.json()),
-            fetch(`${API_URL}?action=getEncuentrosAceptados&equipoId=${usuario.equipoId}`).then(r => r.json())
-        ]);
-        
-        const creados = respCreados.success ? respCreados.data : [];
-        const aceptados = respAceptados.success ? respAceptados.data : [];
-        
-        // Solo publicados, ordenados por fecha
-        const partidos = [
-            ...creados.filter(e => e.estado === 'publicado'),
-            ...aceptados.filter(e => e.estado === 'publicado')
-        ].sort((a, b) => {
-            const fa = extraerFecha(a), fb = extraerFecha(b);
-            return new Date(fa) - new Date(fb);
-        }).slice(0, 6); // Máximo 6
-        
-        if (partidos.length === 0) {
-            container.innerHTML = '<p style="text-align:center;color:#64748b;padding:40px;">No hay partidos</p>';
+        // Traer TODOS los encuentros
+        const resp = await fetch(`${API_URL}?action=getEncuentros`).then(r => r.json());
+
+        const encuentros = resp.success ? resp.data : [];
+
+        // Filtrar SOLO publicados (públicos)
+        const publicos = encuentros.filter(e => e.estado === 'publicado' && e.flyerUrl);
+
+        if (publicos.length === 0) {
+            container.innerHTML = '<p style="text-align:center;color:#64748b;padding:40px;">No hay flyers</p>';
             return;
         }
-        
-        // Solo flyers, nada más
+
+        // SOLO IMÁGENES
         container.innerHTML = `
             <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px;">
-                ${partidos.map(p => `
-                    <div onclick="verDetalleEncuentro('${p.id}')" 
-                         style="cursor:pointer;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.15);aspect-ratio:3/4;background:#f1f5f9;transition:transform 0.2s;"
-                         onmouseover="this.style.transform='scale(1.03)'"
-                         onmouseout="this.style.transform='scale(1)'">
-                        ${p.flyerUrl ? 
-                            `<img src="${p.flyerUrl}" style="width:100%;height:100%;object-fit:cover;display:block;">` :
-                            `<div style="width:100%;height:100%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;color:white;font-size:1.2rem;font-weight:bold;text-align:center;padding:20px;">${p.nombre}</div>`
-                        }
+                ${publicos.map(p => `
+                    <div style="border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.15);aspect-ratio:3/4;">
+                        <img src="${p.flyerUrl}" 
+                             style="width:100%;height:100%;object-fit:cover;display:block;">
                     </div>
                 `).join('')}
             </div>
         `;
-        
+
     } catch (err) {
         container.innerHTML = '<p style="text-align:center;color:#dc2626;">Error al cargar</p>';
     }
-}
-
-function extraerFecha(enc) {
-    try {
-        const f = JSON.parse(enc.fechasJSON || '[]');
-        return f[0]?.dia || '9999-12-31';
-    } catch(e) { return '9999-12-31'; }
 }

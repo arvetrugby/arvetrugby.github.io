@@ -605,13 +605,6 @@ function generarCardEncuentroPanel(enc, esCreador) {
 // GUARDAR ASISTENCIA - SIMPLE Y DIRECTO
 // ==========================================
 window.guardarAsistencia = async function(encuentroId, respuesta) {
-    console.log('🔴 GUARDAR ASISTENCIA - INICIO');
-    console.log('encuentroId:', encuentroId);
-    console.log('respuesta:', respuesta);
-    console.log('jugadorId:', jugadorId);
-    console.log('user:', user);
-    console.log('user.equipoId:', user?.equipoId);
-    
     const params = new URLSearchParams({
         action: 'guardarAsistenciaJugador',
         encuentroId: encuentroId,
@@ -623,38 +616,20 @@ window.guardarAsistencia = async function(encuentroId, respuesta) {
     
     try {
         mostrarMensaje('⏳ Guardando...', 'ok');
-        
-        console.log('📤 Enviando fetch...');
         const response = await fetch(`${API_URL}?${params.toString()}`);
         const result = await response.json();
         
-        console.log('📥 Respuesta:', result);
-        
         if (result.success) {
-            mostrarMensaje('✅ Confirmado', 'ok');
-            
-            console.log('⏳ Esperando 1.5s...');
-            await new Promise(r => setTimeout(r, 1500));
-            
-            console.log('🔄 Llamando cargarEncuentrosJugador...');
-            console.log('Antes de recargar - user:', user);
-            console.log('Antes de recargar - user.equipoId:', user?.equipoId);
-            console.log('Antes de recargar - jugadorId:', jugadorId);
-            
+            mostrarMensaje('✅ ' + (respuesta === 'voy' ? 'VOY' : 'NO VOY'), 'ok');
+            await new Promise(r => setTimeout(r, 1000));
             await window.cargarEncuentrosJugador();
-            
-            console.log('✅ Recarga completada');
         } else {
-            console.log('❌ Error del servidor:', result.error);
             mostrarMensaje('Error al guardar', 'error');
         }
     } catch (err) {
-        console.error('❌ Error:', err);
         mostrarMensaje('Error de conexión', 'error');
     }
-    
-    console.log('🔴 GUARDAR ASISTENCIA - FIN');
-}
+};
 
 // ==========================================
 // ACTUALIZAR SOLO EL CARD QUE CAMBIÓ

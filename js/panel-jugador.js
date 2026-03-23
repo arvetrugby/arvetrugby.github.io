@@ -596,56 +596,54 @@ function generarCardEncuentroPanel(enc, esCreador) {
     `;
 }
 // ==========================================
-// GUARDAR ASISTENCIA - OPTIMIZADO
+// GUARDAR ASISTENCIA - CORREGIDO
 // ==========================================
 async function guardarAsistencia(encuentroId, respuesta) {
-    // Usar la variable user que ya está definida en el scope
+    console.log('📝 Guardando asistencia:', { encuentroId, respuesta, jugadorId, equipoId: user?.equipoId });
+    
     const params = new URLSearchParams({
         action: 'guardarAsistenciaJugador',
         encuentroId: encuentroId,
-        jugadorId: jugadorId, // ya está definido arriba en el archivo
+        jugadorId: jugadorId,
         jugadorNombre: user?.nombre || '',
         equipoId: user?.equipoId || '',
         respuesta: respuesta
     });
     
     try {
+        mostrarMensaje('⏳ Guardando...', 'ok');
+        
         const response = await fetch(`${API_URL}?${params.toString()}`);
         const result = await response.json();
         
+        console.log('📥 Respuesta del servidor:', result);
+        
         if (result.success) {
-            mostrarMensaje(`Confirmado: ${respuesta === 'voy' ? 'VOY ✓' : 'NO VOY ✕'}`, 'ok');
+            mostrarMensaje(`✅ Confirmado: ${respuesta === 'voy' ? 'VOY' : 'NO VOY'}`, 'ok');
             
-            // 🔥 OPTIMIZACIÓN: Recarga rápida similar a invitaciones
-            setTimeout(async () => {
-                console.log('Recargando encuentros...');
-                
-                // Si es admin editando, recargar solo si el jugador es de su equipo
-                if (esAdminEditando) {
-                    // Verificar que el jugador sea del mismo equipo antes de recargar
-                    try {
-                        const responseJug = await fetch(`${API_URL}?action=getJugadorById&id=${jugadorId}`);
-                        const dataJug = await responseJug.json();
-                        
-                        if (dataJug.success && dataJug.data.equipoId === user.equipoId) {
-                            await window.cargarEncuentrosJugador();
-                        }
-                    } catch (err) {
-                        console.error('Error verificando equipo:', err);
-                    }
-                } else {
-                    // Jugador normal: recarga directa
-                    await window.cargarEncuentrosJugador();
-                }
-                
-                console.log('Recarga completada');
-            }, 500); // Reducido de 1500ms a 500ms
+            // 🔥 ESPERAR un momento para que el backend procese
+            await new Promise(resolve => setTimeout(resolve, 800));
+            
+            // 🔥 RECARGAR con fresh data - forzar bypass de cache
+            console.log('🔄 Recargando encuentros...');
+            
+            // Limpiar el contenedor primero para forzar re-render
+            const container = document.getElementById('panelJugadorEncuentros');
+            if (container) {
+                container.innerHTML = '<p style="color: #64748b; text-align: center; padding: 20px;">🔄 Actualizando...</p>';
+            }
+            
+            // Llamar a la función de carga
+            await window.cargarEncuentrosJugador();
+            
+            console.log('✅ Recarga completada');
             
         } else {
+            console.error('❌ Error del servidor:', result.error);
             mostrarMensaje(result.error || 'Error al guardar', 'error');
         }
     } catch (err) {
-        console.error('Error:', err);
+        console.error('❌ Error de conexión:', err);
         mostrarMensaje('Error de conexión', 'error');
     }
 }

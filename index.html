@@ -121,6 +121,8 @@
         .logo-glow { width:180px; height:180px; }
     }
 
+
+          
     /* ===== HERO CONTAINER (solo el layout, sin tocar el fondo) ===== */
     .hero-container {
         position: relative;
@@ -965,6 +967,76 @@
     font-weight: 600;
 }
 </style>
+    <script>
+(function() {
+    const LOADER_CONFIG = {
+        minDuration: 3500,
+        maxDuration: 8000,
+        textChangeInterval: 900
+    };
+
+    const loadingScreen = document.getElementById('loadingScreen');
+    const progressBar = document.getElementById('progressBar');
+    const loadingText = document.getElementById('loadingText');
+    const logo = document.getElementById('loadingLogo');
+
+    // TEXTOS QUE VAN CAMBIANDO
+    const textos = [
+        'Alistando los botines...',
+        'Preparando el scrum...',
+        'Poniendo la cerveza en hielo...',
+        'Inflando la pelota...',
+        '¡Listo para jugar!'
+    ];
+
+    let startTime = Date.now();
+    let progress = 0;
+    let textIndex = 0;
+    let resourcesLoaded = false;
+    let logoLoaded = false;
+
+    if (logo.complete) {
+        logo.style.opacity = '1';
+        logoLoaded = true;
+    } else {
+        logo.onload = () => { logo.style.opacity = '1'; logoLoaded = true; };
+        logo.onerror = () => { logo.style.display = 'none'; logoLoaded = true; };
+    }
+
+    function animate() {
+        const elapsed = Date.now() - startTime;
+        progress = Math.min((elapsed / LOADER_CONFIG.minDuration) * 90, 90);
+        progressBar.style.width = progress + '%';
+
+        const newIndex = Math.min(Math.floor(elapsed / LOADER_CONFIG.textChangeInterval), textos.length - 1);
+        if (newIndex !== textIndex) {
+            textIndex = newIndex;
+            loadingText.textContent = textos[textIndex];
+        }
+
+        if (elapsed < LOADER_CONFIG.minDuration || !resourcesLoaded || !logoLoaded) {
+            requestAnimationFrame(animate);
+        } else {
+            finish();
+        }
+    }
+
+    function finish() {
+        progressBar.style.width = '100%';
+        setTimeout(() => {
+            loadingScreen.classList.add('loading-hidden');
+            setTimeout(() => loadingScreen.remove(), 600);
+        }, 400);
+    }
+
+    if (document.readyState === 'complete') resourcesLoaded = true;
+    else window.addEventListener('load', () => resourcesLoaded = true);
+    
+    setTimeout(() => { resourcesLoaded = true; logoLoaded = true; }, LOADER_CONFIG.maxDuration);
+
+    animate();
+})();
+</script>
 </head>
 <body>
    
@@ -1279,47 +1351,7 @@
         <div id="modalBody"></div>
     </div>
 </div>
-    <script>
-        // Loading screen logic
-        const logo = document.getElementById("loadingLogo");
-        logo.onload = function() {
-            logo.style.opacity = "1";
-            logo.style.animation = "logoIntro 1.4s ease, logoFloat 4s ease-in-out infinite 1.4s";
-        };
-        
-        // Simular carga
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.getElementById('loadingScreen').classList.add('loading-hidden');
-            }, 2000);
-        });
-
-        // Contar equipos y países automáticamente
-        function actualizarStatsBar() {
-            const equipos = document.querySelectorAll('.equipo-card').length;
-            const paises = document.querySelectorAll('.pais-card').length;
-            
-            const statsBar = document.querySelector('.stats-bar');
-            if (statsBar) {
-                statsBar.innerHTML = `🏉 <strong>${equipos} equipos</strong> activos en <strong>${paises} países</strong> de Latinoamérica`;
-            }
-        }
-
-        // Ejecutar cuando cargue
-        window.addEventListener('load', actualizarStatsBar);
-
-        document.addEventListener('DOMContentLoaded', function() {
-    const btn = document.getElementById('toggleFeatures');
-    const grid = document.getElementById('featuresGrid');
     
-    if (btn && grid) {
-        btn.addEventListener('click', function() {
-            const isOpen = grid.classList.toggle('open');
-            btn.textContent = isOpen ? 'Ver menos' : 'Ver más';
-        });
-    }
-});
-    </script>
     <script>
 // Sticky button al hacer scroll
 document.addEventListener('DOMContentLoaded', function() {

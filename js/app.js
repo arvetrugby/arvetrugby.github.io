@@ -2929,3 +2929,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+// Registrar Service Worker para PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then((reg) => console.log('ARVET instalado:', reg.scope))
+      .catch((err) => console.log('Error:', err));
+  });
+}

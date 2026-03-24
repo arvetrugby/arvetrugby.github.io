@@ -391,7 +391,7 @@ box-shadow:0 8px 24px rgba(0,0,0,0.08);
     }
 }
 
-        /* Estilos para tarjetas de partidos */
+        /* ===== FLYERS: tarjetas de partidos ===== */
 
 .flyers-grid {
     display: grid;
@@ -400,22 +400,20 @@ box-shadow:0 8px 24px rgba(0,0,0,0.08);
     padding: 20px 0;
 }
 
-* ===== FLYERS: solo visualización, sin clic ===== */
-.flyer-item {
+#galeriaFlyers .flyer-item {
     cursor: default !important;
-    aspect-ratio: unset !important;
     pointer-events: none !important;
 }
 
-.flyer-item img {
+#galeriaFlyers .flyer-item img {
     height: auto !important;
     object-fit: contain !important;
-    aspect-ratio: unset !important;
 }
 
-.flyer-item:hover {
+#galeriaFlyers .flyer-item:hover {
     transform: none !important;
 }
+
 .sin-flyers,
 .error {
     text-align: center;
@@ -423,7 +421,6 @@ box-shadow:0 8px 24px rgba(0,0,0,0.08);
     padding: 40px;
     font-style: italic;
 }
-
 .loading {
     text-align: center;
     color: #64748b;

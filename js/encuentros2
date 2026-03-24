@@ -1,114 +1,453 @@
+// ============================================
+// EDITAR ENCUENTRO (COMPLETO)
+// ============================================
+async function editarEncuentro(encuentroId) {
+    LoadingManager.show('editar', 'Cargando datos del encuentro...');
+    
+    try {
+        const result = await fetchWithRetry(`${ENCUENTROS_CONFIG.API_URL}?action=getEncuentroById&id=${encuentroId}`);
+        
+        if (!result.success) {
+            mostrarMensajeEncuentros('Encuentro no encontrado', 'error');
+            return;
+        }
+        
+        const enc = result.data;
+        const usuario = obtenerUsuarioActual();
+        
+        // Verificar que sea el creador
+        const encCheck = await fetchWithRetry(`${ENCUENTROS_CONFIG.API_URL}?action=getEncuentros&equipoId=${usuario.equipoId}`);
+        const esCreador = encCheck.data && encCheck.data.some(e => e.id === encuentroId);
+        
+        if (!esCreador) {
+            mostrarMensajeEncuentros('Solo el creador puede editar este encuentro', 'error');
+            return;
+        }
 
-// ============================================
-// MODAL CREAR ENCUENTRO (COMPLETO)
-// ============================================
-function nuevoEncuentro() {
-    if (document.getElementById('modalEncuentro')) return;
-    
-    const modal = document.createElement('div');
-    modal.className = 'modal-overlay active';
-    modal.id = 'modalEncuentro';
-    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 99999; padding: 20px; box-sizing: border-box;';
-    
-    modal.innerHTML = `
-        <div style="background: white; border-radius: 20px; width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; padding: 30px; position: relative; animation: slideUpMsg 0.3s ease;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; position: sticky; top: 0; background: white; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0; z-index: 10;">
-                <h2 style="margin: 0; color: #1e293b; font-size: 1.5rem;">Crear Nuevo Encuentro</h2>
-                <button onclick="cerrarModalEncuentro()" style="background: #f1f5f9; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 24px; color: #64748b; display: flex; align-items: center; justify-content: center;">×</button>
+        let fechas = [], valores = [];
+        try {
+            fechas = JSON.parse(enc.fechasJSON || '[]');
+            valores = JSON.parse(enc.valoresJSON || '[]');
+        } catch(e) { console.error('Error parseando JSON:', e); }
+
+        const tiposArray = enc.tipo ? enc.tipo.split(', ').map(t => t.trim()) : [];
+        const tiposPredefinidos = ['Veteranos +35', 'Veteranos +50'];
+        const tiposSeleccionados = tiposArray.filter(t => tiposPredefinidos.includes(t));
+        const tiposPersonalizados = tiposArray.filter(t => !tiposPredefinidos.includes(t));
+
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay active';
+        modal.id = 'modalEditarEncuentro';
+        modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 99999; padding: 20px; box-sizing: border-box;';
+        
+        modal.innerHTML = `
+            <div style="background: white; border-radius: 20px; width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; padding: 30px; position: relative; animation: slideUpMsg 0.3s ease;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; position: sticky; top: 0; background: white; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0; z-index: 10;">
+                    <h2 style="margin: 0; color: #1e293b; font-size: 1.5rem;">Editar Encuentro</h2>
+                    <button onclick="document.getElementById('modalEditarEncuentro').remove()" style="background: #f1f5f9; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 24px; color: #64748b; display: flex; align-items: center; justify-content: center;">×</button>
+                </div>
+                
+                <form id="formEditarEncuentro" onsubmit="guardarEdicionEncuentro(event, '${encuentroId}')">
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Flyer del encuentro</label>
+                        <div id="editFlyerPreview" style="width: 100%; height: 200px; background: #f1f5f9; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; overflow: hidden; border: 2px dashed #cbd5e1;">
+                            ${enc.flyerUrl ? `<img src="${enc.flyerUrl}" style="max-width: 100%; max-height: 100%; object-fit: contain;">` : '<span style="color: #94a3b8;">Sin flyer</span>'}
+                        </div>
+                        <input type="file" id="editInputFlyer" accept="image/*" style="display: none;">
+                        <input type="hidden" id="editFlyerUrl" value="${enc.flyerUrl || ''}">
+                        <button type="button" onclick="document.getElementById('editInputFlyer').click()" style="width: 100%; padding: 12px; background: #f1f5f9; color: #475569; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; font-weight: 600;">📤 Cambiar flyer</button>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Nombre del encuentro *</label>
+                        <input type="text" id="editNombre" required value="${enc.nombre || ''}" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; box-sizing: border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Tipo de encuentro * (podés elegir varios)</label>
+                        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" name="editTipo" value="Veteranos +35" ${tiposSeleccionados.includes('Veteranos +35') ? 'checked' : ''} style="width: 18px; height: 18px;">
+                                <span>Veteranos +35</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" name="editTipo" value="Veteranos +50" ${tiposSeleccionados.includes('Veteranos +50') ? 'checked' : ''} style="width: 18px; height: 18px;">
+                                <span>Veteranos +50</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" id="editChkOtro" ${tiposPersonalizados.length > 0 ? 'checked' : ''} style="width: 18px; height: 18px;" onchange="toggleEditOtrosTipos()">
+                                <span>Otro (agregar personalizados)</span>
+                            </label>
+                        </div>
+                        <div id="editContainerOtrosTipos" style="display: ${tiposPersonalizados.length > 0 ? 'flex' : 'none'}; flex-direction: column; gap: 10px; margin-left: 26px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 2px solid #e2e8f0;">
+                            <div style="font-size: 12px; color: #64748b; margin-bottom: 5px;">Tipos personalizados:</div>
+                            ${tiposPersonalizados.map((tipo, index) => `
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                    <input type="text" class="editOtro-tipo-input" value="${tipo}" placeholder="Tipo personalizado ${index + 1}" style="flex: 1; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem;">
+                                    <button type="button" onclick="this.parentElement.remove()" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 20px; padding: 5px;">×</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button type="button" onclick="agregarEditOtroTipo()" style="display: ${tiposPersonalizados.length > 0 ? 'block' : 'none'}; width: 100%; margin-top: 10px; padding: 10px; background: #f1f5f9; color: #475569; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; font-size: 0.9rem;" id="editBtnAgregarOtroTipo">+ Agregar otro tipo personalizado</button>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Ubicación del encuentro *</label>
+                        <p style="color: #64748b; font-size: 12px; margin-bottom: 10px;">📍 Arrastrá el pin rojo para marcar exactamente dónde se juega</p>
+                        <div id="editMapaEncuentro" style="width: 100%; height: 300px; border-radius: 12px; margin-bottom: 15px; border: 2px solid #e2e8f0; background: #f1f5f9;"></div>
+                        <input type="hidden" id="editLat" value="${enc.lat || ''}">
+                        <input type="hidden" id="editLng" value="${enc.lng || ''}">
+                        <input type="hidden" id="editPaisId" value="${enc.paisId || ''}">
+                        <input type="hidden" id="editProvinciaId" value="${enc.provinciaId || ''}">
+                        <input type="hidden" id="editCiudadId" value="${enc.ciudadId || ''}">
+                        <label style="font-size: 12px; color: #64748b; margin-bottom: 5px; display: block;">Dirección completa *</label>
+                        <input type="text" id="editDireccion" required value="${enc.lugar || ''}" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; margin-bottom: 10px; box-sizing: border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Cupo máximo de equipos *</label>
+                        <input type="number" id="editCupo" min="2" max="50" required value="${enc.cupoMaximo || 8}" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; box-sizing: border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Fechas y horarios *</label>
+                        <div id="editContainerFechas" style="display: flex; flex-direction: column; gap: 15px;">
+                            ${fechas.length > 0 ? fechas.map((f, idx) => `
+                                <div class="edit-dia-item" style="background: #f8fafc; padding: 15px; border-radius: 12px; border: 2px solid #e2e8f0;">
+                                    <div style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
+                                        <input type="date" class="edit-dia-fecha" required value="${f.dia}" style="flex: 1; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem;">
+                                        <button type="button" onclick="this.closest('.edit-dia-item').remove()" style="padding: 8px 12px; background: #fee2e2; color: #991b1b; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;">✕</button>
+                                    </div>
+                                    <div class="edit-horarios-container" style="display: flex; flex-direction: column; gap: 8px; margin-left: 10px; padding-left: 15px; border-left: 3px solid #cbd5e1;">
+                                        ${f.horarios?.map(h => `
+                                            <div style="display: flex; gap: 8px; align-items: center;">
+                                                <input type="time" class="edit-horario-hora" required value="${h.hora}" style="width: 100px; padding: 8px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 0.9rem;">
+                                                <input type="text" class="edit-horario-desc" placeholder="Descripción" required value="${h.desc}" style="flex: 1; padding: 8px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 0.9rem;">
+                                                <button type="button" onclick="this.parentElement.remove()" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 18px; padding: 5px;">×</button>
+                                            </div>
+                                        `).join('') || ''}
+                                    </div>
+                                    <button type="button" onclick="agregarEditHorario(this)" style="margin-top: 10px; margin-left: 10px; font-size: 12px; padding: 6px 12px; background: #f1f5f9; color: #475569; border: 2px solid #e2e8f0; border-radius: 6px; cursor: pointer;">+ Agregar horario</button>
+                                </div>
+                            `).join('') : ''}
+                        </div>
+                        <button type="button" onclick="agregarEditDia()" style="margin-top: 15px; width: 100%; padding: 12px; background: #f1f5f9; color: #475569; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; font-weight: 600;">+ Agregar día</button>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Valores / Opciones de inscripción *</label>
+                        <div id="editContainerValores" style="display: flex; flex-direction: column; gap: 10px;">
+                            ${valores.length > 0 ? valores.map(v => `
+                                <div style="display: flex; gap: 10px; align-items: center; background: #f8fafc; padding: 12px; border-radius: 10px; border: 2px solid #e2e8f0;">
+                                    <input type="text" class="edit-valor-titulo" placeholder="Título" required value="${v.titulo}" style="flex: 1; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem;">
+                                    <input type="number" class="edit-valor-precio" placeholder="$" min="0" required value="${v.precio}" style="width: 100px; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem;">
+                                    <input type="text" class="edit-valor-desc" placeholder="Descripción opcional" value="${v.desc || ''}" style="flex: 2; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem;">
+                                    <button type="button" onclick="this.parentElement.remove()" style="padding: 6px 10px; background: #fee2e2; color: #991b1b; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;">✕</button>
+                                </div>
+                            `).join('') : ''}
+                        </div>
+                        <button type="button" onclick="agregarEditValor()" style="margin-top: 15px; width: 100%; padding: 12px; background: #f1f5f9; color: #475569; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; font-weight: 600;">+ Agregar opción de valor</button>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Descripción general</label>
+                        <textarea id="editDescripcion" rows="3" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; resize: vertical; box-sizing: border-box;">${enc.descripcion || ''}</textarea>
+                    </div>
+
+                    <div style="display: flex; gap: 15px; margin-top: 25px;">
+                        <button type="button" onclick="document.getElementById('modalEditarEncuentro').remove()" style="flex: 1; padding: 12px; background: #f1f5f9; color: #475569; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1rem;">Cancelar</button>
+                        <button type="submit" style="flex: 2; padding: 12px; background: #4f46e5; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1rem;" id="btnGuardarEdicion">Guardar cambios</button>
+                    </div>
+                </form>
             </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Inicializar mapa con coordenadas existentes
+        setTimeout(() => initEditMapaEncuentro(enc.lat, enc.lng), 100);
+        
+        // Handler para flyer
+        document.getElementById('editInputFlyer').addEventListener('change', async function() {
+            const file = this.files[0];
+            if (!file) return;
             
-            <form id="formEncuentro" onsubmit="guardarEncuentro(event)">
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Flyer del encuentro</label>
-                    <div id="flyerPreview" style="width: 100%; height: 200px; background: #f1f5f9; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; overflow: hidden; border: 2px dashed #cbd5e1;">
-                        <span style="color: #94a3b8;">Vista previa del flyer</span>
-                    </div>
-                    <input type="file" id="inputFlyer" accept="image/*" style="display: none;">
-                    <input type="hidden" id="flyerUrl" value="">
-                    <button type="button" onclick="document.getElementById('inputFlyer').click()" style="width: 100%; padding: 12px; background: #f1f5f9; color: #475569; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.95rem;">📤 Subir flyer</button>
-                    <p style="color: #64748b; font-size: 12px; margin-top: 5px;">Formato recomendado: JPG/PNG, 800x600px</p>
-                </div>
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('editFlyerPreview').innerHTML = `<img src="${e.target.result}" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
+            };
+            reader.readAsDataURL(file);
+            
+            const formData = new FormData();
+            formData.append('image', file);
+            
+            const btn = document.getElementById('btnGuardarEdicion');
+            btn.disabled = true;
+            btn.textContent = 'Subiendo...';
+            
+            try {
+                const response = await fetch('https://api.imgbb.com/1/upload?key=2c40bfae99afcb6fd536a0e303a77b90', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    document.getElementById('editFlyerUrl').value = result.data.url;
+                    mostrarMensajeEncuentros('Flyer actualizado', 'success');
+                }
+            } catch (err) {
+                mostrarMensajeEncuentros('Error al subir flyer', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Guardar cambios';
+            }
+        });
+        
+    } catch (err) {
+        console.error('Error:', err);
+        mostrarMensajeEncuentros('Error al cargar encuentro', 'error');
+    } finally {
+        LoadingManager.hide('editar');
+    }
+}
 
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Nombre del encuentro *</label>
-                    <input type="text" id="encNombre" required placeholder="Ej: Encuentro Argentino - Santiago 2026" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; box-sizing: border-box;">
-                </div>
+// ============================================
+// FUNCIONES AUXILIARES EDICIÓN
+// ============================================
+function toggleEditOtrosTipos() {
+    const chkOtro = document.getElementById('editChkOtro');
+    const container = document.getElementById('editContainerOtrosTipos');
+    const btnAgregar = document.getElementById('editBtnAgregarOtroTipo');
+    
+    if (chkOtro.checked) {
+        container.style.display = 'flex';
+        btnAgregar.style.display = 'block';
+        if (container.children.length <= 1) agregarEditOtroTipo();
+    } else {
+        container.style.display = 'none';
+        btnAgregar.style.display = 'none';
+        container.querySelectorAll('.editOtro-tipo-input').forEach(input => input.parentElement.remove());
+    }
+}
 
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Tipo de encuentro * (podés elegir varios)</label>
-                    <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <input type="checkbox" name="encTipo" value="Veteranos +35" style="width: 18px; height: 18px;">
-                            <span>Veteranos +35</span>
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <input type="checkbox" name="encTipo" value="Veteranos +50" style="width: 18px; height: 18px;">
-                            <span>Veteranos +50</span>
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <input type="checkbox" id="chkOtro" style="width: 18px; height: 18px;" onchange="toggleOtrosTipos()">
-                            <span>Otro (agregar personalizados)</span>
-                        </label>
-                    </div>
-                    <div id="containerOtrosTipos" style="display: none; flex-direction: column; gap: 10px; margin-left: 26px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 2px solid #e2e8f0;">
-                        <div style="font-size: 12px; color: #64748b; margin-bottom: 5px;">Agregá los tipos que necesites:</div>
-                    </div>
-                    <button type="button" onclick="agregarOtroTipo()" style="display: none; width: 100%; margin-top: 10px; padding: 10px; background: #f1f5f9; color: #475569; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; font-size: 0.9rem;" id="btnAgregarOtroTipo">+ Agregar otro tipo personalizado</button>
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Ubicación del encuentro *</label>
-                    <p style="color: #64748b; font-size: 12px; margin-bottom: 10px;">📍 Arrastrá el pin rojo para marcar exactamente dónde se juega</p>
-                    <div id="mapaEncuentro" style="width: 100%; height: 300px; border-radius: 12px; margin-bottom: 15px; border: 2px solid #e2e8f0; background: #f1f5f9;"></div>
-                    <input type="hidden" id="encLat" value="">
-                    <input type="hidden" id="encLng" value="">
-                    <input type="hidden" id="encPaisId" value="">
-                    <input type="hidden" id="encProvinciaId" value="">
-                    <input type="hidden" id="encCiudadId" value="">
-                    <label style="font-size: 12px; color: #64748b; margin-bottom: 5px; display: block;">Dirección completa *</label>
-                    <input type="text" id="encDireccion" required placeholder="Calle, número, ciudad, país..." style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; margin-bottom: 10px; box-sizing: border-box;">
-                    <div id="encUbicacionInfo" style="display: none; background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 10px; font-size: 12px; color: #166534;">
-                        ✅ Ubicación confirmada: <span id="encPaisNombre"></span> > <span id="encProvinciaNombre"></span> > <span id="encCiudadNombre"></span>
-                    </div>
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Cupo máximo de equipos *</label>
-                    <input type="number" id="encCupo" min="2" max="50" value="8" required style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; box-sizing: border-box;">
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Fechas y horarios *</label>
-                    <div id="containerFechas" style="display: flex; flex-direction: column; gap: 15px;"></div>
-                    <button type="button" onclick="agregarDia()" style="margin-top: 15px; width: 100%; padding: 12px; background: #f1f5f9; color: #475569; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; font-weight: 600;">+ Agregar día</button>
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Valores / Opciones de inscripción *</label>
-                    <div id="containerValores" style="display: flex; flex-direction: column; gap: 10px;"></div>
-                    <button type="button" onclick="agregarValor()" style="margin-top: 15px; width: 100%; padding: 12px; background: #f1f5f9; color: #475569; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; font-weight: 600;">+ Agregar opción de valor</button>
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Descripción general</label>
-                    <textarea id="encDescripcion" rows="3" placeholder="Información adicional, Fechas limites y formas de pago etc.. Menú 3er tiempo, todo lo que consideres necesario" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; resize: vertical; box-sizing: border-box;"></textarea>
-                </div>
-
-                <div style="display: flex; gap: 15px; margin-top: 25px;">
-                    <button type="button" onclick="cerrarModalEncuentro()" style="flex: 1; padding: 12px; background: #f1f5f9; color: #475569; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1rem;">Cancelar</button>
-                    <button type="submit" style="flex: 2; padding: 12px; background: #4f46e5; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1rem;" id="btnGuardarEncuentro">Crear encuentro</button>
-                </div>
-            </form>
-        </div>
+function agregarEditOtroTipo() {
+    const container = document.getElementById('editContainerOtrosTipos');
+    const index = container.querySelectorAll('.editOtro-tipo-input').length + 1;
+    
+    const div = document.createElement('div');
+    div.style.cssText = 'display: flex; gap: 10px; align-items: center;';
+    div.innerHTML = `
+        <input type="text" class="editOtro-tipo-input" placeholder="Especificar tipo ${index}" style="flex: 1; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem;">
+        <button type="button" onclick="this.parentElement.remove()" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 20px; padding: 5px;">×</button>
     `;
     
-    document.body.appendChild(modal);
+    container.appendChild(div);
+}
+
+let editMapaEncuentro, editMarkerEncuentro;
+
+function initEditMapaEncuentro(latExistente, lngExistente) {
+    const lat = parseFloat(latExistente) || -34.6037;
+    const lng = parseFloat(lngExistente) || -58.3816;
     
-    // Inicializar mapa con delay
-    setTimeout(() => initMapaEncuentro(), 100);
+    editMapaEncuentro = L.map('editMapaEncuentro').setView([lat, lng], 13);
     
-    agregarDia();
-    agregarValor();
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(editMapaEncuentro);
     
-    document.getElementById('inputFlyer').addEventListener('change', subirFlyerOptimizado);
+    editMarkerEncuentro = L.marker([lat, lng], {
+        draggable: true,
+        icon: L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34]
+        })
+    }).addTo(editMapaEncuentro);
+    
+    editMarkerEncuentro.on('dragend', async function() {
+        const pos = editMarkerEncuentro.getLatLng();
+        await actualizarEditUbicacion(pos.lat, pos.lng);
+    });
+    
+    editMapaEncuentro.on('click', async function(e) {
+        editMarkerEncuentro.setLatLng(e.latlng);
+        await actualizarEditUbicacion(e.latlng.lat, e.latlng.lng);
+    });
+}
+
+async function actualizarEditUbicacion(lat, lng) {
+    document.getElementById('editLat').value = lat;
+    document.getElementById('editLng').value = lng;
+    
+    try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`);
+        const data = await response.json();
+        
+        if (data && data.address) {
+            const addr = data.address;
+            const direccionParts = [];
+            if (addr.road) direccionParts.push(addr.road);
+            if (addr.house_number) direccionParts.push(addr.house_number);
+            if (addr.suburb) direccionParts.push(addr.suburb);
+            if (addr.city || addr.town || addr.village) direccionParts.push(addr.city || addr.town || addr.village);
+            
+            const direccionCompleta = direccionParts.join(', ') || data.display_name || '';
+            document.getElementById('editDireccion').value = direccionCompleta;
+            
+            document.getElementById('editPaisId').value = addr.country_code || '';
+            document.getElementById('editProvinciaId').value = addr.state || addr.province || '';
+            document.getElementById('editCiudadId').value = addr.city || addr.town || addr.village || '';
+        }
+    } catch (err) {
+        console.error('Error obteniendo ubicación:', err);
+    }
+}
+
+function agregarEditDia() {
+    const container = document.getElementById('editContainerFechas');
+    
+    const diaDiv = document.createElement('div');
+    diaDiv.className = 'edit-dia-item';
+    diaDiv.style.cssText = 'background: #f8fafc; padding: 15px; border-radius: 12px; border: 2px solid #e2e8f0;';
+    diaDiv.innerHTML = `
+        <div style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
+            <input type="date" class="edit-dia-fecha" required style="flex: 1; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem;">
+            <button type="button" onclick="this.closest('.edit-dia-item').remove()" style="padding: 8px 12px; background: #fee2e2; color: #991b1b; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;">✕</button>
+        </div>
+        <div class="edit-horarios-container" style="display: flex; flex-direction: column; gap: 8px; margin-left: 10px; padding-left: 15px; border-left: 3px solid #cbd5e1;"></div>
+        <button type="button" onclick="agregarEditHorario(this)" style="margin-top: 10px; margin-left: 10px; font-size: 12px; padding: 6px 12px; background: #f1f5f9; color: #475569; border: 2px solid #e2e8f0; border-radius: 6px; cursor: pointer;">+ Agregar horario</button>
+    `;
+    
+    container.appendChild(diaDiv);
+    agregarEditHorario(diaDiv.querySelector('button[onclick="agregarEditHorario(this)"]'));
+}
+
+function agregarEditHorario(btn) {
+    const horariosContainer = btn.previousElementSibling;
+    
+    const horarioDiv = document.createElement('div');
+    horarioDiv.style.cssText = 'display: flex; gap: 8px; align-items: center;';
+    horarioDiv.innerHTML = `
+        <input type="time" class="edit-horario-hora" required style="width: 100px; padding: 8px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 0.9rem;">
+        <input type="text" class="edit-horario-desc" placeholder="Descripción (ej: Acreditación)" required style="flex: 1; padding: 8px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 0.9rem;">
+        <button type="button" onclick="this.parentElement.remove()" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 18px; padding: 5px;">×</button>
+    `;
+    
+    horariosContainer.appendChild(horarioDiv);
+}
+
+function agregarEditValor() {
+    const container = document.getElementById('editContainerValores');
+    
+    const valorDiv = document.createElement('div');
+    valorDiv.style.cssText = 'display: flex; gap: 10px; align-items: center; background: #f8fafc; padding: 12px; border-radius: 10px; border: 2px solid #e2e8f0;';
+    valorDiv.innerHTML = `
+        <input type="text" class="edit-valor-titulo" placeholder="Título (ej: Completo)" required style="flex: 1; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem;">
+        <input type="number" class="edit-valor-precio" placeholder="$" min="0" required style="width: 100px; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem;">
+        <input type="text" class="edit-valor-desc" placeholder="Descripción opcional" style="flex: 2; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem;">
+        <button type="button" onclick="this.parentElement.remove()" style="padding: 6px 10px; background: #fee2e2; color: #991b1b; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;">✕</button>
+    `;
+    
+    container.appendChild(valorDiv);
+}
+
+async function guardarEdicionEncuentro(e, encuentroId) {
+    e.preventDefault();
+    
+    const lat = document.getElementById('editLat')?.value;
+    const lng = document.getElementById('editLng')?.value;
+    
+    if (!lat || !lng) {
+        mostrarMensajeEncuentros('⚠️ Por favor marcá la ubicación en el mapa', 'error');
+        return;
+    }
+    
+    const tiposSeleccionados = [];
+    document.querySelectorAll('input[name="editTipo"]:checked').forEach(cb => {
+        tiposSeleccionados.push(cb.value);
+    });
+    document.querySelectorAll('.editOtro-tipo-input').forEach(input => {
+        if (input.value.trim()) tiposSeleccionados.push(input.value.trim());
+    });
+    
+    if (tiposSeleccionados.length === 0) {
+        mostrarMensajeEncuentros('Debes seleccionar al menos un tipo de encuentro', 'error');
+        return;
+    }
+    
+    const fechas = [];
+    document.querySelectorAll('.edit-dia-item').forEach(dia => {
+        const fechaInput = dia.querySelector('.edit-dia-fecha');
+        if (!fechaInput?.value) return;
+        
+        const horarios = [];
+        dia.querySelectorAll('.edit-horarios-container > div').forEach(h => {
+            const hora = h.querySelector('.edit-horario-hora')?.value;
+            const desc = h.querySelector('.edit-horario-desc')?.value;
+            if (hora && desc) horarios.push({ hora, desc });
+        });
+        
+        fechas.push({ dia: fechaInput.value, horarios });
+    });
+    
+    if (fechas.length === 0) {
+        mostrarMensajeEncuentros('Debes agregar al menos una fecha', 'error');
+        return;
+    }
+    
+    const valores = [];
+    document.querySelectorAll('#editContainerValores > div').forEach(v => {
+        const titulo = v.querySelector('.edit-valor-titulo')?.value;
+        const precio = v.querySelector('.edit-valor-precio')?.value;
+        const desc = v.querySelector('.edit-valor-desc')?.value || '';
+        if (titulo && precio) valores.push({ titulo, precio: parseFloat(precio), desc });
+    });
+    
+    if (valores.length === 0) {
+        mostrarMensajeEncuentros('Debes agregar al menos una opción de valor', 'error');
+        return;
+    }
+    
+    LoadingManager.show('guardar-edicion', 'Guardando cambios...');
+    
+    const usuario = obtenerUsuarioActual();
+    const params = new URLSearchParams({
+        action: 'actualizarEncuentro',
+        id: encuentroId,
+        equipoId: usuario.equipoId,
+        nombre: document.getElementById('editNombre')?.value || '',
+        flyerUrl: document.getElementById('editFlyerUrl')?.value || '',
+        fechasJSON: encodeURIComponent(JSON.stringify(fechas)),
+        valoresJSON: encodeURIComponent(JSON.stringify(valores)),
+        cupoMaximo: document.getElementById('editCupo')?.value || 8,
+        lugar: document.getElementById('editDireccion')?.value || '',
+        lat: lat,
+        lng: lng,
+        paisId: document.getElementById('editPaisId')?.value || '',
+        provinciaId: document.getElementById('editProvinciaId')?.value || '',
+        ciudadId: document.getElementById('editCiudadId')?.value || '',
+        tipo: tiposSeleccionados.join(', '),
+        descripcion: document.getElementById('editDescripcion')?.value || ''
+    });
+    
+    try {
+        const url = `${ENCUENTROS_CONFIG.API_URL}?${params.toString()}`;
+        const result = await fetchWithRetry(url);
+        
+        if (result.success) {
+            document.getElementById('modalEditarEncuentro')?.remove();
+            mostrarMensajeEncuentros('Encuentro actualizado correctamente', 'success');
+            CacheManager.invalidate(`encuentros-${usuario.equipoId}`);
+            renderizarMisEncuentros();
+        } else {
+            throw new Error(result.error || 'Error al actualizar');
+        }
+    } catch (err) {
+        mostrarMensajeEncuentros(err.message || 'Error al actualizar', 'error');
+    } finally {
+        LoadingManager.hide('guardar-edicion');
+    }
 }

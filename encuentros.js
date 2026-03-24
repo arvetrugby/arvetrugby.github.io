@@ -1447,9 +1447,8 @@ async function cargarAsistenciasAsync(encuentroId, equipoCreadorId, modal) {
 }
 
 // ============================================
-// MODAL CREAR ENCUENTRO (COMPLETO) - SOLO MEJORAS FECHAS Y VALORES
+// MODAL CREAR ENCUENTRO (COMPLETO)
 // ============================================
-
 function nuevoEncuentro() {
     if (document.getElementById('modalEncuentro')) return;
     
@@ -1525,22 +1524,16 @@ function nuevoEncuentro() {
                     <input type="number" id="encCupo" min="2" max="50" value="8" required style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; box-sizing: border-box;">
                 </div>
 
-                <!-- FECHAS MEJORADO -->
                 <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #374151;">Fechas y horarios *</label>
-                    <div id="containerFechas" style="display: flex; flex-direction: column; gap: 16px;"></div>
-                    <button type="button" onclick="agregarDia()" style="margin-top: 16px; width: 100%; padding: 14px; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); color: #1e40af; border: 2px dashed #3b82f6; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                        <span style="font-size: 20px;">+</span> Agregar día
-                    </button>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Fechas y horarios *</label>
+                    <div id="containerFechas" style="display: flex; flex-direction: column; gap: 15px;"></div>
+                    <button type="button" onclick="agregarDia()" style="margin-top: 15px; width: 100%; padding: 12px; background: #f1f5f9; color: #475569; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; font-weight: 600;">+ Agregar día</button>
                 </div>
 
-                <!-- VALORES MEJORADO -->
                 <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #374151;">Valores / Opciones de inscripción *</label>
-                    <div id="containerValores" style="display: flex; flex-direction: column; gap: 16px;"></div>
-                    <button type="button" onclick="agregarValor()" style="margin-top: 16px; width: 100%; padding: 14px; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); color: #1e40af; border: 2px dashed #3b82f6; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                        <span style="font-size: 20px;">+</span> Agregar opción de valor
-                    </button>
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Valores / Opciones de inscripción *</label>
+                    <div id="containerValores" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                    <button type="button" onclick="agregarValor()" style="margin-top: 15px; width: 100%; padding: 12px; background: #f1f5f9; color: #475569; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; font-weight: 600;">+ Agregar opción de valor</button>
                 </div>
 
                 <div style="margin-bottom: 20px;">
@@ -1558,201 +1551,14 @@ function nuevoEncuentro() {
     
     document.body.appendChild(modal);
     
-    // Inyectar CSS mejorado solo para fechas y valores
-    if (!document.getElementById('mejoras-fechas-valores')) {
-        const style = document.createElement('style');
-        style.id = 'mejoras-fechas-valores';
-        style.textContent = `
-            /* FECHAS MEJORADAS */
-            #containerFechas > div {
-                background: #f8fafc;
-                border: 2px solid #e2e8f0;
-                border-radius: 16px;
-                padding: 20px;
-                position: relative;
-            }
-            
-            #containerFechas > div::before {
-                content: '📅';
-                position: absolute;
-                top: -10px;
-                left: 20px;
-                background: white;
-                padding: 0 8px;
-                font-size: 14px;
-            }
-            
-            #containerFechas input[type="date"] {
-                width: 100%;
-                padding: 14px;
-                border: 2px solid #cbd5e1;
-                border-radius: 12px;
-                font-size: 16px;
-                margin-bottom: 16px;
-                background: white;
-            }
-            
-            #containerFechas .horarios-container {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-                margin-left: 12px;
-                padding-left: 20px;
-                border-left: 3px solid #3b82f6;
-            }
-            
-            #containerFechas .horarios-container > div {
-                display: flex;
-                gap: 10px;
-                align-items: center;
-                background: white;
-                padding: 12px;
-                border-radius: 10px;
-                border: 1px solid #e2e8f0;
-            }
-            
-            #containerFechas input[type="time"] {
-                width: 100px;
-                padding: 10px;
-                border: 2px solid #e2e8f0;
-                border-radius: 8px;
-                font-size: 16px;
-            }
-            
-            #containerFechas input[type="text"] {
-                flex: 1;
-                padding: 10px;
-                border: 2px solid #e2e8f0;
-                border-radius: 8px;
-                font-size: 15px;
-            }
-            
-            #containerFechas button[onclick*="parentElement.remove"] {
-                width: 36px;
-                height: 36px;
-                border-radius: 8px;
-                border: none;
-                background: #fee2e2;
-                color: #dc2626;
-                font-size: 18px;
-                cursor: pointer;
-                flex-shrink: 0;
-            }
-            
-            #containerFechas button[onclick="agregarHorario(this)"] {
-                width: 100%;
-                padding: 12px;
-                background: white;
-                border: 2px dashed #cbd5e1;
-                border-radius: 10px;
-                color: #64748b;
-                font-size: 14px;
-                cursor: pointer;
-                margin-top: 8px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 6px;
-            }
-            
-            #containerFechas button[onclick="agregarHorario(this)"]::before {
-                content: '+';
-                font-size: 18px;
-                font-weight: bold;
-            }
-            
-            #containerFechas > div > button[onclick*="parentElement.remove"] {
-                position: absolute;
-                top: 10px;
-                right: 10px;
-                width: 32px;
-                height: 32px;
-                border-radius: 50%;
-                background: #fee2e2;
-                color: #dc2626;
-                border: none;
-                font-size: 16px;
-                cursor: pointer;
-            }
-            
-            /* VALORES MEJORADOS */
-            #containerValores > div {
-                background: white;
-                border: 2px solid #e2e8f0;
-                border-radius: 16px;
-                padding: 20px;
-                display: grid;
-                gap: 12px;
-            }
-            
-            #containerValores input[type="text"] {
-                width: 100%;
-                padding: 14px;
-                border: 2px solid #e2e8f0;
-                border-radius: 12px;
-                font-size: 16px;
-                box-sizing: border-box;
-            }
-            
-            #containerValores input[type="text"]::placeholder {
-                color: #94a3b8;
-            }
-            
-            #containerValores > div > div {
-                display: flex;
-                gap: 12px;
-            }
-            
-            #containerValores input[type="number"] {
-                flex: 1;
-                padding: 14px;
-                border: 2px solid #e2e8f0;
-                border-radius: 12px;
-                font-size: 16px;
-                min-width: 100px;
-            }
-            
-            #containerValores input[type="number"]::placeholder {
-                color: #94a3b8;
-            }
-            
-            #containerValores button[onclick*="parentElement.remove"] {
-                padding: 10px 16px;
-                background: #fee2e2;
-                color: #dc2626;
-                border: none;
-                border-radius: 10px;
-                font-size: 13px;
-                font-weight: 600;
-                cursor: pointer;
-                width: fit-content;
-            }
-            
-            /* Responsive */
-            @media (max-width: 480px) {
-                #containerValores > div > div {
-                    flex-direction: column;
-                }
-                
-                #containerValores input[type="number"] {
-                    width: 100%;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    }
+    // Inicializar mapa con delay
+    setTimeout(() => initMapaEncuentro(), 100);
     
-    // Inicializar
-    setTimeout(() => {
-        initMapaEncuentro();
-        agregarDia();
-        agregarValor();
-    }, 100);
+    agregarDia();
+    agregarValor();
+    
+    document.getElementById('inputFlyer').addEventListener('change', subirFlyerOptimizado);
 }
-
-// Mantener todas las funciones originales exactamente igual
-// toggleOtrosTipos, agregarOtroTipo, initMapaEncuentro, etc.
-// No sobrescribir nada más
 // ============================================
 // FUNCIONES AUXILIARES DEL MODAL
 // ============================================

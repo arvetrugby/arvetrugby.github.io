@@ -983,6 +983,7 @@ async function verDetalleEncuentro(encuentroId) {
         enc.equipoCreadorId = equipoCreadorId;
         
         const modal = crearModalDetalle(enc, detalle, encuentroId);
+        modal.dataset.encuentroId = encuentroId;
         document.body.appendChild(modal);
         
         // Pasar el ID correcto
@@ -1038,8 +1039,9 @@ function crearModalDetalle(enc, detalle, encuentroId) {
                     <span style="font-size: 1.2rem; transition: transform 0.2s;" id="flecha-${eq.id}">▼</span>
                 </div>
                 <div id="equipo-content-${eq.id}" style="display: none; padding: 15px; background: white;">
-                    <div class="skeleton-encuentros" style="height: 80px;"></div>
-                </div>
+    <div class="skeleton-encuentros" style="height: 80px; margin-bottom: 10px;"></div>
+    <p style="color: #64748b; font-size: 0.85rem; text-align: center;">Cargando jugadores...</p>
+</div>
             </div>
         `;
     }).join('') || '<p style="color: #64748b; font-style: italic; padding: 10px;">Ningún equipo ha aceptado aún</p>';
@@ -2722,8 +2724,15 @@ function mostrarPreviewEncuentro(encuentroId) {
     window.location.href = `preview.html?encuentroId=${encuentroId}`;
 }
 async function cargarAsistenciasEquipo(equipoId, container) {
-    const encuentroId = document.getElementById('modalDetalleEncuentro')?.dataset?.encuentroId;
-    if (!encuentroId) return;
+    // Obtener el encuentroId del modal
+    const modal = document.getElementById('modalDetalleEncuentro');
+    const encuentroId = modal?.dataset?.encuentroId;
+    
+    if (!encuentroId) {
+        console.error('No se encontró encuentroId en el modal');
+        container.innerHTML = '<p style="color: #dc2626; padding: 10px;">Error: No se pudo identificar el encuentro</p>';
+        return;
+    }
     
     try {
         const resp = await fetch(`${ENCUENTROS_CONFIG.API_URL}?action=getAsistenciasPorEquipo&encuentroId=${encuentroId}&equipoId=${equipoId}`);

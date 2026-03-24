@@ -1452,6 +1452,7 @@ async function cargarAsistenciasAsync(encuentroId, equipoCreadorId, modal) {
     }
 }
 
+
 // ============================================
 // MODAL CREAR ENCUENTRO (COMPLETO - RESPONSIVE)
 // ============================================
@@ -1548,7 +1549,22 @@ function nuevoEncuentro() {
                 </div>
 
                 <div style="display: flex; gap: 10px; margin-top: 25px; flex-wrap: wrap;">
-                    <button ty<response clipped><NOTE>Result is longer than **10000 characters**, will be **truncated**.</NOTE>
+                    <button type="button" onclick="cerrarModalEncuentro()" style="flex: 1; min-width: 100px; padding: 12px; background: #f1f5f9; color: #475569; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: clamp(0.85rem, 3vw, 1rem);">Cancelar</button>
+                    <button type="submit" style="flex: 2; min-width: 150px; padding: 12px; background: #4f46e5; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: clamp(0.85rem, 3vw, 1rem);" id="btnGuardarEncuentro">Crear encuentro</button>
+                </div>
+            </form>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    setTimeout(() => initMapaEncuentro(), 100);
+    
+    agregarDia();
+    agregarValor();
+    
+    document.getElementById('inputFlyer').addEventListener('change', subirFlyerOptimizado);
+}
                     
 // ============================================
 // FUNCIONES AUXILIARES DEL MODAL

@@ -3,11 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Equipo - ARVET</title>
+    
+    <!-- META DINÁMICOS - Se actualizan vía JS -->
+    <title id="metaTitle">Equipo - ARVET</title>
+    <meta id="metaDescription" name="description" content="Equipo de rugby en ARVET - Plataforma de gestión deportiva">
+    <meta id="metaKeywords" name="keywords" content="rugby, equipo, ARVET">
+    
+    <!-- Open Graph / WhatsApp (dinámicos) -->
+    <meta id="ogTitle" property="og:title" content="Equipo - ARVET">
+    <meta id="ogDescription" property="og:description" content="Equipo de rugby en ARVET">
+    <meta id="ogImage" property="og:image" content="https://arvetrugby.com/images/ARVET.png">
+    <meta id="ogUrl" property="og:url" content="https://arvetrugby.com/">
+    
+    <!-- Twitter -->
+    <meta id="twitterTitle" name="twitter:title" content="Equipo - ARVET">
+    <meta id="twitterDescription" name="twitter:description" content="Equipo de rugby en ARVET">
+    <meta id="twitterImage" name="twitter:image" content="https://arvetrugby.com/images/ARVET.png">
+    
+    <!-- Favicon base -->
+    <link id="favicon" rel="icon" type="image/png" href="https://arvetrugby.com/images/ARVET.png">
+    
+    <!-- Canonical dinámico -->
+    <link id="canonical" rel="canonical" href="https://arvetrugby.com/">
+    
+    <!-- Resto de tus links... -->
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Georama:wdth,wght@75..100,400;75..100,600;75..100,700;75..100,800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Schema.org dinámico -->
+    <script id="schemaEquipo" type="application/ld+json"></script>
+
 
     <style>
         .menu-toggle {
@@ -652,6 +679,92 @@ box-shadow:0 8px 24px rgba(0,0,0,0.08);
     cargarFlyersEncuentrosPublicos('galeriaFlyers');
 });
 </script>
+     <script>
+    // ===== ACTUALIZAR META TAGS CON DATOS DEL EQUIPO =====
+function actualizarMetaTags(equipo) {
+    if (!equipo) return;
+    
+    const nombreEquipo = equipo.nombre || 'Equipo';
+    const ciudad = equipo.ciudad || '';
+    const pais = equipo.pais || '';
+    const descripcion = equipo.descripcion || `Equipo de rugby ${nombreEquipo}. Organizá tu plantel, publicá encuentros y conectá con otros equipos en ARVET.`;
+    const logoUrl = equipo.logoUrl || 'https://arvetrugby.com/images/ARVET.png';
+    
+    // URL actual
+    const urlActual = window.location.href;
+    
+    // Actualizar título
+    document.title = `${nombreEquipo} - Equipo de Rugby | ARVET`;
+    document.getElementById('metaTitle').textContent = `${nombreEquipo} - Equipo de Rugby | ARVET`;
+    
+    // Actualizar descripción
+    const descMeta = `${nombreEquipo}${ciudad ? ` de ${ciudad}` : ''}${pais ? `, ${pais}` : ''}. ${descripcion}`;
+    document.getElementById('metaDescription').setAttribute('content', descMeta);
+    document.getElementById('ogDescription').setAttribute('content', descMeta);
+    document.getElementById('twitterDescription').setAttribute('content', descMeta);
+    
+    // Actualizar keywords
+    const keywords = `rugby, ${nombreEquipo}, equipo rugby, rugby veteranos, rugby amateur${ciudad ? `, rugby ${ciudad}` : ''}${pais ? `, rugby ${pais}` : ''}, ARVET`;
+    document.getElementById('metaKeywords').setAttribute('content', keywords);
+    
+    // Actualizar imágenes (OG y Twitter)
+    // Asegurar URL absoluta
+    const logoAbsoluto = logoUrl.startsWith('http') ? logoUrl : `https://arvetrugby.com${logoUrl.startsWith('/') ? '' : '/'}${logoUrl}`;
+    document.getElementById('ogImage').setAttribute('content', logoAbsoluto);
+    document.getElementById('twitterImage').setAttribute('content', logoAbsoluto);
+    document.getElementById('favicon').setAttribute('href', logoAbsoluto);
+    
+    // Actualizar títulos OG
+    const ogTitle = `${nombreEquipo} - Equipo de Rugby`;
+    document.getElementById('ogTitle').setAttribute('content', ogTitle);
+    document.getElementById('twitterTitle').setAttribute('content', ogTitle);
+    
+    // Actualizar URL
+    document.getElementById('ogUrl').setAttribute('content', urlActual);
+    document.getElementById('canonical').setAttribute('href', urlActual);
+    
+    // Actualizar Schema.org
+    const schema = {
+        "@context": "https://schema.org",
+        "@type": "SportsTeam",
+        "name": nombreEquipo,
+        "sport": "Rugby",
+        "description": descripcion,
+        "url": urlActual,
+        "logo": logoAbsoluto,
+        "image": logoAbsoluto,
+        "location": {
+            "@type": "Place",
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": ciudad,
+                "addressCountry": pais
+            }
+        },
+        "memberOf": {
+            "@type": "Organization",
+            "name": "ARVET",
+            "url": "https://arvetrugby.com/"
+        }
+    };
+    
+    document.getElementById('schemaEquipo').textContent = JSON.stringify(schema);
+    
+    console.log('✅ Meta tags actualizados para:', nombreEquipo);
+}
+
+// ===== LLAMAR DESPUÉS DE CARGAR EL EQUIPO =====
+// Esto va en tu función que carga los datos del equipo (ej: cargarEquipo() o similar)
+// Ejemplo:
+// fetch(`${API_URL}?action=getEquipo&slug=${slug}`)
+//     .then(r => r.json())
+//     .then(data => {
+//         if (data.success) {
+//             actualizarMetaTags(data.equipo);
+//             // ... resto de tu código para mostrar el equipo
+//         }
+//     });
+    </script>
 </body>
 </html>
 

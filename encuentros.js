@@ -1451,120 +1451,1181 @@ async function cargarAsistenciasAsync(encuentroId, equipoCreadorId, modal) {
         container.innerHTML = '<p style="color: #dc2626; text-align: center; padding: 20px;">Error al cargar asistencias</p>';
     }
 }
+
 // ============================================
-// MODAL CREAR ENCUENTRO (COMPLETO)
+// NUEVO: WIZARD CREAR ENCUENTRO V2 - MOBILE FIRST
 // ============================================
-function nuevoEncuentro() {
-    if (document.getElementById('modalEncuentro')) return;
+
+function nuevoEncuentroV2() {
+    if (document.getElementById('modalEncuentroWizard')) return;
     
     const modal = document.createElement('div');
+    modal.id = 'modalEncuentroWizard';
     modal.className = 'modal-overlay active';
-    modal.id = 'modalEncuentro';
-    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 99999; padding: 20px; box-sizing: border-box;';
-    
     modal.innerHTML = `
-        <div style="background: white; border-radius: 20px; width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; padding: 30px; position: relative; animation: slideUpMsg 0.3s ease;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; position: sticky; top: 0; background: white; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0; z-index: 10;">
-                <h2 style="margin: 0; color: #1e293b; font-size: 1.5rem;">Crear Nuevo Encuentro</h2>
-                <button onclick="cerrarModalEncuentro()" style="background: #f1f5f9; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 24px; color: #64748b; display: flex; align-items: center; justify-content: center;">×</button>
+        <div class="wizard-container">
+            <!-- Header con progreso -->
+            <div class="wizard-header">
+                <button class="wizard-close" onclick="cerrarWizard()">×</button>
+                <div class="wizard-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="wizardProgress" style="width: 25%"></div>
+                    </div>
+                    <span class="progress-text">Paso <span id="pasoNumero">1</span> de 4</span>
+                </div>
             </div>
-            
-            <form id="formEncuentro" onsubmit="guardarEncuentro(event)">
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Flyer del encuentro</label>
-                    <div id="flyerPreview" style="width: 100%; height: 200px; background: #f1f5f9; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; overflow: hidden; border: 2px dashed #cbd5e1;">
-                        <span style="color: #94a3b8;">Vista previa del flyer</span>
-                    </div>
-                    <input type="file" id="inputFlyer" accept="image/*" style="display: none;">
-                    <input type="hidden" id="flyerUrl" value="">
-                    <button type="button" onclick="document.getElementById('inputFlyer').click()" style="width: 100%; padding: 12px; background: #f1f5f9; color: #475569; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.95rem;">📤 Subir flyer</button>
-                    <p style="color: #64748b; font-size: 12px; margin-top: 5px;">Formato recomendado: JPG/PNG, 800x600px</p>
-                </div>
 
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Nombre del encuentro *</label>
-                    <input type="text" id="encNombre" required placeholder="Ej: Encuentro Argentino - Santiago 2026" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; box-sizing: border-box;">
-                </div>
+            <!-- Contenido dinámico -->
+            <div class="wizard-body" id="wizardBody">
+                <!-- Los pasos se inyectan aquí -->
+            </div>
 
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Tipo de encuentro * (podés elegir varios)</label>
-                    <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <input type="checkbox" name="encTipo" value="Veteranos +35" style="width: 18px; height: 18px;">
-                            <span>Veteranos +35</span>
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <input type="checkbox" name="encTipo" value="Veteranos +50" style="width: 18px; height: 18px;">
-                            <span>Veteranos +50</span>
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                            <input type="checkbox" id="chkOtro" style="width: 18px; height: 18px;" onchange="toggleOtrosTipos()">
-                            <span>Otro (agregar personalizados)</span>
-                        </label>
-                    </div>
-                    <div id="containerOtrosTipos" style="display: none; flex-direction: column; gap: 10px; margin-left: 26px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 2px solid #e2e8f0;">
-                        <div style="font-size: 12px; color: #64748b; margin-bottom: 5px;">Agregá los tipos que necesites:</div>
-                    </div>
-                    <button type="button" onclick="agregarOtroTipo()" style="display: none; width: 100%; margin-top: 10px; padding: 10px; background: #f1f5f9; color: #475569; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; font-size: 0.9rem;" id="btnAgregarOtroTipo">+ Agregar otro tipo personalizado</button>
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Ubicación del encuentro *</label>
-                    <p style="color: #64748b; font-size: 12px; margin-bottom: 10px;">📍 Arrastrá el pin rojo para marcar exactamente dónde se juega</p>
-                    <div id="mapaEncuentro" style="width: 100%; height: 300px; border-radius: 12px; margin-bottom: 15px; border: 2px solid #e2e8f0; background: #f1f5f9;"></div>
-                    <input type="hidden" id="encLat" value="">
-                    <input type="hidden" id="encLng" value="">
-                    <input type="hidden" id="encPaisId" value="">
-                    <input type="hidden" id="encProvinciaId" value="">
-                    <input type="hidden" id="encCiudadId" value="">
-                    <label style="font-size: 12px; color: #64748b; margin-bottom: 5px; display: block;">Dirección completa *</label>
-                    <input type="text" id="encDireccion" required placeholder="Calle, número, ciudad, país..." style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; margin-bottom: 10px; box-sizing: border-box;">
-                    <div id="encUbicacionInfo" style="display: none; background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 10px; font-size: 12px; color: #166534;">
-                        ✅ Ubicación confirmada: <span id="encPaisNombre"></span> > <span id="encProvinciaNombre"></span> > <span id="encCiudadNombre"></span>
-                    </div>
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Cupo máximo de equipos *</label>
-                    <input type="number" id="encCupo" min="2" max="50" value="8" required style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; box-sizing: border-box;">
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Fechas y horarios *</label>
-                    <div id="containerFechas" style="display: flex; flex-direction: column; gap: 15px;"></div>
-                    <button type="button" onclick="agregarDia()" style="margin-top: 15px; width: 100%; padding: 12px; background: #f1f5f9; color: #475569; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; font-weight: 600;">+ Agregar día</button>
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Valores / Opciones de inscripción *</label>
-                    <div id="containerValores" style="display: flex; flex-direction: column; gap: 10px;"></div>
-                    <button type="button" onclick="agregarValor()" style="margin-top: 15px; width: 100%; padding: 12px; background: #f1f5f9; color: #475569; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; font-weight: 600;">+ Agregar opción de valor</button>
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Descripción general</label>
-                    <textarea id="encDescripcion" rows="3" placeholder="Información adicional, Fechas limites y formas de pago etc.. Menú 3er tiempo, todo lo que consideres necesario" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; resize: vertical; box-sizing: border-box;"></textarea>
-                </div>
-
-                <div style="display: flex; gap: 15px; margin-top: 25px;">
-                    <button type="button" onclick="cerrarModalEncuentro()" style="flex: 1; padding: 12px; background: #f1f5f9; color: #475569; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1rem;">Cancelar</button>
-                    <button type="submit" style="flex: 2; padding: 12px; background: #4f46e5; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1rem;" id="btnGuardarEncuentro">Crear encuentro</button>
-                </div>
-            </form>
+            <!-- Footer con navegación -->
+            <div class="wizard-footer">
+                <button class="btn-secondary" id="btnAnterior" onclick="pasoAnterior()" style="visibility: hidden;">
+                    ← Atrás
+                </button>
+                <button class="btn-primary" id="btnSiguiente" onclick="pasoSiguiente()">
+                    Siguiente →
+                </button>
+            </div>
         </div>
     `;
     
     document.body.appendChild(modal);
     
-    // Inicializar mapa con delay
-    setTimeout(() => initMapaEncuentro(), 100);
+    // Inicializar datos del wizard
+    window.wizardData = {
+        paso: 1,
+        flyerUrl: '',
+        nombre: '',
+        tipo: [],
+        lat: '',
+        lng: '',
+        direccion: '',
+        cupo: 8,
+        fechas: [],
+        valores: [],
+        descripcion: ''
+    };
     
-    agregarDia();
-    agregarValor();
+    renderizarPaso(1);
     
-    document.getElementById('inputFlyer').addEventListener('change', subirFlyerOptimizado);
+    // Inyectar CSS si no existe
+    if (!document.getElementById('wizard-styles')) {
+        const style = document.createElement('style');
+        style.id = 'wizard-styles';
+        style.textContent = `
+            .wizard-container {
+                background: white;
+                width: 100%;
+                max-width: 600px;
+                max-height: 95vh;
+                border-radius: 24px 24px 0 0;
+                display: flex;
+                flex-direction: column;
+                animation: slideUp 0.3s ease;
+                overflow: hidden;
+            }
+            
+            @media (min-width: 600px) {
+                .wizard-container {
+                    border-radius: 20px;
+                    max-height: 90vh;
+                }
+            }
+            
+            @keyframes slideUp {
+                from { transform: translateY(100%); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
+            }
+            
+            .wizard-header {
+                padding: 20px;
+                border-bottom: 1px solid #e2e8f0;
+                position: relative;
+            }
+            
+            .wizard-close {
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                border: none;
+                background: #f1f5f9;
+                color: #64748b;
+                font-size: 24px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .wizard-progress {
+                margin-top: 10px;
+            }
+            
+            .progress-bar {
+                height: 6px;
+                background: #e2e8f0;
+                border-radius: 3px;
+                overflow: hidden;
+                margin-bottom: 8px;
+            }
+            
+            .progress-fill {
+                height: 100%;
+                background: linear-gradient(90deg, #38bdf8, #2563eb);
+                border-radius: 3px;
+                transition: width 0.3s ease;
+            }
+            
+            .progress-text {
+                font-size: 13px;
+                color: #64748b;
+                font-weight: 500;
+            }
+            
+            .wizard-body {
+                flex: 1;
+                overflow-y: auto;
+                padding: 20px;
+            }
+            
+            .wizard-footer {
+                padding: 20px;
+                border-top: 1px solid #e2e8f0;
+                display: flex;
+                gap: 12px;
+            }
+            
+            .btn-primary {
+                flex: 1;
+                padding: 14px 24px;
+                background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%);
+                color: white;
+                border: none;
+                border-radius: 12px;
+                font-size: 16px;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.2s;
+                box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+            }
+            
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+            }
+            
+            .btn-primary:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+                transform: none;
+            }
+            
+            .btn-secondary {
+                flex: 1;
+                padding: 14px 24px;
+                background: #f1f5f9;
+                color: #475569;
+                border: 2px solid #e2e8f0;
+                border-radius: 12px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+            
+            .btn-secondary:hover {
+                background: #e2e8f0;
+            }
+            
+            /* PASO 1: INFO BÁSICA */
+            .paso-titulo {
+                font-size: 24px;
+                font-weight: 800;
+                color: #0f172a;
+                margin-bottom: 8px;
+                line-height: 1.2;
+            }
+            
+            .paso-subtitulo {
+                font-size: 15px;
+                color: #64748b;
+                margin-bottom: 24px;
+            }
+            
+            .upload-zone {
+                border: 3px dashed #cbd5e1;
+                border-radius: 16px;
+                padding: 40px 20px;
+                text-align: center;
+                cursor: pointer;
+                transition: all 0.2s;
+                background: #f8fafc;
+                margin-bottom: 20px;
+            }
+            
+            .upload-zone:hover {
+                border-color: #38bdf8;
+                background: #f0f9ff;
+            }
+            
+            .upload-zone.tiene-imagen {
+                border-style: solid;
+                border-color: #22c55e;
+                background: #f0fdf4;
+                padding: 20px;
+            }
+            
+            .upload-icon {
+                font-size: 48px;
+                margin-bottom: 12px;
+            }
+            
+            .upload-text {
+                font-size: 16px;
+                color: #475569;
+                font-weight: 600;
+                margin-bottom: 4px;
+            }
+            
+            .upload-hint {
+                font-size: 13px;
+                color: #94a3b8;
+            }
+            
+            .preview-flyer {
+                width: 100%;
+                max-height: 200px;
+                object-fit: contain;
+                border-radius: 12px;
+            }
+            
+            .input-group {
+                margin-bottom: 20px;
+            }
+            
+            .input-label {
+                display: block;
+                font-size: 14px;
+                font-weight: 700;
+                color: #374151;
+                margin-bottom: 8px;
+            }
+            
+            .input-field {
+                width: 100%;
+                padding: 14px 16px;
+                border: 2px solid #e2e8f0;
+                border-radius: 12px;
+                font-size: 16px;
+                transition: all 0.2s;
+                box-sizing: border-box;
+            }
+            
+            .input-field:focus {
+                outline: none;
+                border-color: #38bdf8;
+                box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+            }
+            
+            /* PASO 2: TIPO */
+            .tipo-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+            
+            .tipo-card {
+                border: 2px solid #e2e8f0;
+                border-radius: 16px;
+                padding: 20px;
+                text-align: center;
+                cursor: pointer;
+                transition: all 0.2s;
+                background: white;
+            }
+            
+            .tipo-card:hover {
+                border-color: #38bdf8;
+                transform: translateY(-2px);
+            }
+            
+            .tipo-card.seleccionado {
+                border-color: #2563eb;
+                background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+                box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+            }
+            
+            .tipo-icon {
+                font-size: 32px;
+                margin-bottom: 8px;
+            }
+            
+            .tipo-nombre {
+                font-size: 14px;
+                font-weight: 700;
+                color: #1e293b;
+            }
+            
+            .tipo-tag {
+                display: inline-block;
+                padding: 6px 14px;
+                background: #f1f5f9;
+                border-radius: 20px;
+                font-size: 13px;
+                color: #475569;
+                margin: 4px;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+            
+            .tipo-tag:hover {
+                background: #e2e8f0;
+            }
+            
+            .tipo-tag.seleccionado {
+                background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%);
+                color: white;
+            }
+            
+            /* PASO 3: FECHAS */
+            .fecha-card {
+                background: #f8fafc;
+                border-radius: 16px;
+                padding: 16px;
+                margin-bottom: 12px;
+                border: 2px solid #e2e8f0;
+            }
+            
+            .fecha-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 12px;
+            }
+            
+            .fecha-input {
+                flex: 1;
+                margin-right: 12px;
+            }
+            
+            .fecha-input input {
+                width: 100%;
+                padding: 12px;
+                border: 2px solid #e2e8f0;
+                border-radius: 10px;
+                font-size: 16px;
+            }
+            
+            .btn-eliminar {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                border: none;
+                background: #fee2e2;
+                color: #dc2626;
+                font-size: 18px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .horario-row {
+                display: flex;
+                gap: 8px;
+                margin-bottom: 8px;
+                align-items: center;
+            }
+            
+            .horario-row input {
+                flex: 1;
+                padding: 10px 12px;
+                border: 2px solid #e2e8f0;
+                border-radius: 8px;
+                font-size: 14px;
+            }
+            
+            .horario-row input[type="time"] {
+                flex: 0 0 100px;
+            }
+            
+            .btn-agregar-horario {
+                width: 100%;
+                padding: 10px;
+                background: white;
+                border: 2px dashed #cbd5e1;
+                border-radius: 8px;
+                color: #64748b;
+                font-size: 13px;
+                cursor: pointer;
+                margin-top: 8px;
+            }
+            
+            .btn-agregar-fecha {
+                width: 100%;
+                padding: 16px;
+                background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+                border: 2px dashed #38bdf8;
+                border-radius: 16px;
+                color: #2563eb;
+                font-size: 15px;
+                font-weight: 600;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+            }
+            
+            /* PASO 4: UBICACIÓN Y VALORES */
+            .mapa-container {
+                height: 250px;
+                border-radius: 16px;
+                overflow: hidden;
+                margin-bottom: 16px;
+                border: 2px solid #e2e8f0;
+            }
+            
+            .ubicacion-info {
+                background: #f0fdf4;
+                border: 1px solid #86efac;
+                border-radius: 12px;
+                padding: 12px 16px;
+                margin-bottom: 20px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .ubicacion-info svg {
+                width: 20px;
+                height: 20px;
+                color: #22c55e;
+                flex-shrink: 0;
+            }
+            
+            .valor-card {
+                background: white;
+                border: 2px solid #e2e8f0;
+                border-radius: 12px;
+                padding: 16px;
+                margin-bottom: 12px;
+                display: grid;
+                gap: 12px;
+            }
+            
+            .valor-card input {
+                width: 100%;
+                padding: 12px;
+                border: 2px solid #e2e8f0;
+                border-radius: 10px;
+                font-size: 15px;
+            }
+            
+            .cupo-selector {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                background: #f8fafc;
+                padding: 16px;
+                border-radius: 16px;
+                margin-bottom: 20px;
+            }
+            
+            .cupo-btn {
+                width: 44px;
+                height: 44px;
+                border-radius: 50%;
+                border: 2px solid #e2e8f0;
+                background: white;
+                font-size: 20px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s;
+            }
+            
+            .cupo-btn:hover {
+                border-color: #38bdf8;
+                background: #f0f9ff;
+            }
+            
+            .cupo-valor {
+                font-size: 28px;
+                font-weight: 800;
+                color: #2563eb;
+                min-width: 40px;
+                text-align: center;
+            }
+            
+            .resumen-final {
+                background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+                border-radius: 16px;
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .resumen-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 12px 0;
+                border-bottom: 1px solid #bae6fd;
+            }
+            
+            .resumen-item:last-child {
+                border-bottom: none;
+            }
+            
+            .resumen-label {
+                color: #64748b;
+                font-size: 14px;
+            }
+            
+            .resumen-value {
+                color: #0f172a;
+                font-weight: 600;
+                font-size: 14px;
+                text-align: right;
+            }
+        `;
+        document.head.appendChild(style);
+    }
 }
 
+// ============================================
+// RENDERIZAR CADA PASO
+// ============================================
+
+function renderizarPaso(paso) {
+    const body = document.getElementById('wizardBody');
+    const progress = document.getElementById('wizardProgress');
+    const pasoNumero = document.getElementById('pasoNumero');
+    const btnAnterior = document.getElementById('btnAnterior');
+    const btnSiguiente = document.getElementById('btnSiguiente');
+    
+    progress.style.width = `${(paso / 4) * 100}%`;
+    pasoNumero.textContent = paso;
+    btnAnterior.style.visibility = paso === 1 ? 'hidden' : 'visible';
+    
+    if (paso === 4) {
+        btnSiguiente.textContent = '✓ Crear encuentro';
+        btnSiguiente.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
+    } else {
+        btnSiguiente.textContent = 'Siguiente →';
+        btnSiguiente.style.background = 'linear-gradient(135deg, #38bdf8 0%, #2563eb 100%)';
+    }
+    
+    switch(paso) {
+        case 1:
+            body.innerHTML = renderizarPaso1();
+            inicializarPaso1();
+            break;
+        case 2:
+            body.innerHTML = renderizarPaso2();
+            inicializarPaso2();
+            break;
+        case 3:
+            body.innerHTML = renderizarPaso3();
+            inicializarPaso3();
+            break;
+        case 4:
+            body.innerHTML = renderizarPaso4();
+            inicializarPaso4();
+            break;
+    }
+}
+
+function renderizarPaso1() {
+    const tieneFlyer = window.wizardData.flyerUrl;
+    return `
+        <h2 class="paso-titulo">📸 Flyer y nombre</h2>
+        <p class="paso-subtitulo">Primera impresión cuenta. Subí un flyer atractivo.</p>
+        
+        <div class="upload-zone ${tieneFlyer ? 'tiene-imagen' : ''}" id="uploadZone" onclick="document.getElementById('inputFlyer').click()">
+            ${tieneFlyer 
+                ? `<img src="${window.wizardData.flyerUrl}" class="preview-flyer" id="previewFlyer">`
+                : `<div>
+                    <div class="upload-icon">📸</div>
+                    <div class="upload-text">Tocá para subir flyer</div>
+                    <div class="upload-hint">JPG o PNG · Máx 2MB</div>
+                   </div>`
+            }
+        </div>
+        <input type="file" id="inputFlyer" accept="image/*" style="display: none;" onchange="handleFlyerUpload(this)">
+        
+        <div class="input-group">
+            <label class="input-label">¿Cómo se llama el encuentro? *</label>
+            <input type="text" 
+                   class="input-field" 
+                   id="inputNombre" 
+                   placeholder="Ej: Encuentro de Veteranos - Mar del Plata 2026"
+                   value="${window.wizardData.nombre}"
+                   onchange="window.wizardData.nombre = this.value">
+        </div>
+    `;
+}
+
+function renderizarPaso2() {
+    const tiposPredefinidos = [
+        { id: 'veteranos35', nombre: 'Veteranos +35', icono: '👴' },
+        { id: 'veteranos50', nombre: 'Veteranos +50', icono: '👴👴' },
+        { id: 'mixto', nombre: 'Mixto', icono: '👥' },
+        { id: 'femenino', nombre: 'Femenino', icono: '👩' }
+    ];
+    
+    const tiposSeleccionados = window.wizardData.tipo;
+    
+    return `
+        <h2 class="paso-titulo">🏉 ¿Qué tipo de encuentro?</h2>
+        <p class="paso-subtitulo">Seleccioná una o varias opciones</p>
+        
+        <div class="tipo-grid">
+            ${tiposPredefinidos.map(t => `
+                <div class="tipo-card ${tiposSeleccionados.includes(t.nombre) ? 'seleccionado' : ''}" 
+                     onclick="toggleTipo('${t.nombre}', this)">
+                    <div class="tipo-icon">${t.icono}</div>
+                    <div class="tipo-nombre">${t.nombre}</div>
+                </div>
+            `).join('')}
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <p style="font-size: 13px; color: #64748b; margin-bottom: 12px; font-weight: 600;">OTROS TIPOS (opcional)</p>
+            <div id="tagsContainer">
+                ${window.wizardData.tipo.filter(t => !tiposPredefinidos.find(p => p.nombre === t)).map(t => `
+                    <span class="tipo-tag seleccionado" onclick="removeTag('${t}')">${t} ✕</span>
+                `).join('')}
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 12px;">
+                <input type="text" 
+                       id="nuevoTag" 
+                       placeholder="Agregar tipo personalizado..." 
+                       style="flex: 1; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px;"
+                       onkeypress="if(event.key === 'Enter') { event.preventDefault(); agregarTag(); }">
+                <button onclick="agregarTag()" 
+                        style="padding: 12px 20px; background: #2563eb; color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">
+                    +
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+function renderizarPaso3() {
+    const fechasHTML = window.wizardData.fechas.map((f, idx) => `
+        <div class="fecha-card" data-idx="${idx}">
+            <div class="fecha-header">
+                <div class="fecha-input">
+                    <input type="date" 
+                           value="${f.dia}" 
+                           onchange="actualizarFecha(${idx}, 'dia', this.value)"
+                           style="font-size: 16px;">
+                </div>
+                <button class="btn-eliminar" onclick="eliminarFecha(${idx})">×</button>
+            </div>
+            <div class="horarios-container">
+                ${f.horarios.map((h, hIdx) => `
+                    <div class="horario-row">
+                        <input type="time" 
+                               value="${h.hora}" 
+                               onchange="actualizarHorario(${idx}, ${hIdx}, 'hora', this.value)">
+                        <input type="text" 
+                               value="${h.desc}" 
+                               placeholder="¿Qué pasa a esta hora?"
+                               onchange="actualizarHorario(${idx}, ${hIdx}, 'desc', this.value)">
+                        <button class="btn-eliminar" onclick="eliminarHorario(${idx}, ${hIdx})" style="width: 32px; height: 32px;">×</button>
+                    </div>
+                `).join('')}
+            </div>
+            <button class="btn-agregar-horario" onclick="agregarHorarioWizard(${idx})">
+                + Agregar horario
+            </button>
+        </div>
+    `).join('');
+    
+    return `
+        <h2 class="paso-titulo">📅 ¿Cuándo se juega?</h2>
+        <p class="paso-subtitulo">Agregá las fechas y horarios del encuentro</p>
+        
+        <div id="fechasContainer">
+            ${fechasHTML}
+        </div>
+        
+        <button class="btn-agregar-fecha" onclick="agregarFechaWizard()">
+            <span>+</span> Agregar otra fecha
+        </button>
+        
+        ${window.wizardData.fechas.length === 0 ? `
+            <div style="text-align: center; padding: 40px 20px; color: #94a3b8;">
+                <div style="font-size: 48px; margin-bottom: 16px;">📅</div>
+                <p>Agregá al menos una fecha</p>
+            </div>
+        ` : ''}
+    `;
+}
+
+function renderizarPaso4() {
+    const valoresHTML = window.wizardData.valores.map((v, idx) => `
+        <div class="valor-card">
+            <input type="text" 
+                   value="${v.titulo}" 
+                   placeholder="Título (ej: Inscripción completa)"
+                   onchange="actualizarValor(${idx}, 'titulo', this.value)">
+            <div style="display: flex; gap: 12px;">
+                <input type="number" 
+                       value="${v.precio}" 
+                       placeholder="Precio $"
+                       onchange="actualizarValor(${idx}, 'precio', this.value)"
+                       style="flex: 1;">
+                <input type="text" 
+                       value="${v.desc || ''}" 
+                       placeholder="Descripción opcional"
+                       onchange="actualizarValor(${idx}, 'desc', this.value)"
+                       style="flex: 2;">
+            </div>
+            <button onclick="eliminarValor(${idx})" 
+                    style="background: #fee2e2; color: #dc2626; border: none; padding: 8px; border-radius: 8px; cursor: pointer; font-size: 13px;">
+                Eliminar opción
+            </button>
+        </div>
+    `).join('');
+    
+    // Resumen
+    const resumenFechas = window.wizardData.fechas.map(f => {
+        const fecha = new Date(f.dia + 'T00:00:00');
+        return fecha.toLocaleDateString('es-AR', { weekday: 'short', day: 'numeric', month: 'short' });
+    }).join(', ');
+    
+    return `
+        <h2 class="paso-titulo">📍 Ubicación y valores</h2>
+        <p class="paso-subtitulo">¿Dónde se juega y cuánto cuesta?</p>
+        
+        <div class="mapa-container" id="mapaWizard"></div>
+        
+        <div class="ubicacion-info" id="ubicacionInfo" style="${window.wizardData.direccion ? '' : 'display: none;'}">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            <span id="textoUbicacion">${window.wizardData.direccion || ''}</span>
+        </div>
+        
+        <input type="hidden" id="wizardLat" value="${window.wizardData.lat}">
+        <input type="hidden" id="wizardLng" value="${window.wizardData.lng}">
+        
+        <div class="cupo-selector">
+            <button class="cupo-btn" onclick="cambiarCupo(-1)">−</button>
+            <div>
+                <div class="cupo-valor" id="cupoValor">${window.wizardData.cupo}</div>
+                <div style="font-size: 12px; color: #64748b;">equipos</div>
+            </div>
+            <button class="cupo-btn" onclick="cambiarCupo(1)">+</button>
+        </div>
+        
+        <div style="margin-bottom: 16px;">
+            <label class="input-label">Opciones de inscripción *</label>
+            ${valoresHTML}
+            <button onclick="agregarValorWizard()" 
+                    style="width: 100%; padding: 14px; background: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 12px; color: #475569; font-weight: 600; cursor: pointer;">
+                + Agregar opción de valor
+            </button>
+        </div>
+        
+        <div class="input-group">
+            <label class="input-label">Descripción adicional (opcional)</label>
+            <textarea class="input-field" 
+                      id="inputDescripcion"
+                      rows="3" 
+                      placeholder="Información extra: formas de pago, menú, etc."
+                      onchange="window.wizardData.descripcion = this.value">${window.wizardData.descripcion}</textarea>
+        </div>
+        
+        <div class="resumen-final">
+            <div class="resumen-item">
+                <span class="resumen-label">Nombre</span>
+                <span class="resumen-value">${window.wizardData.nombre || '-'}</span>
+            </div>
+            <div class="resumen-item">
+                <span class="resumen-label">Tipo</span>
+                <span class="resumen-value">${window.wizardData.tipo.join(', ') || '-'}</span>
+            </div>
+            <div class="resumen-item">
+                <span class="resumen-label">Fechas</span>
+                <span class="resumen-value">${resumenFechas || '-'}</span>
+            </div>
+            <div class="resumen-item">
+                <span class="resumen-label">Cupo</span>
+                <span class="resumen-value">${window.wizardData.cupo} equipos</span>
+            </div>
+        </div>
+    `;
+}
+
+// ============================================
+// INICIALIZAR CADA PASO
+// ============================================
+
+function inicializarPaso1() {
+    // Ya está listo en el HTML
+}
+
+function inicializarPaso2() {
+    // Ya está listo en el HTML
+}
+
+function inicializarPaso3() {
+    if (window.wizardData.fechas.length === 0) {
+        agregarFechaWizard();
+    }
+}
+
+function inicializarPaso4() {
+    // Inicializar mapa
+    setTimeout(() => {
+        const lat = parseFloat(window.wizardData.lat) || -34.6037;
+        const lng = parseFloat(window.wizardData.lng) || -58.3816;
+        
+        window.mapaWizard = L.map('mapaWizard').setView([lat, lng], 13);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(window.mapaWizard);
+        
+        window.markerWizard = L.marker([lat, lng], {
+            draggable: true,
+            icon: L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41]
+            })
+        }).addTo(window.mapaWizard);
+        
+        window.markerWizard.on('dragend', async function() {
+            const pos = window.markerWizard.getLatLng();
+            await actualizarUbicacionWizard(pos.lat, pos.lng);
+        });
+        
+        window.mapaWizard.on('click', async function(e) {
+            window.markerWizard.setLatLng(e.latlng);
+            await actualizarUbicacionWizard(e.latlng.lat, e.latlng.lng);
+        });
+        
+        // Si ya tenía ubicación, mostrarla
+        if (window.wizardData.direccion) {
+            document.getElementById('ubicacionInfo').style.display = 'flex';
+        }
+    }, 100);
+    
+    // Agregar valor inicial si no hay
+    if (window.wizardData.valores.length === 0) {
+        agregarValorWizard();
+    }
+}
+
+// ============================================
+// HANDLERS DE CADA PASO
+// ============================================
+
+async function handleFlyerUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    
+    if (!file.type.startsWith('image/')) {
+        alert('El archivo debe ser una imagen');
+        return;
+    }
+    
+    // Preview local
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const zone = document.getElementById('uploadZone');
+        zone.classList.add('tiene-imagen');
+        zone.innerHTML = `<img src="${e.target.result}" class="preview-flyer" id="previewFlyer">`;
+    };
+    reader.readAsDataURL(file);
+    
+    // Subir
+    const formData = new FormData();
+    formData.append('image', file);
+    
+    try {
+        const response = await fetch('https://api.imgbb.com/1/upload?key=2c40bfae99afcb6fd536a0e303a77b90', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+            window.wizardData.flyerUrl = result.data.url;
+        }
+    } catch (err) {
+        console.error('Error subiendo flyer:', err);
+    }
+}
+
+function toggleTipo(tipo, elemento) {
+    const index = window.wizardData.tipo.indexOf(tipo);
+    if (index > -1) {
+        window.wizardData.tipo.splice(index, 1);
+        elemento.classList.remove('seleccionado');
+    } else {
+        window.wizardData.tipo.push(tipo);
+        elemento.classList.add('seleccionado');
+    }
+}
+
+function agregarTag() {
+    const input = document.getElementById('nuevoTag');
+    const valor = input.value.trim();
+    if (!valor) return;
+    
+    if (!window.wizardData.tipo.includes(valor)) {
+        window.wizardData.tipo.push(valor);
+        renderizarTags();
+    }
+    input.value = '';
+}
+
+function removeTag(tag) {
+    const index = window.wizardData.tipo.indexOf(tag);
+    if (index > -1) {
+        window.wizardData.tipo.splice(index, 1);
+        renderizarTags();
+    }
+}
+
+function renderizarTags() {
+    const container = document.getElementById('tagsContainer');
+    container.innerHTML = window.wizardData.tipo
+        .filter(t => !['Veteranos +35', 'Veteranos +50', 'Mixto', 'Femenino'].includes(t))
+        .map(t => `<span class="tipo-tag seleccionado" onclick="removeTag('${t}')">${t} ✕</span>`)
+        .join('');
+}
+
+function agregarFechaWizard() {
+    window.wizardData.fechas.push({
+        dia: new Date().toISOString().split('T')[0],
+        horarios: [{ hora: '10:00', desc: 'Acreditación' }]
+    });
+    renderizarPaso(3);
+}
+
+function eliminarFecha(idx) {
+    window.wizardData.fechas.splice(idx, 1);
+    renderizarPaso(3);
+}
+
+function actualizarFecha(idx, campo, valor) {
+    window.wizardData.fechas[idx][campo] = valor;
+}
+
+function agregarHorarioWizard(fechaIdx) {
+    window.wizardData.fechas[fechaIdx].horarios.push({ hora: '14:00', desc: '' });
+    renderizarPaso(3);
+}
+
+function eliminarHorario(fechaIdx, horarioIdx) {
+    window.wizardData.fechas[fechaIdx].horarios.splice(horarioIdx, 1);
+    renderizarPaso(3);
+}
+
+function actualizarHorario(fechaIdx, horarioIdx, campo, valor) {
+    window.wizardData.fechas[fechaIdx].horarios[horarioIdx][campo] = valor;
+}
+
+async function actualizarUbicacionWizard(lat, lng) {
+    document.getElementById('wizardLat').value = lat;
+    document.getElementById('wizardLng').value = lng;
+    window.wizardData.lat = lat;
+    window.wizardData.lng = lng;
+    
+    try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`);
+        const data = await response.json();
+        
+        if (data && data.display_name) {
+            window.wizardData.direccion = data.display_name;
+            document.getElementById('textoUbicacion').textContent = data.display_name;
+            document.getElementById('ubicacionInfo').style.display = 'flex';
+        }
+    } catch (err) {
+        console.error('Error geocodificando:', err);
+    }
+}
+
+function cambiarCupo(delta) {
+    const nuevo = window.wizardData.cupo + delta;
+    if (nuevo >= 2 && nuevo <= 50) {
+        window.wizardData.cupo = nuevo;
+        document.getElementById('cupoValor').textContent = nuevo;
+    }
+}
+
+function agregarValorWizard() {
+    window.wizardData.valores.push({ titulo: '', precio: '', desc: '' });
+    renderizarPaso(4);
+}
+
+function eliminarValor(idx) {
+    window.wizardData.valores.splice(idx, 1);
+    renderizarPaso(4);
+}
+
+function actualizarValor(idx, campo, valor) {
+    window.wizardData.valores[idx][campo] = valor;
+}
+
+// ============================================
+// NAVEGACIÓN DEL WIZARD
+// ============================================
+
+function pasoSiguiente() {
+    // Validar paso actual
+    if (!validarPaso(window.wizardData.paso)) return;
+    
+    if (window.wizardData.paso < 4) {
+        window.wizardData.paso++;
+        renderizarPaso(window.wizardData.paso);
+    } else {
+        guardarEncuentroWizard();
+    }
+}
+
+function pasoAnterior() {
+    if (window.wizardData.paso > 1) {
+        window.wizardData.paso--;
+        renderizarPaso(window.wizardData.paso);
+    }
+}
+
+function validarPaso(paso) {
+    switch(paso) {
+        case 1:
+            if (!window.wizardData.nombre.trim()) {
+                mostrarMensajeEncuentros('Ingresá un nombre para el encuentro', 'error');
+                return false;
+            }
+            return true;
+        case 2:
+            if (window.wizardData.tipo.length === 0) {
+                mostrarMensajeEncuentros('Seleccioná al menos un tipo de encuentro', 'error');
+                return false;
+            }
+            return true;
+        case 3:
+            if (window.wizardData.fechas.length === 0) {
+                mostrarMensajeEncuentros('Agregá al menos una fecha', 'error');
+                return false;
+            }
+            // Validar que todas las fechas tengan al menos un horario
+            for (let f of window.wizardData.fechas) {
+                if (f.horarios.length === 0) {
+                    mostrarMensajeEncuentros('Cada fecha debe tener al menos un horario', 'error');
+                    return false;
+                }
+            }
+            return true;
+        case 4:
+            if (!window.wizardData.lat || !window.wizardData.lng) {
+                mostrarMensajeEncuentros('Marcá la ubicación en el mapa', 'error');
+                return false;
+            }
+            if (window.wizardData.valores.length === 0) {
+                mostrarMensajeEncuentros('Agregá al menos una opción de valor', 'error');
+                return false;
+            }
+            // Validar que todos los valores tengan título y precio
+            for (let v of window.wizardData.valores) {
+                if (!v.titulo.trim() || !v.precio) {
+                    mostrarMensajeEncuentros('Completá título y precio en todas las opciones', 'error');
+                    return false;
+                }
+            }
+            return true;
+    }
+    return true;
+}
+
+async function guardarEncuentroWizard() {
+    const btn = document.getElementById('btnSiguiente');
+    btn.disabled = true;
+    btn.textContent = 'Creando...';
+    
+    LoadingManager.show('guardar-wizard', 'Guardando encuentro...');
+    
+    const usuario = obtenerUsuarioActual();
+    
+    const params = new URLSearchParams({
+        action: 'crearEncuentro',
+        equipoCreadorId: usuario.equipoId,
+        creadorNombre: usuario.equipoNombre || usuario.nombre,
+        nombre: window.wizardData.nombre,
+        flyerUrl: window.wizardData.flyerUrl || '',
+        fechasJSON: JSON.stringify(window.wizardData.fechas),
+        valoresJSON: JSON.stringify(window.wizardData.valores),
+        cupoMaximo: window.wizardData.cupo,
+        lugar: window.wizardData.direccion,
+        lat: window.wizardData.lat,
+        lng: window.wizardData.lng,
+        tipo: window.wizardData.tipo.join(', '),
+        descripcion: window.wizardData.descripcion,
+        estado: 'publicado'
+    });
+    
+    try {
+        const result = await fetchWithRetry(`${ENCUENTROS_CONFIG.API_URL}?${params.toString()}`);
+        
+        if (result.success) {
+            cerrarWizard();
+            mostrarMensajeEncuentros('🎉 ¡Encuentro creado con éxito!', 'success');
+            CacheManager.invalidateAll();
+            if (typeof renderizarMisEncuentros === 'function') {
+                renderizarMisEncuentros();
+            }
+        } else {
+            throw new Error(result.error || 'Error al crear');
+        }
+    } catch (err) {
+        mostrarMensajeEncuentros(err.message || 'Error al crear encuentro', 'error');
+        btn.disabled = false;
+        btn.textContent = '✓ Crear encuentro';
+    } finally {
+        LoadingManager.hide('guardar-wizard');
+    }
+}
+
+function cerrarWizard() {
+    const modal = document.getElementById('modalEncuentroWizard');
+    if (modal) {
+        modal.style.animation = 'slideDown 0.3s ease';
+        setTimeout(() => modal.remove(), 300);
+    }
+    if (window.mapaWizard) {
+        window.mapaWizard.remove();
+        window.mapaWizard = null;
+    }
+}
+
+// Agregar animación de cierre
+if (!document.getElementById('wizard-close-styles')) {
+    const style = document.createElement('style');
+    style.id = 'wizard-close-styles';
+    style.textContent = `
+        @keyframes slideDown {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(100%); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// Exponer función global
+window.nuevoEncuentro = nuevoEncuentroV2;
 // ============================================
 // FUNCIONES AUXILIARES DEL MODAL
 // ============================================

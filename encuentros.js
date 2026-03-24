@@ -2381,39 +2381,60 @@ function descargarAsistenciasCompletasCSV(encuentroId) {
     
     LoadingManager.show('descargar', 'Generando CSV...');
     
-    fetch(`${ENCUENTROS_CONFIG.API_URL}?action=getAsistenciasCompletasCreador&encuentroId=${encuentroId}&equipoCreadorId=${usuario.equipoId}`)
-        .then(r => r.json())
-        .then(result => {
-            if (!result.success) {
-                mostrarMensajeEncuentros('Error al cargar datos', 'error');
-                return;
-            }
+    // Necesitamos el detalle para saber qué equipos aceptaron
+    Promise.all([
+        fetch(`${ENCUENTROS_CONFIG.API_URL}?action=getAsistenciasCompletasCreador&encuentroId=${encuentroId}&equipoCreadorId=${usuario.equipoId}`).then(r => r.json()),
+        fetch(`${ENCUENTROS_CONFIG.API_URL}?action=getDetalleEncuentroCompleto&encuentroId=${encuentroId}`).then(r => r.json())
+    ])
+    .then(([asistenciasResult, detalleResult]) => {
+        if (!asistenciasResult.success) {
+            mostrarMensajeEncuentros('Error al cargar datos', 'error');
+            return;
+        }
+        
+        // 🔧 FILTRAR: Solo equipos que aceptaron este encuentro
+        const equiposAceptadosIds = detalleResult.success 
+            ? detalleResult.data.aceptados?.map(eq => eq.id) || []
+            : [];
+        
+        // 🔧 FILTRAR: Solo jugadores con respuesta "voy"
+        let csv = 'Equipo,Nombre,Apellido,DNI,CUIT/CUIL,Email,Teléfono,Fecha Nacimiento\n';
+        let totalVoy = 0;
+        
+        asistenciasResult.data.forEach(eq => {
+            // Solo procesar si el equipo está en la lista de aceptados
+            if (!equiposAceptadosIds.includes(eq.equipoId)) return;
             
-            let csv = 'Equipo,Nombre,Apellido,DNI,CUIT/CUIL,Email,Teléfono,Fecha Nacimiento,Respuesta,Fecha Respuesta\n';
-            
-            result.data.forEach(eq => {
-                eq.jugadores.forEach(j => {
-                    csv += `"${eq.equipoNombre}","${j.nombre}","${j.apellido}","${j.dni || ''}","${j.cuitCuil || ''}","${j.email || ''}","${j.telefono || ''}","${j.fechaNacimiento || ''}","${j.respuesta || 'pendiente'}","${j.fechaRespuesta || ''}"\n`;
-                });
+            eq.jugadores.forEach(j => {
+                // Solo incluir si dijo "voy"
+                if (j.respuesta !== 'voy') return;
+                
+                totalVoy++;
+                csv += `"${eq.equipoNombre}","${j.nombre}","${j.apellido}","${j.dni || ''}","${j.cuitCuil || ''}","${j.email || ''}","${j.telefono || ''}","${j.fechaNacimiento || ''}"\n`;
             });
-            
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `asistencias_completas_${encuentroId}.csv`;
-            link.click();
-            
-            mostrarMensajeEncuentros('CSV descargado', 'success');
-        })
-        .catch(err => {
-            console.error('Error:', err);
-            mostrarMensajeEncuentros('Error al descargar', 'error');
-        })
-        .finally(() => {
-            LoadingManager.hide('descargar');
         });
+        
+        if (totalVoy === 0) {
+            mostrarMensajeEncuentros('No hay jugadores confirmados todavía', 'info');
+            return;
+        }
+        
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `asistencias_confirmadas_${encuentroId}.csv`;
+        link.click();
+        
+        mostrarMensajeEncuentros(`CSV descargado: ${totalVoy} jugadores confirmados`, 'success');
+    })
+    .catch(err => {
+        console.error('Error:', err);
+        mostrarMensajeEncuentros('Error al descargar', 'error');
+    })
+    .finally(() => {
+        LoadingManager.hide('descargar');
+    });
 }
-
 // ============================================
 // CARGAR ENCUENTROS PARA JUGADOR (PANEL)
 // ============================================

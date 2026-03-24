@@ -400,26 +400,22 @@ box-shadow:0 8px 24px rgba(0,0,0,0.08);
     padding: 20px 0;
 }
 
+* ===== FLYERS: solo visualización, sin clic ===== */
 .flyer-item {
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    cursor: pointer;
-    transition: transform 0.3s ease;
-    aspect-ratio: 3/4;
-}
-
-.flyer-item:hover {
-    transform: scale(1.03);
+    cursor: default !important;
+    aspect-ratio: unset !important;
+    pointer-events: none !important;
 }
 
 .flyer-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+    height: auto !important;
+    object-fit: contain !important;
+    aspect-ratio: unset !important;
 }
 
+.flyer-item:hover {
+    transform: none !important;
+}
 .sin-flyers,
 .error {
     text-align: center;

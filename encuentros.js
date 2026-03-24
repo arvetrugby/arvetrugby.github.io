@@ -1447,7 +1447,7 @@ async function cargarAsistenciasAsync(encuentroId, equipoCreadorId, modal) {
 }
 
 // ============================================
-// MODAL CREAR ENCUENTRO (COMPLETO) - MEJORADO V1
+// MODAL CREAR ENCUENTRO (COMPLETO) - SOLO MEJORAS FECHAS Y VALORES
 // ============================================
 
 function nuevoEncuentro() {
@@ -1456,145 +1456,288 @@ function nuevoEncuentro() {
     const modal = document.createElement('div');
     modal.className = 'modal-overlay active';
     modal.id = 'modalEncuentro';
-    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: flex-end; justify-content: center; z-index: 99999;';
-    
-    // Detectar mobile
-    const isMobile = window.innerWidth < 640;
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 99999; padding: 20px; box-sizing: border-box;';
     
     modal.innerHTML = `
-        <div style="background: white; width: 100%; max-width: 600px; max-height: 90vh; border-radius: ${isMobile ? '20px 20px 0 0' : '16px'}; display: flex; flex-direction: column; animation: slideUp 0.25s ease;">
+        <div style="background: white; border-radius: 20px; width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; padding: 30px; position: relative; animation: slideUpMsg 0.3s ease;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; position: sticky; top: 0; background: white; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0; z-index: 10;">
+                <h2 style="margin: 0; color: #1e293b; font-size: 1.5rem;">Crear Nuevo Encuentro</h2>
+                <button onclick="cerrarModalEncuentro()" style="background: #f1f5f9; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 24px; color: #64748b; display: flex; align-items: center; justify-content: center;">×</button>
+            </div>
             
-            <!-- Header -->
-            <div style="padding: 20px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; z-index: 10; border-radius: ${isMobile ? '20px 20px 0 0' : '16px 16px 0 0'};">
-                <h2 style="margin: 0; font-size: 20px; color: #0f172a;">🏉 Nuevo Encuentro</h2>
-                <button onclick="cerrarModalEncuentro()" style="width: 36px; height: 36px; border-radius: 50%; border: none; background: #f1f5f9; color: #64748b; font-size: 20px; cursor: pointer;">×</button>
-            </div>
-
-            <!-- Body -->
-            <div style="flex: 1; overflow-y: auto; padding: 20px;">
-                <form id="formEncuentro" onsubmit="guardarEncuentro(event)">
-                    
-                    <!-- FLYER -->
-                    <div style="margin-bottom: 20px;">
-                        <div id="flyerPreview" onclick="document.getElementById('inputFlyer').click()" style="width: 100%; height: 180px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; border: 2px dashed #cbd5e1; transition: all 0.2s; overflow: hidden; position: relative;">
-                            <span id="flyerVacio" style="text-align: center;">
-                                <span style="font-size: 40px; display: block; margin-bottom: 8px;">📸</span>
-                                <span style="font-size: 15px; font-weight: 600; color: #475569; display: block;">Tocá para subir flyer</span>
-                                <span style="font-size: 12px; color: #94a3b8;">JPG o PNG · 800×600</span>
-                            </span>
-                            <img id="flyerImg" style="max-width: 100%; max-height: 100%; object-fit: contain; display: none;">
-                            <button type="button" id="btnCambiarFlyer" onclick="event.stopPropagation(); document.getElementById('inputFlyer').click()" style="position: absolute; bottom: 10px; right: 10px; padding: 8px 16px; background: rgba(0,0,0,0.7); color: white; border: none; border-radius: 20px; font-size: 12px; display: none;">Cambiar</button>
-                        </div>
-                        <input type="file" id="inputFlyer" accept="image/*" style="display: none;" onchange="handleFlyerSelect(this)">
-                        <input type="hidden" id="flyerUrl">
+            <form id="formEncuentro" onsubmit="guardarEncuentro(event)">
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Flyer del encuentro</label>
+                    <div id="flyerPreview" style="width: 100%; height: 200px; background: #f1f5f9; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; overflow: hidden; border: 2px dashed #cbd5e1;">
+                        <span style="color: #94a3b8;">Vista previa del flyer</span>
                     </div>
+                    <input type="file" id="inputFlyer" accept="image/*" style="display: none;">
+                    <input type="hidden" id="flyerUrl" value="">
+                    <button type="button" onclick="document.getElementById('inputFlyer').click()" style="width: 100%; padding: 12px; background: #f1f5f9; color: #475569; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.95rem;">📤 Subir flyer</button>
+                    <p style="color: #64748b; font-size: 12px; margin-top: 5px;">Formato recomendado: JPG/PNG, 800x600px</p>
+                </div>
 
-                    <!-- NOMBRE -->
-                    <div style="margin-bottom: 20px;">
-                        <label style="display: block; font-size: 14px; font-weight: 700; color: #374151; margin-bottom: 8px;">Nombre del encuentro *</label>
-                        <input type="text" id="encNombre" required placeholder="Ej: Encuentro Veteranos - Mar del Plata 2026" style="width: 100%; padding: 14px 16px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 16px; box-sizing: border-box;">
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Nombre del encuentro *</label>
+                    <input type="text" id="encNombre" required placeholder="Ej: Encuentro Argentino - Santiago 2026" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; box-sizing: border-box;">
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Tipo de encuentro * (podés elegir varios)</label>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" name="encTipo" value="Veteranos +35" style="width: 18px; height: 18px;">
+                            <span>Veteranos +35</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" name="encTipo" value="Veteranos +50" style="width: 18px; height: 18px;">
+                            <span>Veteranos +50</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="chkOtro" style="width: 18px; height: 18px;" onchange="toggleOtrosTipos()">
+                            <span>Otro (agregar personalizados)</span>
+                        </label>
                     </div>
-
-                    <!-- TIPO -->
-                    <div style="margin-bottom: 20px;">
-                        <label style="display: block; font-size: 14px; font-weight: 700; color: #374151; margin-bottom: 12px;">Tipo de encuentro *</label>
-                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 12px;">
-                            <label style="display: flex; align-items: center; gap: 10px; padding: 14px; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#38bdf8'" onmouseout="this.style.borderColor='#e2e8f0'">
-                                <input type="checkbox" name="encTipo" value="Veteranos +35" style="width: 20px; height: 20px; accent-color: #2563eb;">
-                                <span style="font-weight: 600; color: #374151;">👴 +35</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 10px; padding: 14px; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#38bdf8'" onmouseout="this.style.borderColor='#e2e8f0'">
-                                <input type="checkbox" name="encTipo" value="Veteranos +50" style="width: 20px; height: 20px; accent-color: #2563eb;">
-                                <span style="font-weight: 600; color: #374151;">👴👴 +50</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 10px; padding: 14px; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#38bdf8'" onmouseout="this.style.borderColor='#e2e8f0'">
-                                <input type="checkbox" name="encTipo" value="Mixto" style="width: 20px; height: 20px; accent-color: #2563eb;">
-                                <span style="font-weight: 600; color: #374151;">👥 Mixto</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 10px; padding: 14px; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#38bdf8'" onmouseout="this.style.borderColor='#e2e8f0'">
-                                <input type="checkbox" name="encTipo" value="Femenino" style="width: 20px; height: 20px; accent-color: #2563eb;">
-                                <span style="font-weight: 600; color: #374151;">👩 Femenino</span>
-                            </label>
-                        </div>
-                        <div style="display: flex; gap: 8px;">
-                            <input type="text" id="inputOtroTipo" placeholder="¿Otro tipo? Escribilo acá..." onkeypress="if(event.key === 'Enter') { event.preventDefault(); agregarOtroTipo(); }" style="flex: 1; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 14px;">
-                            <button type="button" onclick="agregarOtroTipo()" style="padding: 12px 20px; background: #2563eb; color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer;">+</button>
-                        </div>
-                        <div id="otrosTiposTags" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;"></div>
+                    <div id="containerOtrosTipos" style="display: none; flex-direction: column; gap: 10px; margin-left: 26px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 2px solid #e2e8f0;">
+                        <div style="font-size: 12px; color: #64748b; margin-bottom: 5px;">Agregá los tipos que necesites:</div>
                     </div>
+                    <button type="button" onclick="agregarOtroTipo()" style="display: none; width: 100%; margin-top: 10px; padding: 10px; background: #f1f5f9; color: #475569; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; font-size: 0.9rem;" id="btnAgregarOtroTipo">+ Agregar otro tipo personalizado</button>
+                </div>
 
-                    <!-- UBICACIÓN -->
-                    <div style="margin-bottom: 20px;">
-                        <label style="display: block; font-size: 14px; font-weight: 700; color: #374151; margin-bottom: 8px;">Ubicación *</label>
-                        <div style="position: relative; margin-bottom: 12px;">
-                            <div id="mapaEncuentro" style="height: 200px; border-radius: 16px; border: 2px solid #e2e8f0; background: #f1f5f9;"></div>
-                            <div style="position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); color: white; padding: 8px 16px; border-radius: 20px; font-size: 13px; white-space: nowrap;">📍 Mové el pin o tocá el mapa</div>
-                        </div>
-                        <input type="hidden" id="encLat">
-                        <input type="hidden" id="encLng">
-                        <input type="hidden" id="encPaisId">
-                        <input type="hidden" id="encProvinciaId">
-                        <input type="hidden" id="encCiudadId">
-                        <input type="text" id="encDireccion" required placeholder="Dirección..." readonly style="width: 100%; padding: 14px 16px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 14px; background: #f8fafc;">
-                        <div id="encUbicacionInfo" style="display: none; background: #dcfce7; border-radius: 10px; padding: 12px 16px; color: #166534; font-size: 14px; margin-top: 10px;">✅ Ubicación confirmada</div>
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Ubicación del encuentro *</label>
+                    <p style="color: #64748b; font-size: 12px; margin-bottom: 10px;">📍 Arrastrá el pin rojo para marcar exactamente dónde se juega</p>
+                    <div id="mapaEncuentro" style="width: 100%; height: 300px; border-radius: 12px; margin-bottom: 15px; border: 2px solid #e2e8f0; background: #f1f5f9;"></div>
+                    <input type="hidden" id="encLat" value="">
+                    <input type="hidden" id="encLng" value="">
+                    <input type="hidden" id="encPaisId" value="">
+                    <input type="hidden" id="encProvinciaId" value="">
+                    <input type="hidden" id="encCiudadId" value="">
+                    <label style="font-size: 12px; color: #64748b; margin-bottom: 5px; display: block;">Dirección completa *</label>
+                    <input type="text" id="encDireccion" required placeholder="Calle, número, ciudad, país..." style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; margin-bottom: 10px; box-sizing: border-box;">
+                    <div id="encUbicacionInfo" style="display: none; background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 10px; font-size: 12px; color: #166534;">
+                        ✅ Ubicación confirmada: <span id="encPaisNombre"></span> > <span id="encProvinciaNombre"></span> > <span id="encCiudadNombre"></span>
                     </div>
+                </div>
 
-                    <!-- CUPO -->
-                    <div style="margin-bottom: 20px;">
-                        <label style="display: block; font-size: 14px; font-weight: 700; color: #374151; margin-bottom: 12px;">Cupo de equipos *</label>
-                        <div style="display: flex; align-items: center; gap: 20px; background: #f8fafc; padding: 16px 24px; border-radius: 16px; width: fit-content;">
-                            <button type="button" onclick="ajustarCupo(-1)" style="width: 48px; height: 48px; border-radius: 50%; border: 2px solid #e2e8f0; background: white; font-size: 24px; color: #475569; cursor: pointer;">−</button>
-                            <span id="cupoValor" style="font-size: 32px; font-weight: 800; color: #2563eb; min-width: 40px; text-align: center;">8</span>
-                            <button type="button" onclick="ajustarCupo(1)" style="width: 48px; height: 48px; border-radius: 50%; border: 2px solid #e2e8f0; background: white; font-size: 24px; color: #475569; cursor: pointer;">+</button>
-                        </div>
-                        <input type="hidden" id="encCupo" value="8">
-                    </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Cupo máximo de equipos *</label>
+                    <input type="number" id="encCupo" min="2" max="50" value="8" required style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; box-sizing: border-box;">
+                </div>
 
-                    <!-- FECHAS -->
-                    <div style="margin-bottom: 20px;">
-                        <label style="display: block; font-size: 14px; font-weight: 700; color: #374151; margin-bottom: 12px;">Fechas y horarios *</label>
-                        <div id="containerFechas" style="display: flex; flex-direction: column; gap: 12px;"></div>
-                        <button type="button" onclick="agregarDia()" style="width: 100%; padding: 14px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 2px dashed #38bdf8; border-radius: 12px; color: #2563eb; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                            <span>+</span> Agregar día
-                        </button>
-                    </div>
+                <!-- FECHAS MEJORADO -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #374151;">Fechas y horarios *</label>
+                    <div id="containerFechas" style="display: flex; flex-direction: column; gap: 16px;"></div>
+                    <button type="button" onclick="agregarDia()" style="margin-top: 16px; width: 100%; padding: 14px; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); color: #1e40af; border: 2px dashed #3b82f6; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <span style="font-size: 20px;">+</span> Agregar día
+                    </button>
+                </div>
 
-                    <!-- VALORES -->
-                    <div style="margin-bottom: 20px;">
-                        <label style="display: block; font-size: 14px; font-weight: 700; color: #374151; margin-bottom: 12px;">Valores / Inscripción *</label>
-                        <div id="containerValores" style="display: flex; flex-direction: column; gap: 12px;"></div>
-                        <button type="button" onclick="agregarValor()" style="width: 100%; padding: 14px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 2px dashed #38bdf8; border-radius: 12px; color: #2563eb; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                            <span>+</span> Agregar opción
-                        </button>
-                    </div>
+                <!-- VALORES MEJORADO -->
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #374151;">Valores / Opciones de inscripción *</label>
+                    <div id="containerValores" style="display: flex; flex-direction: column; gap: 16px;"></div>
+                    <button type="button" onclick="agregarValor()" style="margin-top: 16px; width: 100%; padding: 14px; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); color: #1e40af; border: 2px dashed #3b82f6; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <span style="font-size: 20px;">+</span> Agregar opción de valor
+                    </button>
+                </div>
 
-                    <!-- DESCRIPCIÓN -->
-                    <div style="margin-bottom: 20px;">
-                        <label style="display: block; font-size: 14px; font-weight: 700; color: #374151; margin-bottom: 8px;">Descripción (opcional)</label>
-                        <textarea id="encDescripcion" rows="3" placeholder="Formas de pago, menú del 3er tiempo, observaciones..." style="width: 100%; padding: 14px 16px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 16px; resize: vertical; box-sizing: border-box;"></textarea>
-                    </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151;">Descripción general</label>
+                    <textarea id="encDescripcion" rows="3" placeholder="Información adicional, Fechas limites y formas de pago etc.. Menú 3er tiempo, todo lo que consideres necesario" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; resize: vertical; box-sizing: border-box;"></textarea>
+                </div>
 
-                    <div style="height: 20px;"></div>
-                </form>
-            </div>
-
-            <!-- Footer -->
-            <div style="padding: 16px 20px; border-top: 1px solid #e2e8f0; display: flex; gap: 12px; background: white;">
-                <button type="button" onclick="cerrarModalEncuentro()" style="flex: 1; padding: 14px; background: #f1f5f9; color: #475569; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer;">Cancelar</button>
-                <button type="button" onclick="document.getElementById('formEncuentro').requestSubmit()" style="flex: 2; padding: 14px; background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);">Crear encuentro</button>
-            </div>
+                <div style="display: flex; gap: 15px; margin-top: 25px;">
+                    <button type="button" onclick="cerrarModalEncuentro()" style="flex: 1; padding: 12px; background: #f1f5f9; color: #475569; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1rem;">Cancelar</button>
+                    <button type="submit" style="flex: 2; padding: 12px; background: #4f46e5; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1rem;" id="btnGuardarEncuentro">Crear encuentro</button>
+                </div>
+            </form>
         </div>
     `;
     
     document.body.appendChild(modal);
     
-    // CSS de animación
-    if (!document.getElementById('anim-slide')) {
+    // Inyectar CSS mejorado solo para fechas y valores
+    if (!document.getElementById('mejoras-fechas-valores')) {
         const style = document.createElement('style');
-        style.id = 'anim-slide';
+        style.id = 'mejoras-fechas-valores';
         style.textContent = `
-            @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-            @keyframes slideDown { from { transform: translateY(0); opacity: 1; } to { transform: translateY(100%); opacity: 0; } }
+            /* FECHAS MEJORADAS */
+            #containerFechas > div {
+                background: #f8fafc;
+                border: 2px solid #e2e8f0;
+                border-radius: 16px;
+                padding: 20px;
+                position: relative;
+            }
+            
+            #containerFechas > div::before {
+                content: '📅';
+                position: absolute;
+                top: -10px;
+                left: 20px;
+                background: white;
+                padding: 0 8px;
+                font-size: 14px;
+            }
+            
+            #containerFechas input[type="date"] {
+                width: 100%;
+                padding: 14px;
+                border: 2px solid #cbd5e1;
+                border-radius: 12px;
+                font-size: 16px;
+                margin-bottom: 16px;
+                background: white;
+            }
+            
+            #containerFechas .horarios-container {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                margin-left: 12px;
+                padding-left: 20px;
+                border-left: 3px solid #3b82f6;
+            }
+            
+            #containerFechas .horarios-container > div {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+                background: white;
+                padding: 12px;
+                border-radius: 10px;
+                border: 1px solid #e2e8f0;
+            }
+            
+            #containerFechas input[type="time"] {
+                width: 100px;
+                padding: 10px;
+                border: 2px solid #e2e8f0;
+                border-radius: 8px;
+                font-size: 16px;
+            }
+            
+            #containerFechas input[type="text"] {
+                flex: 1;
+                padding: 10px;
+                border: 2px solid #e2e8f0;
+                border-radius: 8px;
+                font-size: 15px;
+            }
+            
+            #containerFechas button[onclick*="parentElement.remove"] {
+                width: 36px;
+                height: 36px;
+                border-radius: 8px;
+                border: none;
+                background: #fee2e2;
+                color: #dc2626;
+                font-size: 18px;
+                cursor: pointer;
+                flex-shrink: 0;
+            }
+            
+            #containerFechas button[onclick="agregarHorario(this)"] {
+                width: 100%;
+                padding: 12px;
+                background: white;
+                border: 2px dashed #cbd5e1;
+                border-radius: 10px;
+                color: #64748b;
+                font-size: 14px;
+                cursor: pointer;
+                margin-top: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+            }
+            
+            #containerFechas button[onclick="agregarHorario(this)"]::before {
+                content: '+';
+                font-size: 18px;
+                font-weight: bold;
+            }
+            
+            #containerFechas > div > button[onclick*="parentElement.remove"] {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                background: #fee2e2;
+                color: #dc2626;
+                border: none;
+                font-size: 16px;
+                cursor: pointer;
+            }
+            
+            /* VALORES MEJORADOS */
+            #containerValores > div {
+                background: white;
+                border: 2px solid #e2e8f0;
+                border-radius: 16px;
+                padding: 20px;
+                display: grid;
+                gap: 12px;
+            }
+            
+            #containerValores input[type="text"] {
+                width: 100%;
+                padding: 14px;
+                border: 2px solid #e2e8f0;
+                border-radius: 12px;
+                font-size: 16px;
+                box-sizing: border-box;
+            }
+            
+            #containerValores input[type="text"]::placeholder {
+                color: #94a3b8;
+            }
+            
+            #containerValores > div > div {
+                display: flex;
+                gap: 12px;
+            }
+            
+            #containerValores input[type="number"] {
+                flex: 1;
+                padding: 14px;
+                border: 2px solid #e2e8f0;
+                border-radius: 12px;
+                font-size: 16px;
+                min-width: 100px;
+            }
+            
+            #containerValores input[type="number"]::placeholder {
+                color: #94a3b8;
+            }
+            
+            #containerValores button[onclick*="parentElement.remove"] {
+                padding: 10px 16px;
+                background: #fee2e2;
+                color: #dc2626;
+                border: none;
+                border-radius: 10px;
+                font-size: 13px;
+                font-weight: 600;
+                cursor: pointer;
+                width: fit-content;
+            }
+            
+            /* Responsive */
+            @media (max-width: 480px) {
+                #containerValores > div > div {
+                    flex-direction: column;
+                }
+                
+                #containerValores input[type="number"] {
+                    width: 100%;
+                }
+            }
         `;
         document.head.appendChild(style);
     }
@@ -1604,148 +1747,12 @@ function nuevoEncuentro() {
         initMapaEncuentro();
         agregarDia();
         agregarValor();
-    }, 50);
+    }, 100);
 }
 
-// ============================================
-// FUNCIONES AUXILIARES (manteniendo compatibilidad)
-// ============================================
-
-function handleFlyerSelect(input) {
-    const file = input.files[0];
-    if (!file) return;
-    
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        document.getElementById('flyerVacio').style.display = 'none';
-        const img = document.getElementById('flyerImg');
-        img.src = e.target.result;
-        img.style.display = 'block';
-        document.getElementById('btnCambiarFlyer').style.display = 'block';
-    };
-    reader.readAsDataURL(file);
-    
-    // Subir
-    const formData = new FormData();
-    formData.append('image', file);
-    fetch('https://api.imgbb.com/1/upload?key=2c40bfae99afcb6fd536a0e303a77b90', {
-        method: 'POST',
-        body: formData
-    })
-    .then(r => r.json())
-    .then(result => {
-        if (result.success) document.getElementById('flyerUrl').value = result.data.url;
-    })
-    .catch(console.error);
-}
-
-function agregarOtroTipo() {
-    const input = document.getElementById('inputOtroTipo');
-    const valor = input.value.trim();
-    if (!valor) return;
-    
-    const container = document.getElementById('otrosTiposTags');
-    const tag = document.createElement('span');
-    tag.style.cssText = 'padding: 8px 14px; background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%); color: white; border-radius: 50px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px;';
-    tag.innerHTML = `${valor} <button type="button" onclick="this.parentElement.remove()" style="background: rgba(255,255,255,0.3); border: none; color: white; width: 18px; height: 18px; border-radius: 50%; cursor: pointer; font-size: 11px;">×</button>`;
-    
-    // Checkbox hidden
-    const chk = document.createElement('input');
-    chk.type = 'checkbox';
-    chk.name = 'encTipo';
-    chk.value = valor;
-    chk.checked = true;
-    chk.style.display = 'none';
-    tag.appendChild(chk);
-    
-    container.appendChild(tag);
-    input.value = '';
-}
-
-function ajustarCupo(delta) {
-    const span = document.getElementById('cupoValor');
-    const input = document.getElementById('encCupo');
-    let v = parseInt(span.textContent) + delta;
-    if (v < 2) v = 2;
-    if (v > 50) v = 50;
-    span.textContent = v;
-    input.value = v;
-}
-
-// Sobreescribir agregarDia para mejor diseño
-const agregarDiaOriginal = window.agregarDia;
-window.agregarDia = function() {
-    const container = document.getElementById('containerFechas');
-    
-    const div = document.createElement('div');
-    div.style.cssText = 'background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 16px;';
-    div.innerHTML = `
-        <div style="display: flex; gap: 12px; margin-bottom: 12px;">
-            <input type="date" required style="flex: 1; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 16px;">
-            <button type="button" onclick="this.closest('div').parentElement.remove()" style="width: 44px; height: 44px; border-radius: 10px; border: none; background: #fee2e2; color: #dc2626; font-size: 20px; cursor: pointer;">×</button>
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 8px; margin-left: 8px; padding-left: 16px; border-left: 3px solid #cbd5e1;">
-            <div style="display: flex; gap: 8px;">
-                <input type="time" value="10:00" required style="width: 100px; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px;">
-                <input type="text" value="Acreditación" placeholder="Actividad" required style="flex: 1; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px;">
-                <button type="button" onclick="this.parentElement.remove()" style="width: 36px; height: 36px; border-radius: 8px; border: none; background: #fee2e2; color: #dc2626; font-size: 16px; cursor: pointer;">×</button>
-            </div>
-        </div>
-        <button type="button" onclick="agregarHorario(this)" style="width: 100%; padding: 10px; background: white; border: 2px dashed #cbd5e1; border-radius: 8px; color: #64748b; font-size: 13px; cursor: pointer; margin-top: 10px;">+ Agregar horario</button>
-    `;
-    
-    container.appendChild(div);
-    div.querySelector('input[type="date"]').value = new Date().toISOString().split('T')[0];
-};
-
-// Sobreescribir agregarHorario
-const agregarHorarioOriginal = window.agregarHorario;
-window.agregarHorario = function(btn) {
-    const lista = btn.previousElementSibling;
-    const div = document.createElement('div');
-    div.style.cssText = 'display: flex; gap: 8px;';
-    div.innerHTML = `
-        <input type="time" value="14:00" required style="width: 100px; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px;">
-        <input type="text" placeholder="¿Qué pasa a esta hora?" required style="flex: 1; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px;">
-        <button type="button" onclick="this.parentElement.remove()" style="width: 36px; height: 36px; border-radius: 8px; border: none; background: #fee2e2; color: #dc2626; font-size: 16px; cursor: pointer;">×</button>
-    `;
-    lista.appendChild(div);
-};
-
-// Sobreescribir agregarValor
-const agregarValorOriginal = window.agregarValor;
-window.agregarValor = function() {
-    const container = document.getElementById('containerValores');
-    
-    const div = document.createElement('div');
-    div.style.cssText = 'background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px; display: grid; gap: 12px;';
-    div.innerHTML = `
-        <input type="text" placeholder="Título (ej: Inscripción completa)" required style="padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 15px;">
-        <div style="display: flex; gap: 12px;">
-            <input type="number" placeholder="$ Precio" min="0" required style="flex: 1; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 15px;">
-            <input type="text" placeholder="Descripción opcional" style="flex: 2; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 15px;">
-        </div>
-        <button type="button" onclick="this.parentElement.remove()" style="padding: 10px; background: #fee2e2; color: #dc2626; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; width: fit-content;">Eliminar opción</button>
-    `;
-    
-    container.appendChild(div);
-};
-
-// Cerrar con animación
-const cerrarModalOriginal = window.cerrarModalEncuentro;
-window.cerrarModalEncuentro = function() {
-    const modal = document.getElementById('modalEncuentro');
-    if (modal) {
-        modal.firstElementChild.style.animation = 'slideDown 0.2s ease';
-        setTimeout(() => {
-            modal.remove();
-            if (window.mapaEncuentro) {
-                window.mapaEncuentro.remove();
-                window.mapaEncuentro = null;
-            }
-        }, 200);
-    }
-};
+// Mantener todas las funciones originales exactamente igual
+// toggleOtrosTipos, agregarOtroTipo, initMapaEncuentro, etc.
+// No sobrescribir nada más
 // ============================================
 // FUNCIONES AUXILIARES DEL MODAL
 // ============================================

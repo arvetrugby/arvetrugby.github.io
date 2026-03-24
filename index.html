@@ -1137,6 +1137,7 @@
     animate();
 })();
 </script>
+    
 </head>
 <body>
    
@@ -1183,9 +1184,7 @@
                     <a href="#como-funciona" class="btn-secondary-large">
                         Mirá las soluciones
                     </a>
-                    <button id="btnInstalar" style="display:none; background:#38bdf8; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:600;">
-  📲 Instalar App
-</button>
+                    
                 </div>
                 <div class="hero-trust">
                     <div class="hero-trust-icons">
@@ -1764,6 +1763,63 @@ document.getElementById("modalOverlay").addEventListener("click", function(e) {
     }
 });
     </script>
+<!-- BOTÓN INSTALAR APP -->
+<button id="btnInstalar" style="display:none; position:fixed; bottom:80px; right:20px; background:linear-gradient(135deg,#38bdf8,#2563eb); color:white; border:none; padding:12px 20px; border-radius:50px; cursor:pointer; font-weight:600; font-size:14px; box-shadow:0 4px15px rgba(56,189,248,0.4); z-index:998; animation:slideUp 0.3s ease;">
+  📲 Instalar App
+</button>
+
+<style>
+@keyframes slideUp {
+  from { transform:translateY(100px); opacity:0; }
+  to { transform:translateY(0); opacity:1; }
+}
+#btnInstalar:hover {
+  transform:translateY(-2px);
+  box-shadow:0 6px20px rgba(56,189,248,0.5);
+}
+</style>
+
+<script>
+let deferredPrompt;
+
+// Detectar si el navegador permite instalación
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  
+  // Mostrar botón si no está instalada
+  if (!window.matchMedia('(display-mode: standalone)').matches) {
+    document.getElementById('btnInstalar').style.display = 'block';
+  }
+});
+
+// Click en el botón
+document.getElementById('btnInstalar').addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  
+  deferredPrompt.prompt();
+  
+  const { outcome } = await deferredPrompt.userChoice;
+  
+  if (outcome === 'accepted') {
+    console.log('App instalada');
+    document.getElementById('btnInstalar').style.display = 'none';
+  }
+  
+  deferredPrompt = null;
+});
+
+// Si ya está instalada, ocultar
+window.addEventListener('appinstalled', () => {
+  document.getElementById('btnInstalar').style.display = 'none';
+  deferredPrompt = null;
+});
+
+// Ocultar si ya está en modo standalone
+if (window.matchMedia('(display-mode: standalone)').matches) {
+  document.getElementById('btnInstalar').style.display = 'none';
+}
+</script>
 </body>
 </html>
 

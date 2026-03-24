@@ -1,5 +1,58 @@
 let encuentroIdDesdeLink = null;
+// ============================================
+// LOADER SIMPLE - Encuentros.js
+// ============================================
 
+function mostrarLoader(mensaje = 'Procesando...') {
+    // Crear loader si no existe
+    let loader = document.getElementById('loaderEncuentros');
+    if (!loader) {
+        loader = document.createElement('div');
+        loader.id = 'loaderEncuentros';
+        loader.innerHTML = `
+            <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                        background: rgba(255,255,255,0.95); z-index: 999999; 
+                        display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                <div style="width: 50px; height: 50px; border: 4px solid #e2e8f0; 
+                            border-top-color: #4f46e5; border-radius: 50%; 
+                            animation: spinEncuentros 1s linear infinite;"></div>
+                <p id="loaderEncuentrosTexto" style="margin-top: 15px; color: #64748b; font-weight: 500;">${mensaje}</p>
+            </div>
+            <style>
+                @keyframes spinEncuentros { to { transform: rotate(360deg); } }
+            </style>
+        `;
+        document.body.appendChild(loader);
+    } else {
+        loader.style.display = 'block';
+        document.getElementById('loaderEncuentrosTexto').textContent = mensaje;
+    }
+}
+
+function ocultarLoader() {
+    const loader = document.getElementById('loaderEncuentros');
+    if (loader) loader.style.display = 'none';
+}
+
+// Activar loader en cualquier click de botón
+document.addEventListener('click', function(e) {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    
+    // No activar en botones de cerrar/cancelar
+    const texto = btn.textContent?.toLowerCase() || '';
+    if (texto.includes('cerrar') || texto.includes('×') || texto.includes('cancelar')) return;
+    
+    mostrarLoader();
+});
+
+// Ocultar cuando termine cualquier fetch
+const fetchOriginal = window.fetch;
+window.fetch = function(...args) {
+    return fetchOriginal.apply(this, args).finally(() => {
+        setTimeout(ocultarLoader, 300);
+    });
+};
 // ============================================
 // ARVET - SISTEMA DE ENCUENTROS/PARTIDOS
 // ============================================

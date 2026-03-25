@@ -418,3 +418,141 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(finanzasSection, { attributes: true, attributeFilter: ['class'] });
     }
 });
+
+
+// ============================================
+// EDICIÓN DE TRANSACCIONES
+// ============================================
+
+function editarTransaccion(id) {
+    const t = finanzasData.transacciones.find(x => x.id === id);
+    if (!t) return;
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay active';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>✏️ Editar ${t.tipo === 'ingreso' ? 'Ingreso' : 'Egreso'}</h3>
+                <button onclick="this.closest('.modal-overlay').remove()" class="btn-cerrar">×</button>
+            </div>
+            <form onsubmit="guardarEdicion(event, '${id}')" class="form-finanza">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Fecha</label>
+                        <input type="date" name="fecha" required value="${t.fecha}">
+                    </div>
+                    <div class="form-group">
+                        <label>Monto ($)</label>
+                        <input type="number" name="monto" required min="0" step="0.01" value="${t.monto}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Concepto</label>
+                    <input type="text" name="concepto" required value="${t.concepto}">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select name="categoria" required>
+                            <option value="cuota" ${t.categoria === 'cuota' ? 'selected' : ''}>Cuota</option>
+                            <option value="sponsor" ${t.categoria === 'sponsor' ? 'selected' : ''}>Sponsor</option>
+                            <option value="evento" ${t.categoria === 'evento' ? 'selected' : ''}>Evento</option>
+                            <option value="equipamiento" ${t.categoria === 'equipamiento' ? 'selected' : ''}>Equipamiento</option>
+                            <option value="alquiler" ${t.categoria === 'alquiler' ? 'selected' : ''}>Alquiler</option>
+                            <option value="viaje" ${t.categoria === 'viaje' ? 'selected' : ''}>Viaje</option>
+                            <option value="seguro" ${t.categoria === 'seguro' ? 'selected' : ''}>Seguro</option>
+                            <option value="otro" ${t.categoria === 'otro' ? 'selected' : ''}>Otro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Estado</label>
+                        <select name="estado">
+                            <option value="pagado" ${t.estado === 'pagado' ? 'selected' : ''}>Pagado</option>
+                            <option value="pendiente" ${t.estado === 'pendiente' ? 'selected' : ''}>Pendiente</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Método de Pago</label>
+                    <select name="metodoPago">
+                        <option value="efectivo" ${t.metodoPago === 'efectivo' ? 'selected' : ''}>Efectivo</option>
+                        <option value="transferencia" ${t.metodoPago === 'transferencia' ? 'selected' : ''}>Transferencia</option>
+                        <option value="mercadopago" ${t.metodoPago === 'mercadopago' ? 'selected' : ''}>MercadoPago</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" onclick="this.closest('.modal-overlay').remove()" class="btn-secundario">Cancelar</button>
+                    <button type="submit" class="btn-primario">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+function guardarEdicion(e, id) {
+    e.preventDefault();
+    const form = e.target;
+    const currentUser = JSON.parse(localStorage.getItem('arvet_user') || '{}');
+    
+    const datos = {
+        action: 'actualizarTransaccion',
+        id: id,
+        equipoId: getEquipoId(),
+        fecha: form.fecha.value,
+        monto: parseFloat(form.monto.value),
+        concepto: form.concepto.value,
+        categoria: form.categoria.value,
+        estado: form.estado.value,
+        metodoPago: form.metodoPago.value
+    };
+    
+    fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify(datos)
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            document.querySelector('.modal-overlay.active')?.remove();
+            showMsg('Transacción actualizada', 'success');
+            cargarFinanzasDesdeAPI();
+        } else {
+            showMsg('Error: ' + data.error, 'error');
+        }
+    })
+    .catch(err => {
+        console.error('Error:', err);
+        showMsg('Error de conexión', 'error');
+    });
+}
+
+// ============================================
+// FILTROS - CORREGIDO
+// ============================================
+
+function filtrarTransacciones() {
+    const container = document.getElementById('listaTransacciones');
+    if (container) {
+        container.innerHTML = renderizarCards();
+    }
+}
+
+// Asegurarse de que filtrarTransaccionesData() lee los valores actuales
+function filtrarTransaccionesData() {
+    const mesSelect = document.getElementById('filtroMes');
+    const tipoSelect = document.getElementById('filtroTipo');
+    const categoriaSelect = document.getElementById('filtroCategoria');
+    
+    const mes = mesSelect ? mesSelect.value : 'todos';
+    const tipo = tipoSelect ? tipoSelect.value : 'todos';
+    const categoria = categoriaSelect ? categoriaSelect.value : 'todos';
+
+    return finanzasData.transacciones.filter(t => {
+        const matchMes = mes === 'todos' || t.fecha.startsWith(mes);
+        const matchTipo = tipo === 'todos' || t.tipo === tipo;
+        const matchCat = categoria === 'todos' || t.categoria === categoria;
+        return matchMes && matchTipo && matchCat;
+    });
+}

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arvet-v1';
+const CACHE_NAME = 'arvet-v2';
 
 const urlsToCache = [
   '/',
@@ -40,3 +40,4 @@ self.addEventListener('activate', (e) => {
   );
   self.clients.claim();
 });
+

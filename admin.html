@@ -522,25 +522,44 @@ color:white;
             <p id="userRole">Rol</p>
         </div>
         
-        <ul class="nav-menu">
-            <li class="active" onclick="showSection('configuracion')">
-                <span></span> Sitio Público
-            </li>
-             <li onclick="showSection('jugadores')">
-                <span></span> Plantel
-            </li>
-            <li onclick="showSection('encuentros')">
-            <span></span> Encuentros
-            </li>
-              <div class="nav-footer">
-            <button id="btnVerSitio" class="btn-secondary">
-                🌐 Ver Sitio Público
+       <ul class="nav-menu">
+    <li class="active" onclick="showSection('configuracion')">
+        <span></span> Editá Pagina Web
+    </li>
+    <li onclick="showSection('jugadores')">
+        <span></span> Tu Plantel
+    </li>
+    <li onclick="showSection('encuentros')">
+        <span></span> Encuentros
+    </li>
+    <li onclick="showSection('finanzas')">
+        <span></span> Finanzas
+    </li>
+
+    <div class="nav-footer">
+        <button id="btnVerSitio" class="btn-secondary">
+            🌐 Tu Página Web
+        </button>
+
+        <div class="accesos-rapidos">
+            <p class="accesos-titulo">Accesos rápidos</p>
+
+            <button class="btn-acceso" onclick="copiarLink('registro')">
+                👤 Registro Jugador
+                <span class="acceso-desc">Compartí el link para que se sumen al plantel</span>
             </button>
-            <button onclick="logout()" class="btn-logout">
-                 Cerrar Sesión
+
+            <button class="btn-acceso" onclick="copiarLink('web')">
+                🌐 Tu página web
+                <span class="acceso-desc">Compartí el link de tu página web</span>
             </button>
         </div>
-        </ul>
+
+        <button onclick="logout()" class="btn-logout">
+            Cerrar Sesión
+        </button>
+    </div>
+</ul>
       
         
     </nav>

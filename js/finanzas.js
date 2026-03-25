@@ -102,7 +102,6 @@ function renderizarFinanzasUI() {
         <div class="finanzas-filtros">
             <select id="filtroMes" onchange="filtrarTransacciones()">
                 <option value="todos">Todos los meses</option>
-                <option value="${new Date().toISOString().slice(0, 7)}">Este mes</option>
             </select>
             <select id="filtroTipo" onchange="filtrarTransacciones()">
                 <option value="todos">Todos los tipos</option>
@@ -122,26 +121,14 @@ function renderizarFinanzasUI() {
             </select>
         </div>
 
-        <!-- Lista -->
-        <div class="finanzas-lista">
-            <div class="lista-header">
-                <span>Fecha</span>
-                <span>Concepto</span>
-                <span>Categoría</span>
-                <span>Monto</span>
-                <span>Estado</span>
-                <span>Acciones</span>
-            </div>
-            <div id="listaTransacciones" class="lista-items">
-                ${renderizarTransacciones()}
-            </div>
+        <!-- Lista de Cards -->
+        <div class="finanzas-cards" id="listaTransacciones">
+            ${renderizarCards()}
         </div>
     `;
     
-    // Cargar meses dinámicamente
     cargarMesesDisponibles();
 }
-
 function cargarMesesDisponibles() {
     const meses = [...new Set(finanzasData.transacciones.map(t => t.fecha.slice(0, 7)))].sort().reverse();
     const select = document.getElementById('filtroMes');
@@ -151,7 +138,7 @@ function cargarMesesDisponibles() {
     }
 }
 
-function renderizarTransacciones() {
+function renderizarCards() {
     const filtradas = filtrarTransaccionesData();
     
     if (filtradas.length === 0) {
@@ -159,24 +146,28 @@ function renderizarTransacciones() {
     }
 
     return filtradas.map(t => `
-        <div class="transaccion-item ${t.tipo}">
-            <span class="t-fecha">${formatearFecha(t.fecha)}</span>
-            <span class="t-concepto">${t.concepto}</span>
-            <span class="t-categoria">
-                <span class="badge-categoria ${t.categoria}">${t.categoria}</span>
-            </span>
-            <span class="t-monto ${t.tipo}">$${formatearMonto(t.monto)}</span>
-            <span class="t-estado">
-                <span class="badge-estado ${t.estado}">${t.estado === 'pagado' ? '✓' : '⏳'} ${t.estado}</span>
-            </span>
-            <span class="t-acciones">
-                <button onclick="editarTransaccion('${t.id}')" class="btn-icon" title="Editar">✏️</button>
-                <button onclick="eliminarTransaccion('${t.id}')" class="btn-icon" title="Eliminar">🗑️</button>
-            </span>
+        <div class="finanza-card ${t.tipo}">
+            <div class="card-header">
+                <span class="card-icono">${t.tipo === 'ingreso' ? '📥' : '📤'}</span>
+                <span class="card-fecha">${formatearFecha(t.fecha)}</span>
+                <span class="card-estado badge-estado ${t.estado}">
+                    ${t.estado === 'pagado' ? '✓' : '⏳'} ${t.estado}
+                </span>
+            </div>
+            <div class="card-body">
+                <h4 class="card-concepto">${t.concepto}</h4>
+                <span class="card-categoria badge-categoria ${t.categoria}">${t.categoria}</span>
+            </div>
+            <div class="card-footer">
+                <span class="card-monto ${t.tipo}">$${formatearMonto(t.monto)}</span>
+                <div class="card-acciones">
+                    <button onclick="editarTransaccion('${t.id}')" class="btn-icon" title="Editar">✏️</button>
+                    <button onclick="eliminarTransaccion('${t.id}')" class="btn-icon" title="Eliminar">🗑️</button>
+                </div>
+            </div>
         </div>
     `).join('');
 }
-
 function filtrarTransaccionesData() {
     const mes = document.getElementById('filtroMes')?.value || 'todos';
     const tipo = document.getElementById('filtroTipo')?.value || 'todos';

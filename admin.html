@@ -797,7 +797,22 @@ color:white;
 function copiarLink(tipo) {
     const currentUser = JSON.parse(localStorage.getItem('arvet_user') || '{}');
     const equipoId = currentUser.equipoId || '';
-    const slug = currentUser.slug || equipoId;
+    
+    // Generar slug desde el nombre del equipo si no existe en localStorage
+    let slug = currentUser.slug;
+    
+    if (!slug && currentUser.equipoNombre) {
+        // Crear slug: "Nombre del Equipo" → "Nombre-Equipo"
+        slug = currentUser.equipoNombre
+            .trim()
+            .replace(/\s+/g, '-')           // Espacios → guiones
+            .replace(/[^a-zA-Z0-9\-]/g, '') // Eliminar caracteres especiales
+            .replace(/-+/g, '-')             // Evitar guiones múltiples
+            .replace(/^-|-$/g, '');          // Eliminar guiones al inicio/final
+    }
+    
+    // Fallback: usar equipoId si todo falla
+    if (!slug) slug = equipoId;
 
     const links = {
         registro: `https://www.arvetrugby.com/registro-jugador.html?equipo=${equipoId}`,
@@ -810,6 +825,7 @@ function copiarLink(tipo) {
     navigator.clipboard.writeText(link).then(() => {
         showMsg('✅ Link copiado en portapapeles, compartilo por WhatsApp', 'success');
     }).catch(() => {
+        // Fallback para navegadores antiguos
         const textarea = document.createElement('textarea');
         textarea.value = link;
         document.body.appendChild(textarea);

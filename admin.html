@@ -797,7 +797,51 @@ color:white;
     <script src="js/app.js"></script>
     <script src="encuentros.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
+<script>
+function copiarLink(tipo) {
+    const slug = obtenerSlugEquipo(); // la función que ya uses para obtener el slug
 
+    const links = {
+        registro: `https://www.arvetrugby.com/registro-jugador.html?equipo=${slug}`,
+        web: `https://www.arvetrugby.com/${slug}`
+    };
 
+    const link = links[tipo];
+
+    navigator.clipboard.writeText(link).then(() => {
+        mostrarToast('✅ Link copiado en portapapeles, compartilo por WhatsApp');
+    }).catch(() => {
+        // Fallback para navegadores que no soporten clipboard API
+        const textarea = document.createElement('textarea');
+        textarea.value = link;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        mostrarToast('✅ Link copiado en portapapeles, compartilo por WhatsApp');
+    });
+}
+
+function mostrarToast(mensaje) {
+    // Si ya tenés una función de toast, reemplazá esto por la tuya
+    const toast = document.createElement('div');
+    toast.textContent = mensaje;
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #2d7a2d;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        z-index: 9999;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+    </script>
 </body>
 </html>

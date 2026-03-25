@@ -549,6 +549,150 @@ color:white;
     line-height: 1.3;
     white-space: normal;
 }
+    /* FINANZAS - ESTILOS */
+
+.finanzas-resumen {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.card-resumen {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    border-left: 4px solid;
+}
+
+.card-resumen.ingresos { border-left-color: #10b981; }
+.card-resumen.egresos { border-left-color: #ef4444; }
+.card-resumen.balance.positivo { border-left-color: #3b82f6; }
+.card-resumen.balance.negativo { border-left-color: #f59e0b; }
+
+.resumen-icono { font-size: 2rem; }
+.resumen-label { display: block; font-size: 0.875rem; color: #64748b; }
+.resumen-monto { display: block; font-size: 1.5rem; font-weight: 700; color: #1e293b; }
+
+.finanzas-acciones {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.btn-accion-finanza {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #374151;
+}
+
+.btn-accion-finanza:hover { border-color: #4f46e5; color: #4f46e5; }
+
+.finanzas-filtros {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.finanzas-filtros select {
+    padding: 10px 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    background: white;
+    min-width: 150px;
+}
+
+.finanzas-lista {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+
+.lista-header {
+    display: grid;
+    grid-template-columns: 100px 2fr 120px 120px 100px 100px;
+    gap: 15px;
+    padding: 16px 20px;
+    background: #f8fafc;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #64748b;
+}
+
+.transaccion-item {
+    display: grid;
+    grid-template-columns: 100px 2fr 120px 120px 100px 100px;
+    gap: 15px;
+    padding: 16px 20px;
+    border-bottom: 1px solid #f1f5f9;
+    align-items: center;
+}
+
+.transaccion-item.ingresos .t-monto { color: #10b981; font-weight: 600; }
+.transaccion-item.egresos .t-monto { color: #ef4444; font-weight: 600; }
+
+.badge-categoria {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    background: #e2e8f0;
+    color: #475569;
+}
+
+.badge-estado {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-estado.pagado { background: #d1fae5; color: #065f46; }
+.badge-estado.pendiente { background: #fef3c7; color: #92400e; }
+
+.btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    opacity: 0.6;
+}
+
+.btn-icon:hover { opacity: 1; }
+
+.sin-resultados {
+    text-align: center;
+    padding: 40px;
+    color: #64748b;
+}
+
+@media (max-width: 768px) {
+    .lista-header,
+    .transaccion-item {
+        grid-template-columns: 80px 1fr 100px;
+    }
+    .lista-header span:nth-child(3),
+    .lista-header span:nth-child(4),
+    .transaccion-item .t-categoria,
+    .transaccion-item .t-estado {
+        display: none;
+    }
+}
 </style>
 <body class="admin-body">
 <div id="msgOverlay" class="overlay" style="display:none;">

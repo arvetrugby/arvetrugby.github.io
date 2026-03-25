@@ -226,7 +226,7 @@ const LoadingManager = {
 
     hide(id) {
         const overlay = this.overlays.get(id);
-        if (!overlay) return;
+       if (!overlay) return;
 
         const progressEl = overlay.querySelector(`#arvet-progress-${id}`);
         if (progressEl) progressEl.style.width = '100%';
@@ -239,7 +239,7 @@ const LoadingManager = {
             }, 600);
         }, 400);
     },
-
+    
     hideAll() {
         this.overlays.forEach((_, id) => this.hide(id));
     }

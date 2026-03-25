@@ -1102,7 +1102,7 @@ function crearModalDetalle(enc, detalle, encuentroId) {
     // Listas de equipos
     const listaAceptados = detalle.aceptados?.length > 0 ? detalle.aceptados.map(eq => `
         <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: ${eq.esCreador ? '#e0e7ff' : '#f0fdf4'}; border-radius: 10px; border-left: 4px solid ${eq.esCreador ? '#4f46e5' : '#22c55e'}; margin-bottom: 8px; flex-wrap: wrap;">
-            <img src="${eq.logoUrl || 'https://i.ibb.co/Y7BMDcjt/logo-generico.png'}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
+            <img src="${eq.logoUrl || 'https://i.ibb.co/27YqgQrZ/Chat-GPT-Image-23-mar-2026-02-53-18-a-m.png'}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
             <div style="flex: 1; min-width: 200px;">
                 <div style="font-weight: 600; color: ${eq.esCreador ? '#3730a3' : '#166534'}; font-size: 0.95rem; word-break: break-word;">${eq.nombre} ${eq.esCreador ? '👑' : ''}</div>
                 <div style="font-size: 0.8rem; color: #64748b;">${eq.ciudad}, ${eq.provincia}</div>
@@ -1116,7 +1116,7 @@ function crearModalDetalle(enc, detalle, encuentroId) {
 
     const listaRechazados = detalle.rechazados?.length > 0 ? detalle.rechazados.map(eq => `
         <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #fef2f2; border-radius: 10px; border-left: 4px solid #ef4444; margin-bottom: 8px; opacity: 0.9; flex-wrap: wrap;">
-            <img src="${eq.logoUrl || 'https://i.ibb.co/Y7BMDcjt/logo-generico.png'}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
+            <img src="${eq.logoUrl || 'https://i.ibb.co/27YqgQrZ/Chat-GPT-Image-23-mar-2026-02-53-18-a-m.png'}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
             <div style="flex: 1; min-width: 200px;">
                 <div style="font-weight: 600; color: #991b1b; font-size: 0.95rem; word-break: break-word;">${eq.nombre}</div>
                 <div style="font-size: 0.8rem; color: #64748b;">${eq.ciudad}, ${eq.provincia}</div>
@@ -1127,7 +1127,7 @@ function crearModalDetalle(enc, detalle, encuentroId) {
 
     const listaPendientes = detalle.pendientes?.length > 0 ? detalle.pendientes.map(eq => `
         <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #fffbeb; border-radius: 10px; border-left: 4px solid #f59e0b; margin-bottom: 8px; flex-wrap: wrap;">
-            <img src="${eq.logoUrl || 'https://i.ibb.co/Y7BMDcjt/logo-generico.png'}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
+            <img src="${eq.logoUrl || 'https://i.ibb.co/27YqgQrZ/Chat-GPT-Image-23-mar-2026-02-53-18-a-m.png'}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
             <div style="flex: 1; min-width: 200px;">
                 <div style="font-weight: 600; color: #92400e; font-size: 0.95rem; word-break: break-word;">${eq.nombre}</div>
                 <div style="font-size: 0.8rem; color: #64748b;">${eq.ciudad}, ${eq.provincia}</div>

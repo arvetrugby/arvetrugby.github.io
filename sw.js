@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arvet-v2';
+const CACHE_NAME = 'arvet-v3';
 
 const urlsToCache = [
   '/',

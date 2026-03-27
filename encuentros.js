@@ -2806,21 +2806,28 @@ function obtenerUsuarioActual() {
 function formatearFecha(fechaStr) {
   if (!fechaStr) return '';
   
-  // Extraer componentes YYYY-MM-DD
+  // Extraer YYYY-MM-DD
   const fechaParte = fechaStr.split('T')[0];
-  const [año, mes, dia] = fechaParte.split('-').map(Number);
+  let [año, mes, dia] = fechaParte.split('-').map(Number);
   
-  // Crear fecha en UTC para evitar conversiones de timezone
-  const fechaUTC = new Date(Date.UTC(año, mes - 1, dia));
+  // SUMAR 1 DÍA directamente en los números (sin Date objects)
+  dia = dia + 1;
   
-  // Ajustar +1 día si es necesario (descomentar si el problema persiste)
-fechaUTC.setUTCDate(fechaUTC.getUTCDate() + 1);
+  // Ajustar si pasa de fin de mes
+  const diasEnMes = new Date(año, mes, 0).getDate(); // Días del mes actual
+  if (dia > diasEnMes) {
+    dia = 1;
+    mes = mes + 1;
+    if (mes > 12) {
+      mes = 1;
+      año = año + 1;
+    }
+  }
   
   const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
   
-  return `${fechaUTC.getUTCDate()} ${meses[fechaUTC.getUTCMonth()]}`;
+  return `${dia} ${meses[mes - 1]}`;
 }
-
 function usuarioLogueado() {
     return !!localStorage.getItem('arvet_user');
 }

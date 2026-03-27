@@ -2805,7 +2805,12 @@ function obtenerUsuarioActual() {
 function formatearFecha(fechaStr) {
     if (!fechaStr) return '';
     
-    // Si viene sin T (formato antiguo YYYY-MM-DD), agregar T12:00:00Z
+    // FIX TEMPORAL: Si la hora es 00:00:00, sumar 12 horas para mostrar bien
+    if (fechaStr.includes('T00:00:00')) {
+        fechaStr = fechaStr.replace('T00:00:00', 'T12:00:00');
+    }
+    
+    // Si viene sin T, agregar mediodía
     if (!fechaStr.includes('T')) {
         fechaStr = fechaStr + 'T12:00:00.000Z';
     }
@@ -2827,7 +2832,6 @@ function formatearFecha(fechaStr) {
     
     return `${nombreDia} ${dia} ${nombreMes}`;
 }
-
 function usuarioLogueado() {
     return !!localStorage.getItem('arvet_user');
 }

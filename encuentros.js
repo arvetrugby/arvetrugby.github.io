@@ -1060,7 +1060,7 @@ async function rechazarInvitacion(encuentroId) {
     });
     
     try {
-        async const result = await fetchWithRetry(`${ENCUENTROS_CONFIG.API_URL}?${params.toString()}`);
+         const result = await fetchWithRetry(`${ENCUENTROS_CONFIG.API_URL}?${params.toString()}`);
         
         if (result.success) {
             mostrarMensajeEncuentros('Invitación rechazada', 'info');

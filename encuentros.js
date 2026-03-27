@@ -50,6 +50,8 @@ const LoadingManager = {
     overlays: new Map(),
 
     show(id, message = 'Cargando...') {
+        // 🔧 DEBUG: Ver qué está disparando el loader
+        console.log('LoadingManager.show() llamado con:', { id, message, stack: new Error().stack });
 
         
          // 🔧 NO mostrar loader si el modal del mapa está abierto (excepto acciones importantes)

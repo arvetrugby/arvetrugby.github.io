@@ -2807,50 +2807,24 @@ function obtenerUsuarioActual() {
 }
 
 function formatearFecha(fechaStr) {
+    console.log('Input fechaStr:', fechaStr);
+    
     if (!fechaStr) return '';
     
-    // Extraer solo YYYY-MM-DD, ignorando cualquier hora o timezone
     const fechaParte = fechaStr.split('T')[0];
+    console.log('Fecha parte:', fechaParte);
+    
     const [año, mes, dia] = fechaParte.split('-');
+    console.log('Año:', año, 'Mes:', mes, 'Día:', dia);
     
     const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 
                    'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
     
-    // Parsear como números enteros (sin crear objeto Date)
-    const diaNum = parseInt(dia, 10);
-    const mesNum = parseInt(mes, 10);
-    const añoNum = parseInt(año, 10);
+    const resultado = `${parseInt(dia, 10)} de ${meses[parseInt(mes, 10) - 1]}`;
+    console.log('Resultado:', resultado);
     
-    // Calcular día de la semana usando el algoritmo de Zeller CONSISTENTE
-    // Fórmula: (día + ((13*(mes+1))/5) + K + (K/4) + (J/4) - 2*J) mod 7
-    // Donde: mes (3=marzo...14=febrero), K=año%100, J=año/100
-    
-    let m = mesNum;
-    let y = añoNum;
-    
-    // Ajustar: enero y febrero se tratan como meses 13 y 14 del año anterior
-    if (m < 3) {
-        m += 12;
-        y -= 1;
-    }
-    
-    const K = y % 100;
-    const J = Math.floor(y / 100);
-    
-    // Cálculo de Zeller
-    let h = (diaNum + Math.floor((13 * (m + 1)) / 5) + K + Math.floor(K / 4) + Math.floor(J / 4) - 2 * J) % 7;
-    
-    // Ajustar resultado negativo
-    if (h < 0) h += 7;
-    
-    // h: 0=sábado, 1=domingo, 2=lunes, 3=martes, 4=miércoles, 5=jueves, 6=viernes
-    const diasSemana = ['sábado', 'domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes'];
-    const nombreDia = diasSemana[h];
-    const nombreMes = meses[mesNum - 1];
-    
-    return `${nombreDia} ${diaNum} de ${nombreMes}`;
+    return resultado;
 }
-
 
 
 function usuarioLogueado() {

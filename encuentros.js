@@ -2805,27 +2805,15 @@ function obtenerUsuarioActual() {
 
 function formatearFecha(fechaStr) {
   if (!fechaStr) return '';
-  
-  // Extraer YYYY-MM-DD
+
+  // Nos quedamos solo con YYYY-MM-DD (por si viene con hora)
   const fechaParte = fechaStr.split('T')[0];
-  let [año, mes, dia] = fechaParte.split('-').map(Number);
-  
-  // SUMAR 1 DÍA directamente en los números (sin Date objects)
-  dia = dia + 1;
-  
-  // Ajustar si pasa de fin de mes
-  const diasEnMes = new Date(año, mes, 0).getDate(); // Días del mes actual
-  if (dia > diasEnMes) {
-    dia = 1;
-    mes = mes + 1;
-    if (mes > 12) {
-      mes = 1;
-      año = año + 1;
-    }
-  }
-  
+
+  // Extraer valores directamente (SIN usar Date)
+  const [anio, mes, dia] = fechaParte.split('-').map(Number);
+
   const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-  
+
   return `${dia} ${meses[mes - 1]}`;
 }
 function usuarioLogueado() {

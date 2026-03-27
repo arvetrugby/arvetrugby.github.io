@@ -79,7 +79,7 @@ window.cambiarRolJugador = async function(jugadorId, nuevoRol) {
             // Agregar botón de WhatsApp en el card del jugador (NO flotante)
             const j = result.data;
             if (j && j.telefono) {
-                const mensaje = `Hola ${j.nombre} ${j.apellido}, tu rol en el equipo ha cambiado a: ${j.rol}. Usuario: ${j.email}. Contraseña: ${j.password}. Ingresa aquí: https://tusitio.com/login.html`;
+                const mensaje = `Hola ${j.nombre} ${j.apellido}, tu rol en el equipo ha cambiado a: ${j.rol}. Usuario: ${j.email}. Contraseña: ${j.password}. Ingresa aquí: https://arvetrugby.com/login.html`;
                 
                 // Usar la misma función agregarBotonWhatsApp que ya tienes
                 agregarBotonWhatsApp(
@@ -1992,7 +1992,7 @@ window.cambiarEstadoJugador = async function(id, nuevoEstado) {
 
         if (!telefono) return;
 
-        const mensaje = `Hola ${nombre}, tu estado de registro en ARVET ahora es ${nuevoEstado.toLowerCase()}.\nUsuario: ${email}\nContraseña: ${password}\nIngresa aquí: https://tusitio.com/login.html`;
+        const mensaje = `Hola ${nombre}, tu estado de registro en ARVET ahora es ${nuevoEstado.toLowerCase()}.\nUsuario: ${email}\nContraseña: ${password}\nIngresa aquí: https://arvetrugby.com/login.html`;
 
         // Agregar botón al card del jugador específico
         agregarBotonWhatsApp(

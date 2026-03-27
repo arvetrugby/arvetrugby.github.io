@@ -1863,7 +1863,8 @@ async function guardarEncuentro(e) {
             if (hora && desc) horarios.push({ hora, desc });
         });
         
-        fechas.push({ dia: fechaInput.value, horarios });
+        const fechaConMediodia = fechaInput.value + 'T12:00:00.000Z';
+fechas.push({ dia: fechaConMediodia, horarios });
     });
     
     if (fechas.length === 0) {
@@ -2338,7 +2339,8 @@ async function guardarEdicionEncuentro(e, encuentroId) {
             if (hora && desc) horarios.push({ hora, desc });
         });
         
-        fechas.push({ dia: fechaInput.value, horarios });
+        const fechaConMediodia = fechaInput.value + 'T12:00:00.000Z';
+fechas.push({ dia: fechaConMediodia, horarios });
     });
     
     if (fechas.length === 0) {

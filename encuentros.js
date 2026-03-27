@@ -2806,26 +2806,18 @@ function obtenerUsuarioActual() {
 function formatearFecha(fechaStr) {
     if (!fechaStr) return '';
     
-    // DEBUG - descomentar para verificar
-    // console.log('formatearFecha input:', fechaStr);
-    
-    // Extraer solo YYYY-MM-DD, ignorando cualquier hora o timezone
+    // Extraer solo YYYY-MM-DD
     const fechaParte = fechaStr.split('T')[0];
     const [año, mes, dia] = fechaParte.split('-');
     
-    // Parsear como enteros para eliminar ceros a la izquierda
+    const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+    
+    // Parsear como enteros
     const diaNum = parseInt(dia, 10);
     const mesNum = parseInt(mes, 10);
     
-    const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 
-                   'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-    
-    const resultado = `${diaNum} de ${meses[mesNum - 1]}`;
-    
-    // DEBUG - descomentar para verificar
-    // console.log('formatearFecha output:', resultado);
-    
-    return resultado;
+    // Retornar directamente sin crear objetos Date
+    return `${diaNum} de ${meses[mesNum - 1]}`;
 }
 
 function usuarioLogueado() {

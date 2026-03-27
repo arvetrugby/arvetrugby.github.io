@@ -46,29 +46,26 @@ const CacheManager = {
 // ============================================
 // LOADING SCREEN (igual que index)
 // ============================================
+// ============================================
+// LOADING SCREEN (igual que index) - MODIFICADO
+// ============================================
 const LoadingManager = {
     overlays: new Map(),
-    idsMostrados: new Set(), // 🔧 Nuevo: tracking de IDs ya mostrados
+    idsMostrados: new Set(), // 🔧 NUEVO: tracking de IDs ya mostrados
 
     show(id, message = 'Cargando...') {
-        // 🔧 SI YA SE MOSTRÓ ESTE ID, NO MOSTRAR OTRO
+        // 🔧 IGNORAR si ya se mostró este ID (previene duplicados)
         if (this.idsMostrados.has(id)) {
-            console.log('⏩ Loader ignorado (ya mostrado):', id);
             return;
         }
         
-        // 🔧 IGNORAR IDs de carga automática (mis-encuentros, invitaciones, etc)
+        // 🔧 IGNORAR IDs de carga automática (listados, etc)
         const idsAutomaticos = ['mis-encuentros', 'invitaciones', 'detalle', 'flyers'];
         if (idsAutomaticos.includes(id)) {
-            console.log('⏩ Loader automático ignorado:', id);
             return;
         }
         
         if (this.overlays.has(id)) return;
-        
-        // Marcar como mostrado
-        this.idsMostrados.add(id);
-       
 
         // Inyectar estilos si no existen
         if (!document.getElementById('arvet-loader-styles')) {
@@ -190,6 +187,7 @@ const LoadingManager = {
 
         document.body.appendChild(overlay);
         this.overlays.set(id, overlay);
+        this.idsMostrados.add(id); // 🔧 REGISTRAR que ya se mostró
 
         // Logo fade in
         const logoEl = overlay.querySelector('.arvet-loader-logo');
@@ -232,6 +230,7 @@ const LoadingManager = {
             if (document.body.contains(overlay)) {
                 overlay.remove();
                 this.overlays.delete(id);
+                this.idsMostrados.delete(id); // 🔧 LIMPIAR tracking
             }
         }, 10000);
     },
@@ -239,19 +238,23 @@ const LoadingManager = {
     hide(id) {
         const overlay = this.overlays.get(id);
         if (!overlay) return;
+        
         const progressEl = overlay.querySelector(`#arvet-progress-${id}`);
         if (progressEl) progressEl.style.width = '100%';
+        
         setTimeout(() => {
             overlay.classList.add('arvet-loader-hidden');
             setTimeout(() => {
                 overlay.remove();
                 this.overlays.delete(id);
+                this.idsMostrados.delete(id); // 🔧 LIMPIAR tracking al ocultar
             }, 600);
         }, 400);
     },
 
     hideAll() {
         this.overlays.forEach((_, id) => this.hide(id));
+        this.idsMostrados.clear(); // 🔧 LIMPIAR todo
     }
 };
 // ============================================

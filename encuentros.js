@@ -1915,7 +1915,7 @@ fechas.push({
     });
     
     try {
-        const result = await fetchWithRetry(`${ENCUENTROS_CONFIG.API_URL}?${params.toString()}`);
+        async const result = await fetchWithRetry(`${ENCUENTROS_CONFIG.API_URL}?${params.toString()}`);
         
         if (result.success) {
             cerrarModalEncuentro();

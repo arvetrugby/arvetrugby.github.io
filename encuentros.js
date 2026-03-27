@@ -1023,18 +1023,18 @@ async function aceptarInvitacion(encuentroId) {
     try {
         const result = await fetchWithRetry(`${ENCUENTROS_CONFIG.API_URL}?${params.toString()}`);
         
-       if (result.success) {
-    mostrarMensajeEncuentros('¡Invitación aceptada!', 'success');
-    CacheManager.invalidate(`invitaciones-${usuario.equipoId}`);
-    
-    // Crear asistencias en background — silencioso
-    fetch(`${ENCUENTROS_CONFIG.API_URL}?action=crearAsistenciasEquipo&encuentroId=${encuentroId}&equipoId=${usuario.equipoId}`)
-        .catch(() => {});
-    
-    setTimeout(() => {
-        LoadingManager.hideAll();
-        renderizarInvitaciones();
-    }, 800);
+        if (result.success) {
+            mostrarMensajeEncuentros('¡Invitación aceptada!', 'success');
+            CacheManager.invalidate(`invitaciones-${usuario.equipoId}`);
+            
+            // Crear asistencias en background — silencioso
+            fetch(`${ENCUENTROS_CONFIG.API_URL}?action=crearAsistenciasEquipo&encuentroId=${encuentroId}&equipoId=${usuario.equipoId}`)
+                .catch(() => {});
+            
+            setTimeout(() => {
+                LoadingManager.hideAll();
+                renderizarInvitaciones();
+            }, 800);
 
         } else {
             mostrarMensajeEncuentros(result.error || 'Error al aceptar', 'error');
@@ -1045,7 +1045,6 @@ async function aceptarInvitacion(encuentroId) {
         LoadingManager.hide('accion');
     }
 }
-
 async function rechazarInvitacion(encuentroId) {
     if (!confirm('¿Seguro que querés rechazar esta invitación?')) return;
     
@@ -1060,15 +1059,15 @@ async function rechazarInvitacion(encuentroId) {
     });
     
     try {
-         const result = await fetchWithRetry(`${ENCUENTROS_CONFIG.API_URL}?${params.toString()}`);
+        const result = await fetchWithRetry(`${ENCUENTROS_CONFIG.API_URL}?${params.toString()}`);
         
         if (result.success) {
             mostrarMensajeEncuentros('Invitación rechazada', 'info');
             CacheManager.invalidate(`invitaciones-${usuario.equipoId}`);
             setTimeout(() => {
-    LoadingManager.hideAll(); // limpiar cualquier loader colgado
-    renderizarInvitaciones();
-}, 800);
+                LoadingManager.hideAll(); // limpiar cualquier loader colgado
+                renderizarInvitaciones();
+            }, 800);
         } else {
             mostrarMensajeEncuentros(result.error || 'Error al rechazar', 'error');
         }

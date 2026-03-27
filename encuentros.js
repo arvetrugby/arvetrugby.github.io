@@ -2809,30 +2809,50 @@ function obtenerUsuarioActual() {
 function formatearFecha(fechaStr) {
     if (!fechaStr) return '';
     
-    // Extraer solo YYYY-MM-DD, ignorando hora y timezone
+    // Extraer solo YYYY-MM-DD, ignorando cualquier hora o timezone
     const fechaParte = fechaStr.split('T')[0];
     const [año, mes, dia] = fechaParte.split('-');
     
-    const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-    const dias = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+    const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 
+                   'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
     
-    // Calcular día de la semana con algoritmo de Zeller (sin Date object)
-    let y = parseInt(año);
-    let m = parseInt(mes);
-    let d = parseInt(dia);
+    // Parsear como números enteros (sin crear objeto Date)
+    const diaNum = parseInt(dia, 10);
+    const mesNum = parseInt(mes, 10);
+    const añoNum = parseInt(año, 10);
     
+    // Calcular día de la semana usando el algoritmo de Zeller CONSISTENTE
+    // Fórmula: (día + ((13*(mes+1))/5) + K + (K/4) + (J/4) - 2*J) mod 7
+    // Donde: mes (3=marzo...14=febrero), K=año%100, J=año/100
+    
+    let m = mesNum;
+    let y = añoNum;
+    
+    // Ajustar: enero y febrero se tratan como meses 13 y 14 del año anterior
     if (m < 3) {
         m += 12;
         y -= 1;
     }
-    const k = y % 100;
-    const j = Math.floor(y / 100);
-    let h = (d + Math.floor((13 * (m + 1)) / 5) + k + Math.floor(k / 4) + Math.floor(j / 4) - 2 * j) % 7;
-    if (h < 0) h += 7;
-    const diaSemanaIndex = h === 0 ? 6 : h - 1;
     
-    return `${dias[diaSemanaIndex]} ${d} ${meses[parseInt(mes) - 1]}`;
+    const K = y % 100;
+    const J = Math.floor(y / 100);
+    
+    // Cálculo de Zeller
+    let h = (diaNum + Math.floor((13 * (m + 1)) / 5) + K + Math.floor(K / 4) + Math.floor(J / 4) - 2 * J) % 7;
+    
+    // Ajustar resultado negativo
+    if (h < 0) h += 7;
+    
+    // h: 0=sábado, 1=domingo, 2=lunes, 3=martes, 4=miércoles, 5=jueves, 6=viernes
+    const diasSemana = ['sábado', 'domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes'];
+    const nombreDia = diasSemana[h];
+    const nombreMes = meses[mesNum - 1];
+    
+    return `${nombreDia} ${diaNum} de ${nombreMes}`;
 }
+
+
+
 function usuarioLogueado() {
     return !!localStorage.getItem('arvet_user');
 }

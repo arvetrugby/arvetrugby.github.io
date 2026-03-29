@@ -423,7 +423,17 @@ function formatearMonto(monto) {
 }
 
 function formatearFecha(fecha) {
-    return new Date(fecha).toLocaleDateString('es-AR', { day: '2-digit', month: 'short' });
+    if (!fecha) return '';
+
+    const str = String(fecha).split('T')[0];
+    const [anio, mes, dia] = str.split('-');
+
+    const fechaObj = new Date(anio, mes - 1, dia);
+
+    return fechaObj.toLocaleDateString('es-AR', {
+        day: '2-digit',
+        month: 'short'
+    });
 }
 
 function formatearMes(mes) {

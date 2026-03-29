@@ -769,19 +769,13 @@
       rangoTexto = procesadas.map(p => `${p.diaNum} de ${p.mes}`).join(' y ');
     }
     
-    const detalles = procesadas.flatMap(p => 
-  (p.horarios && p.horarios.length > 0)
-    ? p.horarios.map(h => ({
-        fecha: `${p.diaNum} de ${p.mes}`,
-        hora: h.hora || '',
-        desc: h.desc || ''
-      }))
-    : [{
-        fecha: `${p.diaNum} de ${p.mes}`,
-        hora: '',
-        desc: ''
-      }]
-);
+   const detalles = procesadas.map(p => ({
+  fecha: `${p.diaNum} de ${p.mes}`,
+  horarios: (p.horarios || []).map(h => ({
+    hora: h.hora || '',
+    desc: h.desc || ''
+  }))
+}));
     
     return { 
       rango: rangoTexto, 
@@ -854,14 +848,20 @@
                     
                     <div class="date-details-mobile">
                       ${fechasData.detalles.map(d => `
-                        <div class="date-detail-item">
-                          ${icons.clock}
-                          <div class="detail-content">
-                            <span class="detail-date">${d.fecha}</span>
-                            ${d.hora ? `<span class="detail-time">${d.hora} hs${d.desc ? ` • ${d.desc}` : ''}</span>` : ''}
-                          </div>
-                        </div>
-                      `).join('')}
+  <div class="date-detail-item">
+    ${icons.clock}
+    <div class="detail-content">
+      <span class="detail-date">${d.fecha}</span>
+
+      ${d.horarios.map(h => `
+        <span class="detail-time">
+          ${h.hora} hs${h.desc ? ` - ${h.desc}` : ''}
+        </span>
+      `).join('')}
+
+    </div>
+  </div>
+`).join('')}
                     </div>
                   </div>
                   

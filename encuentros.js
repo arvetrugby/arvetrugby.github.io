@@ -695,7 +695,7 @@ function generarCardEncuentroHTML(enc) {
 
             ${mapaHTML}
 
-            ${enc.descripcion ? `<p style="color: #64748b; margin-bottom: 15px; line-height: 1.5;">${enc.descripcion}</p>` : ''}
+            ${enc.descripcion ? `<p style="color: #64748b; white-space: pre-wrap; margin-bottom: 15px; line-height: 1.5;">${enc.descripcion}</p>` : ''}
 
             ${enc.flyerUrl ? `
                 <div style="margin-bottom: 15px;">

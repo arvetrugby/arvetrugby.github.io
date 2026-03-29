@@ -2803,18 +2803,7 @@ function obtenerUsuarioActual() {
     };
 }
 
-function formatearFecha(fechaStr) {
-    if (!fechaStr) return '';
 
-    // Evita el problema de zona horaria
-    const [anio, mes, dia] = fechaStr.split('-');
-    const fecha = new Date(anio, mes - 1, dia); // LOCAL (clave)
-
-    return fecha.toLocaleDateString('es-AR', {
-        day: 'numeric',
-        month: 'short'
-    });
-}
 function usuarioLogueado() {
     return !!localStorage.getItem('arvet_user');
 }

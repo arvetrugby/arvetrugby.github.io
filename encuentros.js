@@ -1,4 +1,4 @@
-console.log('✅ encuentros.js SE CARGÓ - Fecha2');
+console.log('✅ encuentros.js SE CARGÓ - 1');
 
 
 // ============================================
@@ -990,7 +990,7 @@ function generarCardInvitacion(enc, estado) {
 
             ${mapaHTML}
 
-            ${enc.descripcion ? `<p style="color: #64748b; margin-bottom: 15px; line-height: 1.5;">${enc.descripcion}</p>` : ''}
+            ${enc.descripcion ? `<p style="color: #64748b; white-space: pre-wrap; margin-bottom: 15px; line-height: 1.5;">${enc.descripcion}</p>` : ''}
 
             ${enc.flyerUrl ? `
                 <div style="margin-bottom: 15px;">

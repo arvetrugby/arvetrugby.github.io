@@ -1,4 +1,4 @@
-console.log('✅ encuentros.js Lito! - fecha2');
+console.log('✅ encuentros.js SE CARGÓ - línea 1');
 
 
 // ============================================
@@ -613,6 +613,102 @@ function renderizarListaEncuentros(encuentros, container, empty) {
     setupLazyLoading(container);
 }
 
+function generarCardEncuentroHTML(enc) {
+    // Parsear JSONs
+    let fechas = [], valores = [];
+    try {
+        fechas = JSON.parse(enc.fechasJSON || '[]');
+        valores = JSON.parse(enc.valoresJSON || '[]');
+    } catch(e) { console.error('Error parseando JSON:', e); }
+    
+    const equiposConfirmados = enc.equiposAceptados || 1;
+    const plazasLibres = enc.cupoMaximo - equiposConfirmados;
+    
+    // Generar HTML de fechas
+    const fechasHTML = fechas.map(f => {
+        const horariosHTML = f.horarios?.map(h => 
+            `<span style="display: inline-block; background: #f1f5f9; padding: 2px 8px; border-radius: 4px; font-size: 0.85rem; margin-right: 5px; margin-bottom: 4px;">${h.hora}hs - ${h.desc}</span>`
+        ).join('') || '';
+        
+        return `
+            <div style="margin-bottom: 8px;">
+                <strong style="color: #1e293b;">📅 ${formatearFecha(f.dia)}</strong>
+                <div style="margin-top: 4px; margin-left: 24px;">
+                    ${horariosHTML}
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    // Mapa lazy-loaded
+    const mapaHTML = (enc.lat && enc.lng) ? `
+        <div style="margin: 15px 0; border-radius: 8px; overflow: hidden; border: 2px solid #e2e8f0;" class="lazy-map" data-lat="${enc.lat}" data-lng="${enc.lng}" data-direccion="${enc.direccion || 'Ubicación marcada'}">
+            <div style="background: #f8fafc; padding: 40px; text-align: center;">
+                <button onclick="cargarMapaInline(this.parentElement.parentElement)" style="background: #4f46e5; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                    📍 Cargar mapa
+                </button>
+            </div>
+        </div>
+    ` : `<div style="color: #64748b; margin: 10px 0;">📍 ${enc.direccion || 'Sin ubicación'}</div>`;
+
+    const estadoClass = `estado-${enc.estado || 'publicado'}`;
+    const estadoTexto = {
+        publicado: 'Publicado',
+        borrador: 'Borrador',
+        cancelado: 'Cancelado'
+    }[enc.estado] || enc.estado;
+
+    const botonesHTML = enc.estado === 'cancelado' ? `
+        <button onclick="verDetalleEncuentro('${enc.id}')" style="padding: 8px 16px; border-radius: 6px; border: none; background: #e0e7ff; color: #3730a3; cursor: pointer; font-weight: 500;">Ver detalle</button>
+        <span style="color: #991b1b; font-weight: 600; padding: 8px 16px;">CANCELADO</span>
+    ` : `
+        <button onclick="verDetalleEncuentro('${enc.id}')" style="padding: 8px 16px; border-radius: 6px; border: none; background: #e0e7ff; color: #3730a3; cursor: pointer; font-weight: 500;">Ver detalle</button>
+        <button onclick="editarEncuentro('${enc.id}')" style="padding: 8px 16px; border-radius: 6px; border: none; background: #f1f5f9; color: #475569; cursor: pointer; font-weight: 500;">Editar</button>
+        <button onclick="cancelarEncuentro('${enc.id}')" style="padding: 8px 16px; border-radius: 6px; border: none; background: #fee2e2; color: #991b1b; cursor: pointer; font-weight: 500;">Cancelar</button>
+        <button onclick="compartirEncuentro('${enc.id}')" style="padding: 8px 16px; border-radius: 6px; border: none; background: #22c55e; color: white; cursor: pointer; font-weight: 500;">Compartir</button>
+    `;
+
+    const tiposHTML = enc.tipo ? enc.tipo.split(', ').map(t => 
+        `<span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #e0e7ff; color: #3730a3; margin-right: 5px; margin-bottom: 4px;">${t}</span>`
+    ).join('') : '<span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #f1f5f9; color: #64748b; margin-right: 5px;">Sin tipo</span>';
+
+    return `
+        <div class="encuentro-card" style="${enc.estado === 'cancelado' ? 'opacity: 0.7; background: #f9fafb;' : ''} margin-bottom: 20px; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); border: none; transition: box-shadow 0.2s, transform 0.2s;" onmouseover="this.style.boxShadow='0 10px 15px -3px rgba(0,0,0,0.1)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 4px 6px -1px rgba(0,0,0,0.1)'; this.style.transform='translateY(0)'" data-id="${enc.id}">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; gap: 15px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 200px;">
+                    <div style="font-size: 1.3rem; font-weight: 700; color: #1e293b; margin-bottom: 5px; line-height: 1.2;">${enc.nombre}</div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px;">
+                        <span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; background: ${enc.estado === 'publicado' ? '#dcfce7' : enc.estado === 'cancelado' ? '#fee2e2' : '#f1f5f9'}; color: ${enc.estado === 'publicado' ? '#166534' : enc.estado === 'cancelado' ? '#991b1b' : '#64748b'};">${estadoTexto}</span>
+                        ${tiposHTML}
+                    </div>
+                </div>
+                <div style="text-align: right; min-width: 100px;">
+                    <div style="font-size: 1.5rem; font-weight: 800; color: #4f46e5;">${equiposConfirmados}/${enc.cupoMaximo}</div>
+                    <div style="font-size: 0.8rem; color: #64748b;">${plazasLibres > 0 ? plazasLibres + ' plaza' + (plazasLibres > 1 ? 's' : '') + ' libre' + (plazasLibres > 1 ? 's' : '') : 'Completo'}</div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 15px; color: #64748b; font-size: 0.9rem;">
+                ${fechasHTML}
+                ${valores.length > 0 ? `<div style="margin-top: 10px;"><strong style="color: #1e293b;">💰 Valores:</strong><br>${valores.map(v => `• ${v.titulo}: $${parseFloat(v.precio).toLocaleString('es-AR')}${v.desc ? ` (${v.desc})` : ''}`).join('<br>')}</div>` : ''}
+            </div>
+
+            ${mapaHTML}
+
+            ${enc.descripcion ? `<p style="color: #64748b; margin-bottom: 15px; line-height: 1.5;">${enc.descripcion}</p>` : ''}
+
+            ${enc.flyerUrl ? `
+                <div style="margin-bottom: 15px;">
+                    <img data-src="${enc.flyerUrl}" class="lazy-img" alt="Flyer" style="max-width: 300px; border-radius: 8px; object-fit: cover; display: block;">
+                </div>
+            ` : ''}
+
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                ${botonesHTML}
+            </div>
+        </div>
+    `;
+}
 
 // ============================================
 // LAZY LOADING
@@ -2706,48 +2802,19 @@ function obtenerUsuarioActual() {
         rol: "admin"
     };
 }
-function generarCardEncuentroHTML(enc) {
-    let fechas = [];
 
-    try {
-        fechas = JSON.parse(enc.fechasJSON || '[]');
-    } catch(e) {}
-
-    const fechasHTML = fechas.map(f => `
-        <div style="margin-bottom: 6px;">
-            📅 ${formatearFecha(f.dia)}
-        </div>
-    `).join('');
-
-    return `
-        <div style="
-            background: white;
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        ">
-            <strong>${enc.nombre || 'Encuentro'}</strong>
-            <div style="margin-top: 6px;">
-                ${fechasHTML}
-            </div>
-        </div>
-    `;
-}
 function formatearFecha(fechaStr) {
   if (!fechaStr) return '';
 
   const fecha = new Date(fechaStr);
 
-  return fecha.toLocaleDateString('es-AR', {
-    day: 'numeric',
-    month: 'short',
-    timeZone: 'UTC'
-  });
-}
+  const dia = fecha.getUTCDate();
+  const mes = fecha.getUTCMonth(); // 0-11
 
-console.log(formatearFecha("2026-05-16"));
-console.log(formatearFecha("2026-05-16T00:00:00.000Z"));
+  const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+
+  return `${dia} ${meses[mes]}`;
+}
 
 function usuarioLogueado() {
     return !!localStorage.getItem('arvet_user');

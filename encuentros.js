@@ -1,4 +1,4 @@
-console.log('✅ encuentros.js SE CARGÓ - línea 1');
+console.log('✅ encuentros.js Lito! - línea 1');
 
 
 // ============================================

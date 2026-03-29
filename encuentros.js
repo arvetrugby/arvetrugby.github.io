@@ -1,4 +1,4 @@
-console.log('✅ encuentros.js Lito! - fecha');
+console.log('✅ encuentros.js Lito! - fecha2');
 
 
 // ============================================
@@ -2706,7 +2706,34 @@ function obtenerUsuarioActual() {
         rol: "admin"
     };
 }
+function generarCardEncuentroHTML(enc) {
+    let fechas = [];
 
+    try {
+        fechas = JSON.parse(enc.fechasJSON || '[]');
+    } catch(e) {}
+
+    const fechasHTML = fechas.map(f => `
+        <div style="margin-bottom: 6px;">
+            📅 ${formatearFecha(f.dia)}
+        </div>
+    `).join('');
+
+    return `
+        <div style="
+            background: white;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        ">
+            <strong>${enc.nombre || 'Encuentro'}</strong>
+            <div style="margin-top: 6px;">
+                ${fechasHTML}
+            </div>
+        </div>
+    `;
+}
 function formatearFecha(fechaStr) {
   if (!fechaStr) return '';
 

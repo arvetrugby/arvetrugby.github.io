@@ -1,4 +1,4 @@
-console.log('✅ encuentros.js SE CARGÓ - línea 1');
+console.log('✅ encuentros.js SE CARGÓ - Fecha1');
 
 
 // ============================================
@@ -2804,13 +2804,16 @@ function obtenerUsuarioActual() {
 }
 
 function formatearFecha(fechaStr) {
-  if (!fechaStr) return '';
+    if (!fechaStr) return '';
 
-  return new Date(fechaStr).toLocaleDateString('es-AR', {
-    day: 'numeric',
-    month: 'short',
-    timeZone: 'UTC'
-  });
+    // Evita el problema de zona horaria
+    const [anio, mes, dia] = fechaStr.split('-');
+    const fecha = new Date(anio, mes - 1, dia); // LOCAL (clave)
+
+    return fecha.toLocaleDateString('es-AR', {
+        day: 'numeric',
+        month: 'short'
+    });
 }
 function usuarioLogueado() {
     return !!localStorage.getItem('arvet_user');

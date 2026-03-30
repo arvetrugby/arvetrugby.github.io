@@ -1265,7 +1265,7 @@ function crearModalDetalle(enc, detalle, encuentroId) {
                 ${enc.descripcion ? `
                     <div style="margin-bottom: 20px; padding: 15px; background: #f8fafc; border-radius: 12px;">
                         <h4 style="color: #64748b; font-size: 0.85rem; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 0.5px;">📝 Descripción</h4>
-                        <p style="margin: 0; color: #1e293b; line-height: 1.6; font-size: 0.95rem; word-break: break-word;">${enc.descripcion}</p>
+                        <p style="margin: 0; color: #1e293b; white-space: pre-wrap; line-height: 1.6; font-size: 0.95rem; word-break: break-word;">${enc.descripcion}</p>
                     </div>
                 ` : ''}
 

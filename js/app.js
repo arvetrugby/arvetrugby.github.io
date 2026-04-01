@@ -1026,7 +1026,7 @@ function initRegistroJugador() {
     }
     
     // 🔥 AVATAR DEFAULT
-    let avatarUrl = "https://i.ibb.co/hb0x9zc/avatar1.png"; // sin espacio al final
+   let avatarUrl = "https://res.cloudinary.com/dy9zeeo5g/image/upload/w_200,h_200,c_fill,f_auto,q_auto/v1775064368/avatar1_kttu3d.png";
 
     const avatarPreview = document.getElementById('avatarPreview');
     const avatarOptions = document.querySelectorAll('.avatar-option');
@@ -1659,7 +1659,7 @@ window.formatearFecha = function(fecha) {
             
             return `
                 <div class="card" style="text-align: center; position: relative;">
-                    <img src="${j.avatarUrl || 'https://i.ibb.co/hb0x9zc/avatar1.png'}" 
+                    <img src="${j.avatarUrl || 'https://res.cloudinary.com/dy9zeeo5g/image/upload/w_200,h_200,c_fill,f_auto,q_auto/v1775064368/avatar1_kttu3d.png'}" 
                          style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; 
                                 border: 3px solid var(--equipo-color, #3b82f6); margin-bottom: 12px; margin-top: 12px;">
                     <h3 style="margin: 0 0 4px 0; font-size: 16px;">${j.nombre} ${j.apellido || ''}</h3>
@@ -1865,7 +1865,7 @@ async function cargarJugadoresAdmin() {
         <!-- Fila superior: Avatar + Info -->
         <div style="display: flex; align-items: center; gap: 12px;">
             <!-- Imagen de perfil -->
-            <img src="${j.avatarUrl || 'https://i.ibb.co/hb0x9zc/avatar1.png'}" 
+            <img src="${j.avatarUrl || 'https://res.cloudinary.com/dy9zeeo5g/image/upload/w_200,h_200,c_fill,f_auto,q_auto/v1775064368/avatar1_kttu3d.png'}" 
                  alt="${j.nombre}" 
                  style="width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary, #3b82f6); flex-shrink: 0;">
             
@@ -2197,13 +2197,13 @@ const btnGuardarColor = document.getElementById('btnGuardarColor');
                     logoPreview.src = equipo.logoUrl;
                     console.log('✅ Logo cargado:', equipo.logoUrl);
                 } else {
-                    logoPreview.src = 'https://i.ibb.co/YFjMZQmN/f88959de-9367-4d6b-b15d-1ffa48b2a1c7.png';
+                    logoPreview.src = 'https://res.cloudinary.com/dy9zeeo5g/image/upload/w_400,h_400,c_limit,f_auto,q_auto/v1775066348/ChatGPT_Image_23_mar_2026_02_53_18_a.m._ee9ev3.png';
                     console.log('ℹ️ No hay logo, mostrando default');
                 }
             }
         } catch (err) {
             console.error('Error cargando logo:', err);
-            logoPreview.src = 'https://i.ibb.co/YFjMZQmN/f88959de-9367-4d6b-b15d-1ffa48b2a1c7.png';
+            logoPreview.src = 'https://res.cloudinary.com/dy9zeeo5g/image/upload/w_400,h_400,c_limit,f_auto,q_auto/v1775066348/ChatGPT_Image_23_mar_2026_02_53_18_a.m._ee9ev3.png';
         }
     }
     cargarLogoExistente();

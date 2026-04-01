@@ -775,15 +775,20 @@ async function subirAvatar(input) {
     formData.append('image', archivoSubir);
     
     try {
-        const response = await fetch('https://api.imgbb.com/1/upload?key=2c40bfae99afcb6fd536a0e303a77b90', {
-            method: 'POST',
-            body: formData
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            const url = result.data.url || result.data.display_url;
+        // Subir a Cloudinary
+const formDataCloud = new FormData();
+formDataCloud.append('file', archivoSubir);
+formDataCloud.append('upload_preset', 'arvet_upload');
+
+const response = await fetch('https://api.cloudinary.com/v1_1/dy9zeeo5g/image/upload', {
+    method: 'POST',
+    body: formDataCloud
+});
+
+const result = await response.json();
+
+if (result.secure_url) {
+    const url = result.secure_url;
             
             // Actualizar preview
             document.getElementById('avatarPreview').src = url;
@@ -1042,22 +1047,21 @@ function initRegistroJugador() {
         const file = this.files[0];
         if (!file) return;
 
-        const formData = new FormData();
-        formData.append("image", file);
+      const formData = new FormData();
+formData.append("file", file);
+formData.append("upload_preset", "arvet_upload");
 
-        try {
+const response = await fetch("https://api.cloudinary.com/v1_1/dy9zeeo5g/image/upload", {
+    method: "POST",
+    body: formData
+});
 
-            const response = await fetch("https://api.imgbb.com/1/upload?key=2c40bfae99afcb6fd536a0e303a77b90", {
-                method: "POST",
-                body: formData
-            });
+const result = await response.json();
 
-            const result = await response.json();
-
-            if (result.success) {
-                avatarUrl = result.data.url;
-                avatarPreview.src = avatarUrl;
-            }
+if (result.secure_url) {
+    avatarUrl = result.secure_url;
+    avatarPreview.src = avatarUrl;
+}
 
         } catch (error) {
             console.error("Error subiendo imagen:", error);
@@ -2206,20 +2210,20 @@ const btnGuardarColor = document.getElementById('btnGuardarColor');
         
         showMsg('Subiendo...', 'info');
         
-        const formData = new FormData();
-        formData.append("image", file);
-        
-        try {
-            // 1. Subir a ImgBB
-            const response = await fetch("https://api.imgbb.com/1/upload?key=2c40bfae99afcb6fd536a0e303a77b90", {
-                method: "POST",
-                body: formData
-            });
-            
-            const result = await response.json();
-            
-            if (result.success) {
-                const imageUrl = result.data.url;
+    const formData = new FormData();
+formData.append("file", file);
+formData.append("upload_preset", "arvet_upload");
+
+// 1. Subir a Cloudinary
+const response = await fetch("https://api.cloudinary.com/v1_1/dy9zeeo5g/image/upload", {
+    method: "POST",
+    body: formData
+});
+
+const result = await response.json();
+
+if (result.secure_url) {
+    const imageUrl = result.secure_url;
                 logoPreview.src = imageUrl;
                 
                 // 2. GUARDAR AUTOMÁTICAMENTE (tu código del botón)
@@ -2463,19 +2467,19 @@ btnGuardarColor.addEventListener('click', async function() {
 
     for (const file of files) {
         const formData = new FormData();
-        formData.append("image", file);
+formData.append("file", file);
+formData.append("upload_preset", "arvet_upload");
 
-        try {
-            const response = await fetch("https://api.imgbb.com/1/upload?key=2c40bfae99afcb6fd536a0e303a77b90", {
-                method: "POST",
-                body: formData
-            });
+const response = await fetch("https://api.cloudinary.com/v1_1/dy9zeeo5g/image/upload", {
+    method: "POST",
+    body: formData
+});
 
-            const result = await response.json();
+const result = await response.json();
 
-            if (result.success) {
-                window.galeriaTemporal.push(result.data.url);
-            }
+if (result.secure_url) {
+    window.galeriaTemporal.push(result.secure_url);
+}
         } catch (err) {
             console.error('Error subiendo foto:', err);
         }

@@ -788,7 +788,10 @@ const response = await fetch('https://api.cloudinary.com/v1_1/dy9zeeo5g/image/up
 const result = await response.json();
 
 if (result.secure_url) {
-    const url = result.secure_url;
+    const url = result.secure_url.replace(
+    '/upload/',
+    '/upload/w_300,h_300,c_fill,f_auto,q_auto/'
+);
             
             // Actualizar preview
             document.getElementById('avatarPreview').src = url;
@@ -2488,7 +2491,12 @@ const response = await fetch("https://api.cloudinary.com/v1_1/dy9zeeo5g/image/up
 const result = await response.json();
 
 if (result.secure_url) {
-    window.galeriaTemporal.push(result.secure_url);
+    const urlOptimizada = result.secure_url.replace(
+    '/upload/',
+    '/upload/w_1200,f_auto,q_auto/'
+);
+
+window.galeriaTemporal.push(urlOptimizada);
 }
         } catch (err) {
             console.error('Error subiendo foto:', err);

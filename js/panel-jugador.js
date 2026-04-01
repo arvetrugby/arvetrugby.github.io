@@ -245,79 +245,85 @@ document.addEventListener('DOMContentLoaded', async function() {
       }
     }
     
-    mostrarMensaje('⏳ Subiendo foto...');
-    
+     mostrarMensaje('⏳ Subiendo foto...');
+  
+  const controller = new AbortController();  // ← AGREGAR ESTO
+  const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 seg timeout
+  
+  try {  // ← FALTABA ESTE TRY
     const formData = new FormData();
-formData.append('file', archivoSubir);
-formData.append('upload_preset', 'arvet_upload');
+    formData.append('file', archivoSubir);
+    formData.append('upload_preset', 'arvet_upload');
 
-const response = await fetch('https://api.cloudinary.com/v1_1/dy9zeeo5g/image/upload', {
-  method: 'POST',
-  body: formData,
-  signal: controller.signal
+    const response = await fetch('https://api.cloudinary.com/v1_1/dy9zeeo5g/image/upload', {
+      method: 'POST',
+      body: formData,
+      signal: controller.signal
+    });
+    
+    clearTimeout(timeoutId);  // ← cancelar timeout si terminó bien
+
+    const result = await response.json();
+
+    if (result.secure_url) {
+      const url = result.secure_url;
+      
+      if (!url) throw new Error('No se obtuvo URL');
+      
+      avatarUrlActual = url;
+      
+      // Mostrar preview
+      const testImg = new Image();
+      testImg.onload = async function() {
+        document.getElementById('avatarPreview').src = avatarUrlActual;
+        
+        // 🔥 SUBIR AUTOMÁTICAMENTE AL SERVIDOR
+        mostrarMensaje('⏳ Guardando en perfil...');
+        
+        try {
+          await fetch(API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'updateJugador',
+              id: jugadorId,
+              avatarUrl: avatarUrlActual
+            })
+          });
+          
+          mostrarMensaje('✅ Foto actualizada');
+          
+          // Actualizar localStorage si es el usuario logueado
+          if (!esAdminEditando && user) {
+            const updatedUser = { ...user, avatarUrl: avatarUrlActual };
+            localStorage.setItem('arvet_user', JSON.stringify(updatedUser));
+          }
+          
+        } catch (err) {
+          console.error('Error guardando avatar:', err);
+          mostrarMensaje('⚠️ Foto subida pero error al guardar', 'error');
+        }
+      };
+      
+      testImg.onerror = function() {
+        mostrarMensaje('⚠️ Error al mostrar imagen', 'error');
+      };
+      testImg.src = avatarUrlActual;
+      
+    } else {
+      mostrarMensaje('Error: ' + (result.error?.message || 'Error de Cloudinary'), 'error');
+    }
+    
+  } catch (err) {  // ← ESTE CATCH AHORA SÍ TIENE SU TRY
+    if (err.name === 'AbortError') {
+      mostrarMensaje('⏱️ Timeout - intentá con imagen más chica', 'error');
+    } else {
+      mostrarMensaje('❌ Error: ' + err.message, 'error');
+    }
+  }
 });
 
-const result = await response.json();
-
-if (result.secure_url) {
-  const url = result.secure_url;
-
-        
-        if (!url) throw new Error('No se obtuvo URL');
-        
-        avatarUrlActual = url;
-        
-        // Mostrar preview
-        const testImg = new Image();
-        testImg.onload = async function() {
-          document.getElementById('avatarPreview').src = avatarUrlActual;
-          
-          // 🔥 SUBIR AUTOMÁTICAMENTE AL SERVIDOR
-          mostrarMensaje('⏳ Guardando en perfil...');
-          
-          try {
-            await fetch(API_URL, {
-              method: 'POST',
-              mode: 'no-cors',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                action: 'updateJugador',
-                id: jugadorId,
-                avatarUrl: avatarUrlActual
-              })
-            });
-            
-            mostrarMensaje('✅ Foto actualizada');
-            
-            // Actualizar localStorage si es el usuario logueado
-            if (!esAdminEditando && user) {
-              const updatedUser = { ...user, avatarUrl: avatarUrlActual };
-              localStorage.setItem('arvet_user', JSON.stringify(updatedUser));
-            }
-            
-          } catch (err) {
-            console.error('Error guardando avatar:', err);
-            mostrarMensaje('⚠️ Foto subida pero error al guardar', 'error');
-          }
-        };
-        
-        testImg.onerror = function() {
-          mostrarMensaje('⚠️ Error al mostrar imagen', 'error');
-        };
-        testImg.src = avatarUrlActual;
-        
-      } else {
-  mostrarMensaje('Error: ' + (result.error?.message || 'Error de Cloudinary'), 'error');
-}
-
-} catch (err) {
-  if (err.name === 'AbortError') {
-    mostrarMensaje('⏱️ Timeout - intentá con imagen más chica', 'error');
-  } else {
-    mostrarMensaje('❌ Error: ' + err.message, 'error');
-  }
-}
-  });
   // ==========================================
   // CAMBIAR CONTRASEÑA
   // ==========================================

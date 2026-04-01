@@ -1061,7 +1061,7 @@ const result = await response.json();
 if (result.secure_url) {
     avatarUrl = result.secure_url;
     avatarPreview.src = avatarUrl;
-}
+
 
         } catch (error) {
             console.error("Error subiendo imagen:", error);

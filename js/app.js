@@ -1071,7 +1071,7 @@ if (result.secure_url) {
     
     // Obtener equipoId de la URL
     
-    console.log('Equipo ID:', equipoId);
+    
     
     if (!equipoId) {
         mostrarMensaje('Error: No se especificó el equipo', 'error');
@@ -2213,7 +2213,7 @@ const btnGuardarColor = document.getElementById('btnGuardarColor');
     const formData = new FormData();
 formData.append("file", file);
 formData.append("upload_preset", "arvet_upload");
-
+ try {
 // 1. Subir a Cloudinary
 const response = await fetch("https://api.cloudinary.com/v1_1/dy9zeeo5g/image/upload", {
     method: "POST",

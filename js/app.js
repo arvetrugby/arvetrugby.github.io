@@ -2472,7 +2472,7 @@ btnGuardarColor.addEventListener('click', async function() {
         const formData = new FormData();
 formData.append("file", file);
 formData.append("upload_preset", "arvet_upload");
-
+try {
 const response = await fetch("https://api.cloudinary.com/v1_1/dy9zeeo5g/image/upload", {
     method: "POST",
     body: formData

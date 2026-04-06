@@ -169,19 +169,32 @@ document.addEventListener('DOMContentLoaded', async function() {
   // ==========================================
   
   document.getElementById('formPerfil').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const datos = {
-      id: jugadorId,
-      nombre: document.getElementById('nombre').value.trim(),
-      apellido: document.getElementById('apellido').value.trim(),
-      email: document.getElementById('email').value.trim(),
-      telefono: document.getElementById('telefono').value.trim(),
-      fechaNacimiento: document.getElementById('fechaNacimiento').value,
-      dni: document.getElementById('dni').value.trim(),
-      cuitCuil: document.getElementById('cuitCuil').value.trim(),
-      avatarUrl: avatarUrlActual
-    };
+  e.preventDefault();
+  
+  const datos = {
+    id: jugadorId,
+    nombre: document.getElementById('nombre').value.trim(),
+    apellido: document.getElementById('apellido').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    telefono: document.getElementById('telefono').value.trim(),
+    fechaNacimiento: document.getElementById('fechaNacimiento').value,
+    dni: document.getElementById('dni').value.trim(),
+    cuitCuil: document.getElementById('cuitCuil').value.trim(),
+  };
+  
+  // ✅ Solo agregar avatarUrl si realmente existe
+  if (avatarUrlActual) {
+    datos.avatarUrl = avatarUrlActual;
+  }
+  
+  // ✅ Eliminar campos vacíos para no pisar datos existentes
+  const datosFiltrados = Object.fromEntries(
+    Object.entries(datos).filter(([key, val]) => val !== '' && val !== null && val !== undefined)
+  );
+  
+  // Siempre mantener el id
+  datosFiltrados.id = jugadorId;
+  
     
     try {
       await fetch(API_URL, {

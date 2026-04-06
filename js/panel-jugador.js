@@ -120,11 +120,13 @@ document.addEventListener('DOMContentLoaded', async function() {
       const nombreCompleto = `${jugador.nombre || ''} ${jugador.apellido || ''}`.trim();
       document.getElementById('nombreJugadorHeader').textContent = nombreCompleto || 'Jugador';
       
-      // Cargar equipo (color y logo)
-      if (jugador.equipoId || jugador.equipo_id) {
-        await cargarEquipo(jugador.equipoId || jugador.equipo_id);
-      }
+      // Ocultar loader antes de cargar equipo
       ocultarLoader();
+      
+      // Cargar equipo sin bloquear (no await)
+      if (jugador.equipoId || jugador.equipo_id) {
+        cargarEquipo(jugador.equipoId || jugador.equipo_id);
+      }
     } catch (err) {
       console.error('Error cargando perfil:', err);
       mostrarMensaje('Error de conexión', 'error');
